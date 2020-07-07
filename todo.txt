@@ -1,0 +1,28 @@
+Model
+
+- Value mapping
+  - Tree 
+
+- Planning
+  - Programs
+  - Projects
+  - Tasks
+  - Routines
+  
+- Execution
+  - Schedule slots  
+
+UI
+
+- Console
+  - Tree file
+    - Leaves
+      - Eventual (No prodefined time slot)
+      - Routines (Have some predefined time slot)
+      - Programs (
+
+- Reports
+  - Lean Value Tree
+  - Dashboard
+  - Programs over months
+  - Routine tracking
