@@ -4,26 +4,27 @@ import "testing"
 
 func TestAnything(t *testing.T) {
   input := `
-- Change the world
+- Change the world: "Because the world needs to be changed"
   - What I build
   - How I live
 `
-
   cases := []struct {
     expectedType    TokenType
     expectedLiteral string
   }{
     {ITEM, "-"},
     {IDENT, "Change the world"},
-    {FIRST, "  "},
+    {SEMICOLON, ":"},
+    {STRING, "Because the world needs to be changed"},
+    {LEVEL, "  "},
     {ITEM, "-"},
     {IDENT, "What I build"},
-    {FIRST, "  "},
+    {LEVEL, "  "},
     {ITEM, "-"},
     {IDENT, "How I live"},
   }
 
-  lexer := New(input)
+  lexer := NewLexer(input)
 
   for i, tt := range cases {
     tok := lexer.NextToken()

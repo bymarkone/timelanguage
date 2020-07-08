@@ -11,7 +11,7 @@ const (
   ITEM      = "ITEM"
   IDENT     = "IDENT"
   STRING    = "STRING"
-  FIRST     = "FIRST"
+  LEVEL     = "LEVEL"
   SEMICOLON = "SEMICOLON"
   EOL       = "EOL"
   EOF       = "EOF"

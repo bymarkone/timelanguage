@@ -7,7 +7,7 @@ type Lexer struct {
   ch              byte
 }
 
-func New(input string) *Lexer {
+func NewLexer(input string) *Lexer {
   l := &Lexer{input: input}
   l.readChar()
   return l
@@ -31,7 +31,7 @@ func (l *Lexer) NextToken() Token {
         ch := l.ch
         l.readChar()
         literal := string(ch) + string(l.ch)
-        tok = Token{Type: FIRST, Literal: literal}
+        tok = Token{Type: LEVEL, Literal: literal}
       } else {
         l.readChar()
         return l.NextToken()
