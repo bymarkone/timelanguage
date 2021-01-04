@@ -4,8 +4,8 @@ import (
   "fmt"
 )
 
-var tree = make(map[int]*Valuable)
-var all = make(map[string]*Valuable)
+var tree = make(map[int]*Item)
+var all = make(map[string]*Item)
 
 type Parser struct {
   lexer       *Lexer
@@ -34,21 +34,15 @@ func NewParser(lexer *Lexer) *Parser {
   return parser
 }
 
-func (p *Parser) Parse() *Valuable {
-  p.parseValuable()
-  p.parseValuable()
-  p.parseValuable()
+func (p *Parser) Parse() *Item {
+  for !p.peekTokenIs(EOF) {
+    p.parseValuable()
+  }
   return tree[0]
 }
 
 func (p *Parser) parseValuable() {
   level := p.findLevel()
-
-  if !p.expectPeek(ITEM) {
-    return
-  }
-
-  itemToken := p.curToken
 
   if !p.expectPeek(IDENT) {
     return
@@ -57,29 +51,29 @@ func (p *Parser) parseValuable() {
   nameToken := p.curToken
   name := p.curToken.Literal
 
-  var valuable *Valuable
+  var item *Item
   if all[name] != nil {
-    valuable = all[name]
+    item = all[name]
   } else {
-    valuable = &Valuable {Token: itemToken}
-    valuable.Name = &Name{Token: nameToken, Value: name}
-    valuable.Level = &Level{Value: level}
-    valuable.Children = []*Valuable{}
+    item = &Item {Token: nameToken}
+    item.Name = &Name{Token: nameToken, Value: name}
+    item.Children = []*Item{}
     p.expectSkip(SEMICOLON)
     if p.expectPeek(STRING) {
-      valuable.Description = &Description{Token: p.curToken, Value: p.curToken.Literal}
+      item.Description = &Description{Token: p.curToken, Value: p.curToken.Literal}
     }
-    all[name] = valuable
+    item.Level = level
+    all[name] = item
     if level >= 1 {
-      tree[level - 1].Children = append(tree[level - 1].Children, valuable)
+      tree[level - 1].Children = append(tree[level - 1].Children, item)
     }
-    tree[level] = valuable
+    tree[level] = item
   }
 }
 
 func (p *Parser) findLevel() int {
   level := 0
-  for p.expectPeek(LEVEL) {
+  for p.expectPeek(LEVEL) || p.expectPeek(ITEM) {
     level += 1
   }
   return level

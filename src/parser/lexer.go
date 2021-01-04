@@ -79,7 +79,7 @@ func (l *Lexer) readIdentifier() string {
   position := l.position
   for {
     l.readChar()
-    if l.ch == ':' || l.ch == '\n' || l.ch == '\r' {
+    if l.ch == ':' || l.ch == '\n' || l.ch == '\r' || l.ch == 0 {
       break
     }
   }

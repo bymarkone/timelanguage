@@ -13,7 +13,6 @@ const (
   STRING    = "STRING"
   LEVEL     = "LEVEL"
   SEMICOLON = "SEMICOLON"
-  EOL       = "EOL"
   EOF       = "EOF"
   ILLEGAL   = "ILLEGAL"
 )

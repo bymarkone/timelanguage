@@ -3,34 +3,41 @@ package parser
 import "testing"
 
 func TestTreeCreation(t *testing.T) {
-  input := `
-- change the world: "Because the world needs to be changed"
-  - what to build: "I cannot understand what I cannot build"
-  - what to say: "Words will always retain their power" 
+	input := `
+AI
+- Math
+- Foundations
+- Books
+- Research
 `
+	cases := []struct {
+		item        string
+		description string
+		level       int
+	}{
+		{"AI", "", 0},
+		{"Math", "", 1},
+		{"Foundations", "", 1},
+		{"Books", "", 1},
+		{"Research", "", 1},
+	}
 
-  cases := []struct {
-    project       string
-    description   string
-    level         int
-  }{
-    { "change the world", "Because the world needs to be changed", 1 },
-    { "what to build", "I cannot understand what I cannot build", 2 },
-    { "what to say", "Words will always retain their power", 2 },
-  }
+	lexer := NewLexer(input)
+	parser := NewParser(lexer)
+	item := parser.Parse()
+	items := append([]*Item{item}, item.Children...)
 
-  lexer := NewLexer(input)
-  parser := NewParser(lexer)
-  valuable := parser.Parse()
-  valuables := append([]*Valuable{valuable}, valuable.Children...)
+	for i, tt := range cases {
+		if items[i].Name.TokenLiteral() != tt.item {
+			t.Fatalf("Expecting %s got %s", tt.item, items[i].Name.TokenLiteral())
+		}
 
-  for i, tt := range cases {
-    if valuables[i].Name.TokenLiteral() != tt.project {
-      t.Fatalf("Expecting %s got %s", tt.project, valuables[i].Name.TokenLiteral())
-    }
+		if items[i].Description != nil && items[i].Description.TokenLiteral() != tt.description {
+			t.Fatalf("Expecting %s got %s", tt.description, items[i].Description.TokenLiteral())
+		}
 
-    if valuables[i].Description.TokenLiteral() != tt.description {
-      t.Fatalf("Expecting %s got %s", tt.description, valuables[i].Description.TokenLiteral())
-    }
-  }
+		if items[i].Level != tt.level {
+			t.Fatalf("Expecting %d got %d, for item %s", tt.level, items[i].Level, items[i].Name.Value)
+		}
+	}
 }
