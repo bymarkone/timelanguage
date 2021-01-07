@@ -1,0 +1,11 @@
+COMMAND
+    help
+
+DESCRIPTION
+    Display quick manual for commands.
+
+    Help is available for the following commands:
+
+    - show [threads | projects | pipelines | plan]
+    - now
+    - exit
