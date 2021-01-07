@@ -8,7 +8,7 @@ type Item struct {
 	Token       Token
 	Name        *Name
 	Description *Description
-	Level       int
+	Category    *Category
 	Children    []*Item
 }
 
@@ -28,3 +28,9 @@ type Description struct {
 
 func (s *Description) TokenLiteral() string { return s.Token.Literal }
 
+type Category struct {
+	Token Token
+	Value string
+}
+
+func (i *Category) TokenLiteral() string { return i.Token.Literal }
