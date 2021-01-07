@@ -48,7 +48,7 @@ func (p *Parser) parseCategory() {
 		return
 	}
 
-	currentCategory = &Category{Token: p.curToken}
+	currentCategory = &Category{Token: p.curToken, Value: p.curToken.Literal}
 	p.parseItem()
 }
 
