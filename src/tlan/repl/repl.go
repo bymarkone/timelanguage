@@ -17,7 +17,7 @@ func Start(in io.Reader, _out io.Writer) {
 	out = _out
 
 	for {
-		_, _ = fmt.Fprint(out, PROMPT)
+		print(PROMPT)
 		scanned := scanner.Scan()
 		if !scanned {
 			return
@@ -58,7 +58,7 @@ func help(words []string) {
 
 func show(words []string) {
 	if len(words) == 1 {
-		fmt.Print("Incorrect number of arguments. Type 'help show' to see usage.\n")
+		println("Incorrect number of arguments. Type 'help show' to see usage.")
 		return
 	}
 	switch words[1] {
@@ -104,21 +104,36 @@ func printPipeline() {
 }
 
 func printShowHelp() {
+	println("This command prints elements of a given collection.")
 	printEmptyLine()
-	printTlanHeader()
-	_, _ = fmt.Fprint(out, "'show' usage\n")
+	println("Usage:")
+	println("  show <collection> {flags}")
 	printEmptyLine()
+	println("Arguments:")
+	println("  collection                  : collection to be printed")
+	printEmptyLine()
+	println("Flags:")
+	println("  --active, -a                : filter only active objects in the collection")
 }
 
 func printHelp() {
 	printEmptyLine()
 	printTlanHeader()
-	_, _ = fmt.Fprint(out, "Commands:\n")
-	_, _ = fmt.Fprint(out, "  help [command]              : prints help information for commands\n")
-	_, _ = fmt.Fprint(out, "  show projects|tracks|plan   : prints a specific view for each object\n")
-	_, _ = fmt.Fprint(out, "  now                         : shows tasks to be performed now (i.e the current time slot)\n")
-	_, _ = fmt.Fprint(out, "  exit                        : exits the application\n")
+	println("Commands:")
+	println("  help [command]              : prints help information for commands")
+	println("  show <collection>           : prints elements of a given collection")
+	println("  now                         : shows tasks to be performed now (i.e the current time slot)")
+	println("  exit                        : exits the application")
 	printEmptyLine()
+}
+
+func println(what string) {
+	print(what)
+	printEmptyLine()
+}
+
+func print(what string) {
+	_, _ = fmt.Fprint(out, what)
 }
 
 func printEmptyLine() {
@@ -126,5 +141,6 @@ func printEmptyLine() {
 }
 
 func printTlanHeader() {
-	_, _ = fmt.Fprint(out, "tLan - a language for time\n")
+	println("tLan - a language for time")
 }
+
