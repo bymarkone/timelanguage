@@ -10,6 +10,7 @@ type Item struct {
 	Description *Description
 	Category    *Category
 	Children    []*Item
+	Marked      bool
 }
 
 func (s *Item) TokenLiteral() string { return s.Token.Literal }

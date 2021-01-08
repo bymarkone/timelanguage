@@ -37,14 +37,14 @@ Mathematics
 		items := p.Parse()
 
 		Eval(context, items)
-		projects := listProjects()
+		projects := ListProjects()
 
 		for i, p := range tt.expected {
 			if projects[i].Name != p.Name {
-				t.Errorf("Project has wrong data. Got %s, want %s", projects[i].Name, p.Name)
+				t.Errorf("Project has wrong data2. Got %s, want %s", projects[i].Name, p.Name)
 			}
 			if projects[i].Category != p.Category {
-				t.Errorf("Project has wrong data. Got %s, want %s", projects[i].Category, p.Category)
+				t.Errorf("Project has wrong data2. Got %s, want %s", projects[i].Category, p.Category)
 			}
 		}
 	}

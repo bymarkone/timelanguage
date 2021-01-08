@@ -26,6 +26,10 @@ func (l *Lexer) NextToken() Token {
 		tok = newToken(SEMICOLON, l.ch)
 	case '-':
 		tok = newToken(ITEM, l.ch)
+	case '(':
+		tok = newToken(LP, l.ch)
+	case ')':
+		tok = newToken(RP, l.ch)
 	case ' ':
 		if l.peekChar() == ' ' {
 			ch := l.ch
@@ -79,7 +83,7 @@ func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for {
 		l.readChar()
-		if l.ch == ':' || l.ch == '\n' || l.ch == '\r' || l.ch == 0 {
+		if l.ch == ':' || l.ch == '\n' || l.ch == '\r' || l.ch == 0 || l.ch == ')' {
 			break
 		}
 	}

@@ -15,4 +15,6 @@ const (
 	SEMICOLON = "SEMICOLON"
 	EOF       = "EOF"
 	ILLEGAL   = "ILLEGAL"
+	LP        = "LEFT_PARENTHESIS"
+	RP        = "RIGHT_PARENTHESIS"
 )

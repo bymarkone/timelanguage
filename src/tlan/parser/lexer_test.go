@@ -7,9 +7,10 @@ func TestAnything(t *testing.T) {
 AI
 - Math
   - Bachelors Degree
+  - (Cambridge Part III)
 - Foundations
 - Books
-- Research
+- (Research)
 `
 	cases := []struct {
 		expectedType    TokenType
@@ -21,12 +22,19 @@ AI
 		{LEVEL, "  "},
 		{ITEM, "-"},
 		{IDENT, "Bachelors Degree"},
+		{LEVEL, "  "},
+		{ITEM, "-"},
+		{LP, "("},
+		{IDENT, "Cambridge Part III"},
+		{RP, ")"},
 		{ITEM, "-"},
 		{IDENT, "Foundations"},
 		{ITEM, "-"},
 		{IDENT, "Books"},
 		{ITEM, "-"},
+		{LP, "("},
 		{IDENT, "Research"},
+		{RP, ")"},
 	}
 
 	lexer := NewLexer(input)

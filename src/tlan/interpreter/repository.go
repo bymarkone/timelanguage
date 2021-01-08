@@ -2,10 +2,10 @@ package interpreter
 
 var projects []*Project
 
-func addProject(project Project)  {
+func AddProject(project Project)  {
 	projects = append(projects, &project)
 }
 
-func listProjects() []*Project {
+func ListProjects() []*Project {
 	return projects
 }

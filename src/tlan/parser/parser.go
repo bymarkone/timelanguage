@@ -54,12 +54,17 @@ func (p *Parser) parseCategory() {
 
 func (p *Parser) parseItem() {
 	var level = p.findLevel()
+	var marked = false
 	p.expectSkip(ITEM)
+	if p.peekTokenIs(LP) {
+		marked = true
+		p.nextToken()
+	}
 	if !p.expectPeek(IDENT) {
 		return
 	}
 
-	var item = &Item{Token: p.curToken, Category: currentCategory, Children: []*Item{}}
+	var item = &Item{Token: p.curToken, Category: currentCategory, Children: []*Item{}, Marked: marked}
 	if level == 0 {
 		firstLevelItems = append(firstLevelItems, item)
 	}
@@ -71,6 +76,9 @@ func (p *Parser) parseItem() {
 	p.parseName()
 	p.parseDescription()
 
+	if (marked) {
+		p.expectSkip(RP)
+	}
 	p.expectSkip(SEMICOLON)
 	if p.peekTokenIs(LEVEL) || p.peekTokenIs(ITEM) {
 		p.parseItem()

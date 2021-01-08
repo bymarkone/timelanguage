@@ -9,19 +9,20 @@ AI
   - Bachelors Degree
 - Foundations
 - Books
-- Research
+- (Research)
 `
 	cases := []struct {
 		item        string
 		description string
 		level       int
 		category    string
-		children 		int
+		children    int
+		parenthesis bool
 	}{
-		{"Math", "", 1, "AI", 1},
-		{"Foundations", "", 1, "AI", 0},
-		{"Books", "", 1, "AI", 0},
-		{"Research", "", 1, "AI", 0},
+		{"Math", "", 1, "AI", 1, false},
+		{"Foundations", "", 1, "AI", 0, false},
+		{"Books", "", 1, "AI", 0, false},
+		{"Research", "", 1, "AI", 0, true},
 	}
 
 	lexer := NewLexer(input)
@@ -43,6 +44,10 @@ AI
 
 		if len(items[i].Children) != tt.children {
 			t.Fatalf("Expecting children count %d got %d, for item %s", tt.children, len(items[i].Children), items[i].Name.Value)
+		}
+
+		if items[i].Marked != tt.parenthesis {
+			t.Fatalf("Expecting %v got %v, for item %s", tt.parenthesis, items[i].Marked, items[i].Name.Value)
 		}
 	}
 }
