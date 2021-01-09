@@ -1,4 +1,4 @@
-package parser
+package language
 
 import (
 	"fmt"
@@ -55,7 +55,7 @@ func (p *Parser) parseCategory() {
 func (p *Parser) parseItem() {
 	var level = p.findLevel()
 	var marked = false
-	p.expectSkip(ITEM)
+	p.expectSkip(DASH)
 	if p.peekTokenIs(LP) {
 		marked = true
 		p.nextToken()
@@ -80,7 +80,7 @@ func (p *Parser) parseItem() {
 		p.expectSkip(RP)
 	}
 	p.expectSkip(SEMICOLON)
-	if p.peekTokenIs(LEVEL) || p.peekTokenIs(ITEM) {
+	if p.peekTokenIs(LEVEL) || p.peekTokenIs(DASH) {
 		p.parseItem()
 	}
 }

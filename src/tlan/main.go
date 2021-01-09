@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/user"
-	"tlan/parser"
+	"tlan/language"
 	"tlan/repl"
-	"io/ioutil"
-	"tlan/interpreter"
 )
 
 const DATA_FOLDER = "./../../data"
@@ -40,9 +39,9 @@ func load() {
 			return
 		}
 		text := string(content)
-		l := parser.NewLexer(text)
-		p := parser.NewParser(l)
+		l := language.NewLexer(text)
+		p := language.NewParser(l)
 		items := p.Parse()
-		interpreter.Eval("project", items)
+		language.Eval("project", items)
 	}
 }

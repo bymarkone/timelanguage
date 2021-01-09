@@ -1,4 +1,4 @@
-package parser
+package language
 
 type TokenType string
 
@@ -8,7 +8,7 @@ type Token struct {
 }
 
 const (
-	ITEM      = "ITEM"
+	DASH      = "DASH"
 	IDENT     = "IDENT"
 	STRING    = "STRING"
 	LEVEL     = "LEVEL"
@@ -17,4 +17,6 @@ const (
 	ILLEGAL   = "ILLEGAL"
 	LP        = "LEFT_PARENTHESIS"
 	RP        = "RIGHT_PARENTHESIS"
+	LSB       = "LEFT_SQUARE_BRACKETS"
+	RSB       = "RIGHT_SQUARE_BRACKETS"
 )

@@ -1,15 +1,15 @@
-package interpreter
+package language
 
 import (
 	"testing"
-	"tlan/parser"
+	"tlan/plan"
 )
 
 func TestEvalProjects(t *testing.T) {
 
 	tests := []struct {
 		input    string
-		expected []*Project
+		expected []*plan.Project
 	}{
 		{
 			`
@@ -19,7 +19,7 @@ Mathematics
 - Study Analysis Burkin
 - (Study Logic for Mathematicians)
 `,
-			[]*Project{
+			[]*plan.Project{
 				{Name: "IU Analysis II", Category: "Mathematics", Active: true},
 				{Name: "IU Modern Algebra", Category: "Mathematics", Active: true},
 				{Name: "Study Analysis Burkin", Category: "Mathematics", Active: true},
@@ -32,12 +32,12 @@ Mathematics
 
 		var context = "project"
 
-		l := parser.NewLexer(tt.input)
-		p := parser.NewParser(l)
+		l := NewLexer(tt.input)
+		p := NewParser(l)
 		items := p.Parse()
 
 		Eval(context, items)
-		projects := ListProjects()
+		projects := plan.ListProjects()
 
 		for i, p := range tt.expected {
 			if projects[i].Name != p.Name {

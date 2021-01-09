@@ -1,4 +1,4 @@
-package parser
+package language
 
 type Node interface {
 	TokenLiteral() string

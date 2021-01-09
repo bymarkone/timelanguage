@@ -1,20 +1,22 @@
-package interpreter
+package language
 
-import "tlan/parser"
+import (
+	"tlan/plan"
+)
 
-func Eval(context string, items []*parser.Item) {
+func Eval(context string, items []*Item) {
 	switch context {
 	case "project":
 		evalProject(items)
 	}
 }
 
-func evalProject(items []*parser.Item) {
+func evalProject(items []*Item) {
 	for _, item := range items {
-		var project = Project{}
+		var project = plan.Project{}
 		project.Name = item.Name.Value
 		project.Category = item.Category.Value
 		project.Active = !item.Marked
-		AddProject(project)
+		plan.AddProject(project)
 	}
 }

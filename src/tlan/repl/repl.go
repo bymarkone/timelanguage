@@ -6,7 +6,7 @@ import (
 	"io"
 	"os/exec"
 	"strings"
-	"tlan/interpreter"
+	"tlan/plan"
 	"tlan/utils"
 )
 
@@ -87,9 +87,9 @@ func printProjects(words []string) {
 	activeFilter := utils.Find(words, func(val string) bool {
 		return val == "--active" || val == "-a"
 	})
-	var projects = interpreter.ListProjects()
+	var projects = plan.ListProjects()
 	if activeFilter {
-		projects =  interpreter.FilterProjects(projects, func(val interpreter.Project) bool {
+		projects =  plan.FilterProjects(projects, func(val plan.Project) bool {
 				return val.Active == true
 		})
 	}

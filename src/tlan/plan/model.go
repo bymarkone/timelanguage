@@ -1,8 +1,4 @@
-package interpreter
-
-type Persistent interface {
-	Persist()
-}
+package plan
 
 type Project struct {
 	Name              string
@@ -32,26 +28,9 @@ type Task struct {
 	Description string
 }
 
-type Track struct {
-	Name string
-}
-
-type Schedule struct {
-	Name string
-}
-
 type Day struct {
 	Day   int
 	Month int
 	Year  int
 }
 
-type Time struct {
-	Hour   int
-	Minute int
-}
-
-type Period struct {
-	Start *Time
-	End   *Time
-}

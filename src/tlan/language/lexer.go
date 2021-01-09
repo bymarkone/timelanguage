@@ -1,4 +1,8 @@
-package parser
+package language
+
+import (
+	"strings"
+)
 
 type Lexer struct {
 	input        string
@@ -25,13 +29,17 @@ func (l *Lexer) NextToken() Token {
 	case ':':
 		tok = newToken(SEMICOLON, l.ch)
 	case '-':
-		tok = newToken(ITEM, l.ch)
+		tok = newToken(DASH, l.ch)
 	case '(':
 		tok = newToken(LP, l.ch)
 	case ')':
 		tok = newToken(RP, l.ch)
+	case '[':
+		tok = newToken(LSB, l.ch)
+	case ']':
+		tok = newToken(RSB, l.ch)
 	case ' ':
-		if l.peekChar() == ' ' {
+		if isSpace(l.peekChar()) {
 			ch := l.ch
 			l.readChar()
 			literal := string(ch) + string(l.ch)
@@ -44,7 +52,7 @@ func (l *Lexer) NextToken() Token {
 		tok.Literal = ""
 		tok.Type = EOF
 	default:
-		if isLetter(l.ch) {
+		if isLetter(l.ch) || isNumber(l.ch) {
 			tok.Type = IDENT
 			tok.Literal = l.readIdentifier()
 			return tok
@@ -83,11 +91,11 @@ func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for {
 		l.readChar()
-		if l.ch == ':' || l.ch == '\n' || l.ch == '\r' || l.ch == 0 || l.ch == ')' {
+		if !(isLetter(l.ch) || isNumber(l.ch) || isSpace(l.ch)) {
 			break
 		}
 	}
-	return l.input[position:l.position]
+	return strings.TrimSpace(l.input[position:l.position])
 }
 
 func (l *Lexer) peekChar() byte {
@@ -111,4 +119,12 @@ func newToken(tokenType TokenType, ch byte) Token {
 
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
+func isNumber(ch byte) bool {
+	return '0' <= ch && ch <= '9'
+}
+
+func isSpace(ch byte) bool {
+	return ch == ' '
 }

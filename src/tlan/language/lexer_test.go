@@ -1,4 +1,4 @@
-package parser
+package language
 
 import "testing"
 
@@ -6,7 +6,7 @@ func TestAnything(t *testing.T) {
 	input := `
 AI
 - Math
-  - Bachelors Degree
+  - Bachelors Degree [1501-1012]
   - (Cambridge Part III)
 - Foundations
 - Books
@@ -17,21 +17,26 @@ AI
 		expectedLiteral string
 	}{
 		{IDENT, "AI"},
-		{ITEM, "-"},
+		{DASH, "-"},
 		{IDENT, "Math"},
 		{LEVEL, "  "},
-		{ITEM, "-"},
+		{DASH, "-"},
 		{IDENT, "Bachelors Degree"},
+		{LSB, "["},
+		{IDENT, "1501"},
+		{DASH, "-"},
+		{IDENT, "1012"},
+		{RSB, "]"},
 		{LEVEL, "  "},
-		{ITEM, "-"},
+		{DASH, "-"},
 		{LP, "("},
 		{IDENT, "Cambridge Part III"},
 		{RP, ")"},
-		{ITEM, "-"},
+		{DASH, "-"},
 		{IDENT, "Foundations"},
-		{ITEM, "-"},
+		{DASH, "-"},
 		{IDENT, "Books"},
-		{ITEM, "-"},
+		{DASH, "-"},
 		{LP, "("},
 		{IDENT, "Research"},
 		{RP, ")"},

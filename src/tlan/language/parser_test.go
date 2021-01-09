@@ -1,4 +1,4 @@
-package parser
+package language
 
 import "testing"
 
@@ -6,7 +6,7 @@ func TestTreeCreation(t *testing.T) {
 	input := `
 AI
 - Math
-  - Bachelors Degree
+  - Bachelors Degree (1501-0612)
 - Foundations
 - Books
 - (Research)
