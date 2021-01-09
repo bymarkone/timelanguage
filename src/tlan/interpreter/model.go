@@ -11,6 +11,17 @@ type Project struct {
 	End               *Day
 	ContributingGoals []*Goal
 	Tasks             []*Task
+	Active            bool
+}
+
+func FilterProjects(arr []*Project, cond func(project Project) bool) []*Project {
+	var result []*Project
+	for i := range arr {
+		if cond(*arr[i]) {
+			result = append(result, arr[i])
+		}
+	}
+	return result
 }
 
 type Goal struct {

@@ -7,9 +7,11 @@ import (
 	"os/exec"
 	"strings"
 	"tlan/interpreter"
+	"tlan/utils"
 )
 
 const PROMPT = ">> "
+
 var out io.Writer
 
 func Start(in io.Reader, _out io.Writer) {
@@ -67,7 +69,7 @@ func show(words []string) {
 	case "plan":
 		printPlan()
 	case "projects":
-		printProjects()
+		printProjects(words)
 	}
 }
 
@@ -81,8 +83,16 @@ func clear() {
 	_ = cmd.Run()
 }
 
-func printProjects() {
-	projects := interpreter.ListProjects()
+func printProjects(words []string) {
+	activeFilter := utils.Find(words, func(val string) bool {
+		return val == "--active" || val == "-a"
+	})
+	var projects = interpreter.ListProjects()
+	if activeFilter {
+		projects =  interpreter.FilterProjects(projects, func(val interpreter.Project) bool {
+				return val.Active == true
+		})
+	}
 	fmt.Print("\nListing projects: \n\n")
 	for _, project := range projects {
 		fmt.Printf("- %s\n", project.Name)
@@ -143,4 +153,3 @@ func printEmptyLine() {
 func printTlanHeader() {
 	println("tLan - a language for time")
 }
-

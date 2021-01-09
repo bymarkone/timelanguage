@@ -14,6 +14,7 @@ func evalProject(items []*parser.Item) {
 		var project = Project{}
 		project.Name = item.Name.Value
 		project.Category = item.Category.Value
+		project.Active = !item.Marked
 		AddProject(project)
 	}
 }
