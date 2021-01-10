@@ -10,7 +10,7 @@ import (
 	"tlan/repl"
 )
 
-const DATA_FOLDER = "./../../data"
+const DATA_FOLDER = "./../../data/projects"
 
 func main() {
 	user, err := user.Current()

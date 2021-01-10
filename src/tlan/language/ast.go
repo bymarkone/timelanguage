@@ -11,6 +11,7 @@ type Item struct {
 	Category    *Category
 	Children    []*Item
 	Marked      bool
+	Annotations []Annotation
 }
 
 func (s *Item) TokenLiteral() string { return s.Token.Literal }
@@ -35,3 +36,36 @@ type Category struct {
 }
 
 func (i *Category) TokenLiteral() string { return i.Token.Literal }
+
+type Annotation interface {
+	Type() string
+}
+
+const (
+	UNARY  = "UNARY"
+	BINARY = "BINARY"
+)
+
+type UnaryAnnotation struct {
+	Token Token
+	Name  *Name
+}
+
+func (i *UnaryAnnotation) TokenLiteral() string { return i.Token.Literal }
+func (i *UnaryAnnotation) Type() string         { return UNARY }
+
+type BinaryAnnotation struct {
+	Token    Token
+	Left     *Name
+	Right    *Name
+	Operator *Operator
+}
+
+func (i *BinaryAnnotation) TokenLiteral() string { return i.Token.Literal }
+func (i *BinaryAnnotation) Type() string         { return BINARY }
+
+type Operator struct {
+	Token Token
+}
+
+func (i *Operator) TokenLiteral() string { return i.Token.Literal }

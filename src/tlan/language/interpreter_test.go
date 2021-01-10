@@ -15,13 +15,13 @@ func TestEvalProjects(t *testing.T) {
 			`
 Mathematics
 - IU Analysis II
-- IU Modern Algebra
+- IU Modern Algebra [1001-1504]
 - Study Analysis Burkin
 - (Study Logic for Mathematicians)
 `,
 			[]*plan.Project{
 				{Name: "IU Analysis II", Category: "Mathematics", Active: true},
-				{Name: "IU Modern Algebra", Category: "Mathematics", Active: true},
+				{Name: "IU Modern Algebra", Category: "Mathematics", Active: true, Start: plan.Day{Day: 10, Month: 1}, End: plan.Day{Day: 15, Month: 4}},
 				{Name: "Study Analysis Burkin", Category: "Mathematics", Active: true},
 				{Name: "Study Logic for Mathematicians", Category: "Mathematics", Active: false},
 			},
@@ -48,6 +48,9 @@ Mathematics
 			}
 			if projects[i].Active != p.Active {
 				t.Errorf("Project has wrong attribute. Got %v, want %v", projects[i].Active, p.Active)
+			}
+			if projects[i].Start != p.Start {
+				t.Errorf("Project has wrong attribute. Got %v, want %v", projects[i].Start, p.Start)
 			}
 		}
 	}

@@ -3,8 +3,8 @@ package plan
 type Project struct {
 	Name              string
 	Category          string
-	Start             *Day
-	End               *Day
+	Start             Day
+	End               Day
 	ContributingGoals []*Goal
 	Tasks             []*Task
 	Active            bool
