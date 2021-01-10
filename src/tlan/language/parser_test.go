@@ -7,12 +7,13 @@ func TestTreeCreation(t *testing.T) {
 AI
 - Math
   - Bachelors Degree 
-- Foundations [1501-0612]
-- Books
+- Foundations [Unary, 1501-0612]
+* Books
 - (Research)
 `
 	cases := []struct {
-		item        string
+		itemType    string
+		name        string
 		description string
 		level       int
 		category    string
@@ -20,10 +21,10 @@ AI
 		parenthesis bool
 		annotations []string
 	}{
-		{"Math", "", 1, "AI", 1, false, []string{}},
-		{"Foundations", "", 1, "AI", 0, false, []string{"1501-0612"}},
-		{"Books", "", 1, "AI", 0, false, []string{}},
-		{"Research", "", 1, "AI", 0, true, []string{}},
+		{"-", "Math", "", 1, "AI", 1, false, []string{}},
+		{"-", "Foundations", "", 1, "AI", 0, false, []string{"Unary", "1501-0612"}},
+		{"*", "Books", "", 1, "AI", 0, false, []string{}},
+		{"-", "Research", "", 1, "AI", 0, true, []string{}},
 	}
 
 	lexer := NewLexer(input)
@@ -31,8 +32,12 @@ AI
 	items := parser.Parse()
 
 	for i, tt := range cases {
-		if items[i].Name.TokenLiteral() != tt.item {
-			t.Fatalf("Expecting %s got %s", tt.item, items[i].Name.TokenLiteral())
+		if items[i].Type.TokenLiteral() != tt.itemType {
+			t.Fatalf("Expecting %s got %s", tt.itemType, items[i].Type.TokenLiteral())
+		}
+
+		if items[i].Name.TokenLiteral() != tt.name {
+			t.Fatalf("Expecting %s got %s", tt.name, items[i].Name.TokenLiteral())
 		}
 
 		if items[i].Description != nil && items[i].Description.TokenLiteral() != tt.description {

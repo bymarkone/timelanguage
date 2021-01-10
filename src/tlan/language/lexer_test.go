@@ -6,10 +6,10 @@ func TestAnything(t *testing.T) {
 	input := `
 AI
 - Math
-  - Bachelors Degree [1501-1012]
+  - Bachelors Degree [Unary, 1501-1012]
   - (Cambridge Part III)
 - Foundations
-- Books
+* Books
 - (Research)
 `
 	cases := []struct {
@@ -23,6 +23,8 @@ AI
 		{DASH, "-"},
 		{IDENT, "Bachelors Degree"},
 		{LSB, "["},
+		{IDENT, "Unary"},
+		{COMMA, ","},
 		{IDENT, "1501"},
 		{DASH, "-"},
 		{IDENT, "1012"},
@@ -34,7 +36,7 @@ AI
 		{RP, ")"},
 		{DASH, "-"},
 		{IDENT, "Foundations"},
-		{DASH, "-"},
+		{STAR, "*"},
 		{IDENT, "Books"},
 		{DASH, "-"},
 		{LP, "("},

@@ -30,12 +30,16 @@ func (l *Lexer) NextToken() Token {
 		tok = newToken(SEMICOLON, l.ch)
 	case '-':
 		tok = newToken(DASH, l.ch)
+	case '*':
+		tok = newToken(STAR, l.ch)
 	case '(':
 		tok = newToken(LP, l.ch)
 	case ')':
 		tok = newToken(RP, l.ch)
 	case '[':
 		tok = newToken(LSB, l.ch)
+	case ',':
+		tok = newToken(COMMA, l.ch)
 	case ']':
 		tok = newToken(RSB, l.ch)
 	case ' ':

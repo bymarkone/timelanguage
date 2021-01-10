@@ -1,10 +1,10 @@
-package plan
+package schedule
 
 import "tlan/plan"
 
 type Track struct {
-	Name string
-	Project []*plan.Project
+	Name     string
+	Projects []*plan.Project
 }
 
 type Schedule struct {
@@ -17,6 +17,6 @@ type Time struct {
 }
 
 type Period struct {
-	Start *Time
-	End   *Time
+	Start Time
+	End   Time
 }

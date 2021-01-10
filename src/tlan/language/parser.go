@@ -4,16 +4,15 @@ import (
 	"fmt"
 )
 
-var currentCategory *Category = nil
-var currentItem *Item = nil
-var currentLevel = 0
-var firstLevelItems []*Item
-
 type Parser struct {
-	lexer     *Lexer
-	curToken  Token
-	peekToken Token
-	Errors    []ParseError
+	lexer           *Lexer
+	curToken        Token
+	peekToken       Token
+	Errors          []ParseError
+	currentCategory *Category
+	currentItem     *Item
+	currentLevel    int
+	firstLevelItems []*Item
 }
 
 type ParseError struct {
@@ -38,53 +37,64 @@ func NewParser(lexer *Lexer) *Parser {
 
 func (p *Parser) Parse() []*Item {
 	for !p.peekTokenIs(EOF) {
-		p.parseCategory()
+		if !p.parseCategory() {
+			for _, err := range p.Errors {
+				fmt.Printf("Expected %s, got %s\n", err.expected, err.got)
+			}
+			break
+		}
 	}
-	return firstLevelItems
+	return p.firstLevelItems
 }
 
-func (p *Parser) parseCategory() {
+func (p *Parser) parseCategory() bool {
 	if !p.expectPeek(IDENT) {
-		return
+		return false
 	}
 
-	currentCategory = &Category{Token: p.curToken, Value: p.curToken.Literal}
+	p.currentItem = nil
+	p.currentCategory = &Category{Token: p.curToken, Value: p.curToken.Literal}
+	p.parseAnnotations()
 	p.parseItem()
+	return true
 }
 
 func (p *Parser) parseItem() {
 	var level = p.findLevel()
-	if !p.expectPeek(DASH) {
+	var item = &Item{Category: p.currentCategory}
+	if p.expectPeek(DASH) {
+		item.Type = &ItemType{Value: p.curToken.Literal, Token: p.curToken}
+	} else if p.expectPeek(STAR) {
+		item.Type = &ItemType{Value: p.curToken.Literal, Token: p.curToken}
+	} else {
 		return
 	}
 
-	var item = &Item{Token: p.curToken, Category: currentCategory, Children: []*Item{}}
 	if level == 0 {
-		firstLevelItems = append(firstLevelItems, item)
+		p.firstLevelItems = append(p.firstLevelItems, item)
 	}
-	if level > currentLevel {
-		currentItem.Children = append(currentItem.Children, item)
+	if level > p.currentLevel {
+		item.Children = append(item.Children, item)
 	}
-	currentItem = item
-	currentLevel = level
+	p.currentItem = item
+	p.currentLevel = level
 
 	p.parseMarker()
 	p.parseName()
 	p.parseDescription()
-	p.parseAnnotation()
+	p.parseAnnotations()
 
-	p.expectSkip(RSB)
 	p.expectSkip(RP)
 	p.expectSkip(SEMICOLON)
 
-	if p.peekTokenIs(LEVEL) || p.peekTokenIs(DASH) {
+	if p.peekTokenIs(LEVEL) || p.peekTokenIs(DASH) || p.peekTokenIs(STAR) {
 		p.parseItem()
 	}
 }
 
 func (p *Parser) parseMarker() {
 	if p.peekTokenIs(LP) {
-		currentItem.Marked = true
+		p.currentItem.Marked = true
 		p.nextToken()
 	}
 }
@@ -93,26 +103,33 @@ func (p *Parser) parseName() {
 	if !p.expectPeek(IDENT) {
 		return
 	}
-	currentItem.Name = &Name{Token: p.curToken, Value: p.curToken.Literal}
+	p.currentItem.Name = &Name{Token: p.curToken, Value: p.curToken.Literal}
 }
 
 func (p *Parser) parseDescription() {
 	if !p.expectPeek(STRING) {
 		return
 	}
-	currentItem.Description = &Description{Token: p.curToken, Value: p.curToken.Literal}
+	p.currentItem.Description = &Description{Token: p.curToken, Value: p.curToken.Literal}
 }
 
-func (p *Parser) parseAnnotation() {
+func (p *Parser) parseAnnotations() {
 	if !p.expectPeek(LSB) {
 		return
 	}
+	for !p.peekTokenIs(RSB) {
+		p.parseAnnotation()
+	}
+	p.expectSkip(RSB)
+}
+
+func (p *Parser) parseAnnotation() {
 	if !p.expectPeek(IDENT) {
 		return
 	}
-	if p.peekTokenIs(RSB) {
+	if p.peekTokenIs(RSB) || p.peekTokenIs(COMMA) {
 		unary := &UnaryAnnotation{Token: p.curToken, Name: &Name{Token: p.curToken, Value: p.curToken.Literal}}
-		currentItem.Annotations = append(currentItem.Annotations, unary)
+		p.addAnnotationTo(unary)
 	} else if p.peekTokenIs(DASH) {
 		left := &Name{Token: p.curToken, Value: p.curToken.Literal}
 		p.expectPeek(DASH)
@@ -127,7 +144,16 @@ func (p *Parser) parseAnnotation() {
 			Left:     left,
 			Operator: &operator,
 			Right:    right}
-		currentItem.Annotations = append(currentItem.Annotations, binary)
+		p.addAnnotationTo(binary)
+	}
+	p.expectSkip(COMMA)
+}
+
+func (p *Parser) addAnnotationTo(ann Annotation) {
+	if p.currentItem != nil {
+		p.currentItem.Annotations = append(p.currentItem.Annotations, ann)
+	} else if p.currentCategory != nil {
+		p.currentCategory.Annotations = append(p.currentCategory.Annotations, ann)
 	}
 }
 

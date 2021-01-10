@@ -3,12 +3,26 @@ package language
 import (
 	"strconv"
 	"tlan/plan"
+	"tlan/schedule"
 )
 
 func Eval(context string, items []*Item) {
 	switch context {
 	case "project":
 		evalProject(items)
+	case "schedule":
+		evalSchedule(items)
+	}
+}
+
+func evalSchedule(items []*Item) {
+	for _, item := range items {
+		var track = schedule.Track{}
+		track.Name = item.Name.Value
+		track.Projects = plan.ListProjectsFiltered(func(project plan.Project) bool {
+			return project.Category == item.Name.Value
+		})
+		schedule.AddTrack(track)
 	}
 }
 

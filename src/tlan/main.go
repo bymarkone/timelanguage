@@ -10,7 +10,7 @@ import (
 	"tlan/repl"
 )
 
-const DATA_FOLDER = "./../../data/projects"
+const DATA_FOLDER = "./../../data"
 
 func main() {
 	user, err := user.Current()
@@ -25,15 +25,22 @@ func main() {
 }
 
 func load() {
-	fmt.Printf("Loading data2... \n")
-	filesInfo, err := ioutil.ReadDir(DATA_FOLDER)
+	fmt.Printf("Loading data... \n")
+	contexts := []string{"project", "schedule"}
+	for _, context := range contexts {
+		loadContext(context)
+	}
+}
+func loadContext(context string) {
+	baseFolder := DATA_FOLDER + "/" + context
+	filesInfo, err := ioutil.ReadDir(baseFolder)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 	for _, file := range filesInfo {
 		fmt.Printf("Processing file %s \n", file.Name())
-		content, err := ioutil.ReadFile(DATA_FOLDER + "/" + file.Name())
+		content, err := ioutil.ReadFile(baseFolder + "/" + file.Name())
 		if err != nil {
 			log.Fatal(err)
 			return
@@ -42,6 +49,6 @@ func load() {
 		l := language.NewLexer(text)
 		p := language.NewParser(l)
 		items := p.Parse()
-		language.Eval("project", items)
+		language.Eval(context, items)
 	}
 }

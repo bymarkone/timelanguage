@@ -9,6 +9,8 @@ type Token struct {
 
 const (
 	DASH      = "DASH"
+	STAR      = "STAR"
+	COMMA     = "COMMA"
 	IDENT     = "IDENT"
 	STRING    = "STRING"
 	LEVEL     = "LEVEL"

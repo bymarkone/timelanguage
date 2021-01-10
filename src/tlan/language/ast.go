@@ -6,6 +6,7 @@ type Node interface {
 
 type Item struct {
 	Token       Token
+	Type        *ItemType
 	Name        *Name
 	Description *Description
 	Category    *Category
@@ -15,6 +16,13 @@ type Item struct {
 }
 
 func (s *Item) TokenLiteral() string { return s.Token.Literal }
+
+type ItemType struct {
+	Token Token
+	Value string
+}
+
+func (s *ItemType) TokenLiteral() string { return s.Token.Literal }
 
 type Name struct {
 	Token Token
@@ -33,6 +41,7 @@ func (s *Description) TokenLiteral() string { return s.Token.Literal }
 type Category struct {
 	Token Token
 	Value string
+	Annotations []Annotation
 }
 
 func (i *Category) TokenLiteral() string { return i.Token.Literal }

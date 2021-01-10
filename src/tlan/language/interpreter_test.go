@@ -3,7 +3,50 @@ package language
 import (
 	"testing"
 	"tlan/plan"
+	"tlan/schedule"
 )
+
+func TestEvalTracks(t *testing.T) {
+
+	tests := []struct {
+		input    string
+		expected []*schedule.Track
+	}{
+		{
+			`
+Creative Work [0500-0900]
+* Mathematics
+* Books
+* Research
+* Bible
+`,
+			[]*schedule.Track{
+				{Name: "Mathematics"},
+				{Name: "Books"},
+				{Name: "Research"},
+				{Name: "Bible"},
+			},
+		},
+	}
+
+	schedule.Clean()
+
+	for _, tt := range tests {
+
+		l := NewLexer(tt.input)
+		p := NewParser(l)
+		items := p.Parse()
+
+		Eval("schedule", items)
+		tracks := schedule.ListTracks()
+
+		for i, r := range tt.expected {
+			if tracks[i].Name != r.Name {
+				t.Errorf("Track has wrong data. Got %s, want %s", tracks[i].Name, r.Name)
+			}
+		}
+	}
+}
 
 func TestEvalProjects(t *testing.T) {
 
@@ -16,7 +59,7 @@ func TestEvalProjects(t *testing.T) {
 Mathematics
 - IU Analysis II
 - IU Modern Algebra [1001-1504]
-- Study Analysis Burkin
+* Study Analysis Burkin
 - (Study Logic for Mathematicians)
 `,
 			[]*plan.Project{
@@ -28,15 +71,15 @@ Mathematics
 		},
 	}
 
-	for _, tt := range tests {
+	plan.Clean()
 
-		var context = "project"
+	for _, tt := range tests {
 
 		l := NewLexer(tt.input)
 		p := NewParser(l)
 		items := p.Parse()
 
-		Eval(context, items)
+		Eval("project", items)
 		projects := plan.ListProjects()
 
 		for i, p := range tt.expected {
