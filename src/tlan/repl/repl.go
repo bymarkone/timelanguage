@@ -6,7 +6,9 @@ import (
 	"io"
 	"os/exec"
 	"strings"
+	"time"
 	"tlan/plan"
+	"tlan/schedule"
 	"tlan/utils"
 )
 
@@ -39,9 +41,9 @@ func Start(in io.Reader, _out io.Writer) {
 		case "clear":
 			clear()
 		case "exit":
-			break
+			return
 		case "now":
-			now(words)
+			now()
 		}
 	}
 }
@@ -73,8 +75,19 @@ func show(words []string) {
 	}
 }
 
-func now(words []string) {
-
+func now() {
+	tracks := schedule.ListTracks()
+	now := time.Now()
+	filteredTracks := schedule.FilterTracks(tracks, func(track schedule.Track) bool {
+		return track.Schedule.Period.Start.Hour < now.Hour() && track.Schedule.Period.End.Hour > now.Hour()
+	})
+	println("NOW is time to do " + filteredTracks[0].Schedule.Name)
+	for _, track := range filteredTracks {
+		println(track.Name)
+		for _, project := range track.Projects {
+			println(" -- " + project.Name)
+		}
+	}
 }
 
 func clear() {
@@ -89,8 +102,8 @@ func printProjects(words []string) {
 	})
 	var projects = plan.ListProjects()
 	if activeFilter {
-		projects =  plan.FilterProjects(projects, func(val plan.Project) bool {
-				return val.Active == true
+		projects = plan.FilterProjects(projects, func(val plan.Project) bool {
+			return val.Active == true
 		})
 	}
 	fmt.Print("\nListing projects: \n\n")

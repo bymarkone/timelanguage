@@ -18,6 +18,9 @@ func Eval(context string, items []*Item) {
 func evalSchedule(items []*Item) {
 	for _, item := range items {
 		var track = schedule.Track{}
+		start := findTimeStart(item.Category.Annotations)
+		end := findTimeEnd(item.Category.Annotations)
+		track.Schedule = schedule.Schedule{Name: item.Category.Value, Period: schedule.Period{Start: start, End: end}}
 		track.Name = item.Name.Value
 		track.Projects = plan.ListProjectsFiltered(func(project plan.Project) bool {
 			return project.Category == item.Name.Value
@@ -32,14 +35,14 @@ func evalProject(items []*Item) {
 		project.Name = item.Name.Value
 		project.Category = item.Category.Value
 		project.Active = !item.Marked
-		project.Start = findStart(item)
-		project.End = findEnd(item)
+		project.Start = findDayStart(item.Annotations)
+		project.End = findDayEnd(item.Annotations)
 		plan.AddProject(project)
 	}
 }
 
-func findStart(item *Item) plan.Day {
-	for _, ann := range item.Annotations {
+func findDayStart(anns []Annotation) plan.Day {
+	for _, ann := range anns {
 		if ann.Type() == BINARY {
 			binary := ann.(*BinaryAnnotation)
 			day, _ := strconv.Atoi(binary.Left.Value[0:2])
@@ -50,8 +53,8 @@ func findStart(item *Item) plan.Day {
 	return plan.Day{}
 }
 
-func findEnd(item *Item) plan.Day {
-	for _, ann := range item.Annotations {
+func findDayEnd(anns []Annotation) plan.Day {
+	for _, ann := range anns {
 		if ann.Type() == BINARY {
 			binary := ann.(*BinaryAnnotation)
 			day, _ := strconv.Atoi(binary.Right.Value[0:2])
@@ -60,4 +63,28 @@ func findEnd(item *Item) plan.Day {
 		}
 	}
 	return plan.Day{}
+}
+
+func findTimeStart(anns []Annotation) schedule.Time {
+	for _, ann := range anns {
+		if ann.Type() == BINARY {
+			binary := ann.(*BinaryAnnotation)
+			day, _ := strconv.Atoi(binary.Left.Value[0:2])
+			month, _ := strconv.Atoi(binary.Left.Value[2:4])
+			return schedule.Time{Hour: day, Minute: month}
+		}
+	}
+	return schedule.Time{}
+}
+
+func findTimeEnd(anns []Annotation) schedule.Time {
+	for _, ann := range anns {
+		if ann.Type() == BINARY {
+			binary := ann.(*BinaryAnnotation)
+			day, _ := strconv.Atoi(binary.Right.Value[0:2])
+			month, _ := strconv.Atoi(binary.Right.Value[2:4])
+			return schedule.Time{Hour: day, Minute: month}
+		}
+	}
+	return schedule.Time{}
 }
