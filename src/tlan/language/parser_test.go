@@ -60,5 +60,11 @@ AI
 		if len(items[i].Annotations) != len(tt.annotations) {
 			t.Fatalf("Expecting annotations count to be %d got %d, for item %s", len(tt.annotations), len(items[i].Annotations), name)
 		}
+
+		for j, _ := range items[i].Annotations {
+			if items[i].Annotations[j].ToString() != tt.annotations[j] {
+				t.Fatalf("Expecting annotations to be %s got %s, for item %s", tt.annotations[j], items[i].Annotations[j].ToString(), name)
+			}
+		}
 	}
 }

@@ -74,7 +74,7 @@ func (p *Parser) parseItem() {
 		p.firstLevelItems = append(p.firstLevelItems, item)
 	}
 	if level > p.currentLevel {
-		item.Children = append(item.Children, item)
+		p.currentItem.Children = append(p.currentItem.Children, item)
 	}
 	p.currentItem = item
 	p.currentLevel = level
@@ -128,7 +128,7 @@ func (p *Parser) parseAnnotation() {
 		return
 	}
 	if p.peekTokenIs(RSB) || p.peekTokenIs(COMMA) {
-		unary := &UnaryAnnotation{Token: p.curToken, Name: &Name{Token: p.curToken, Value: p.curToken.Literal}}
+		unary := &UnaryAnnotation{Token: p.curToken, Name: Name{Token: p.curToken, Value: p.curToken.Literal}}
 		p.addAnnotationTo(unary)
 	} else if p.peekTokenIs(DASH) {
 		left := &Name{Token: p.curToken, Value: p.curToken.Literal}

@@ -39,8 +39,8 @@ type Description struct {
 func (s *Description) TokenLiteral() string { return s.Token.Literal }
 
 type Category struct {
-	Token Token
-	Value string
+	Token       Token
+	Value       string
 	Annotations []Annotation
 }
 
@@ -48,6 +48,7 @@ func (i *Category) TokenLiteral() string { return i.Token.Literal }
 
 type Annotation interface {
 	Type() string
+	ToString() string
 }
 
 const (
@@ -57,11 +58,12 @@ const (
 
 type UnaryAnnotation struct {
 	Token Token
-	Name  *Name
+	Name  Name
 }
 
 func (i *UnaryAnnotation) TokenLiteral() string { return i.Token.Literal }
 func (i *UnaryAnnotation) Type() string         { return UNARY }
+func (i *UnaryAnnotation) ToString() string     { return i.Name.Value }
 
 type BinaryAnnotation struct {
 	Token    Token
@@ -72,6 +74,7 @@ type BinaryAnnotation struct {
 
 func (i *BinaryAnnotation) TokenLiteral() string { return i.Token.Literal }
 func (i *BinaryAnnotation) Type() string         { return BINARY }
+func (i *BinaryAnnotation) ToString() string     { return i.Left.Value + i.Operator.TokenLiteral() + i.Right.Value }
 
 type Operator struct {
 	Token Token
