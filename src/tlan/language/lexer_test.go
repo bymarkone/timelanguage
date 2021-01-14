@@ -8,8 +8,8 @@ AI
 - Math
   - Bachelors Degree [Unary, 1501-1012]
   - (Cambridge Part III)
-- Foundations
-* Books
+- Foundations [Unary, 3101-0112]
+* Books 
 - (Research)
 `
 	cases := []struct {
@@ -36,6 +36,13 @@ AI
 		{RP, ")"},
 		{DASH, "-"},
 		{IDENT, "Foundations"},
+		{LSB, "["},
+		{IDENT, "Unary"},
+		{COMMA, ","},
+		{IDENT, "3101"},
+		{DASH, "-"},
+		{IDENT, "0112"},
+		{RSB, "]"},
 		{STAR, "*"},
 		{IDENT, "Books"},
 		{DASH, "-"},
