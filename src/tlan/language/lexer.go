@@ -47,10 +47,10 @@ func (l *Lexer) NextToken() Token {
 		if l.ch == '>' {
 			tok = Token{Type: DUALARROW, Literal: ">>"}
 			l.readChar()
-			return l.NextToken()
+			return tok
 		} else {
 			tok = newToken(ARROW, l.ch)
-			return l.NextToken()
+			return tok
 		}
 	case ' ':
 		if isSpace(l.peekChar()) {

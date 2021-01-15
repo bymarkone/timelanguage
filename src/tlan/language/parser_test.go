@@ -5,7 +5,7 @@ import "testing"
 func TestTreeCreation(t *testing.T) {
 	input := `
 AI
-- Math
+- Math >> Mathematician
   - Bachelors Degree 
 - Foundations [Unary, 1501-0612]
 * Books
@@ -20,11 +20,12 @@ AI
 		children    int
 		parenthesis bool
 		annotations []string
+		target      string
 	}{
-		{"-", "Math", "", 1, "AI", 1, false, []string{}},
-		{"-", "Foundations", "", 1, "AI", 0, false, []string{"Unary", "1501-0612"}},
-		{"*", "Books", "", 1, "AI", 0, false, []string{}},
-		{"-", "Research", "", 1, "AI", 0, true, []string{}},
+		{"-", "Math", "", 1, "AI", 1, false, []string{}, "Mathematician"},
+		{"-", "Foundations", "", 1, "AI", 0, false, []string{"Unary", "1501-0612"}, ""},
+		{"*", "Books", "", 1, "AI", 0, false, []string{}, ""},
+		{"-", "Research", "", 1, "AI", 0, true, []string{}, ""},
 	}
 
 	lexer := NewLexer(input)
@@ -66,5 +67,10 @@ AI
 				t.Fatalf("Expecting annotations to be %s got %s, for item %s", tt.annotations[j], items[i].Annotations[j].ToString(), name)
 			}
 		}
+
+		if items[i].Target != tt.target {
+			t.Fatalf("Expecting %s got %s, for item target %s", tt.target, items[i].Target, name)
+		}
+
 	}
 }

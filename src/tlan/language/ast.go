@@ -13,6 +13,7 @@ type Item struct {
 	Children    []*Item
 	Marked      bool
 	Annotations []Annotation
+	Target      string
 }
 
 func (s *Item) TokenLiteral() string { return s.Token.Literal }
@@ -74,7 +75,9 @@ type BinaryAnnotation struct {
 
 func (i *BinaryAnnotation) TokenLiteral() string { return i.Token.Literal }
 func (i *BinaryAnnotation) Type() string         { return BINARY }
-func (i *BinaryAnnotation) ToString() string     { return i.Left.Value + i.Operator.TokenLiteral() + i.Right.Value }
+func (i *BinaryAnnotation) ToString() string {
+	return i.Left.Value + i.Operator.TokenLiteral() + i.Right.Value
+}
 
 type Operator struct {
 	Token Token

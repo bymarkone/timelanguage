@@ -83,6 +83,7 @@ func (p *Parser) parseItem() {
 	p.parseName()
 	p.parseDescription()
 	p.parseAnnotations()
+	p.parseTarget()
 
 	p.expectSkip(RP)
 	p.expectSkip(SEMICOLON)
@@ -111,6 +112,16 @@ func (p *Parser) parseDescription() {
 		return
 	}
 	p.currentItem.Description = &Description{Token: p.curToken, Value: p.curToken.Literal}
+}
+
+func (p *Parser) parseTarget() {
+	if !p.expectPeek(DUALARROW) {
+		return
+	}
+	if !p.expectPeek(IDENT) {
+		return
+	}
+	p.currentItem.Target = p.curToken.Literal
 }
 
 func (p *Parser) parseAnnotations() {
