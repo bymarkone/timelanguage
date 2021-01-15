@@ -42,6 +42,16 @@ func (l *Lexer) NextToken() Token {
 		tok = newToken(COMMA, l.ch)
 	case ']':
 		tok = newToken(RSB, l.ch)
+	case '>':
+		l.readChar()
+		if l.ch == '>' {
+			tok = Token{Type: DUALARROW, Literal: ">>"}
+			l.readChar()
+			return l.NextToken()
+		} else {
+			tok = newToken(ARROW, l.ch)
+			return l.NextToken()
+		}
 	case ' ':
 		if isSpace(l.peekChar()) {
 			ch := l.ch

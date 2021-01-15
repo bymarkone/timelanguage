@@ -5,7 +5,7 @@ import "testing"
 func TestAnything(t *testing.T) {
 	input := `
 AI
-- Math
+- Math >> Mathematician
   - Bachelors Degree [Unary, 1501-1012]
   - (Cambridge Part III)
 - Foundations [Unary, 3101-0112]
@@ -19,6 +19,8 @@ AI
 		{IDENT, "AI"},
 		{DASH, "-"},
 		{IDENT, "Math"},
+		{DUALARROW, ">>"},
+		{IDENT, "Mathematician"},
 		{LEVEL, "  "},
 		{DASH, "-"},
 		{IDENT, "Bachelors Degree"},
