@@ -43,7 +43,7 @@ func Start(in io.Reader, _out io.Writer) {
 		case "exit":
 			return
 		case "now":
-			now()
+			now(words)
 		}
 	}
 }
@@ -57,6 +57,8 @@ func help(words []string) {
 	switch words[1] {
 	case "show":
 		printShowHelp()
+	case "now":
+		printNowHelp()
 	}
 }
 
@@ -75,11 +77,15 @@ func show(words []string) {
 	}
 }
 
-func now() {
+func now(words []string) {
 	tracks := schedule.ListTracks()
 	now := time.Now()
+	if len(words) > 1 {
+		hour, minute := utils.Parse(words[1])
+		now = time.Date(now.Year(), now.Month(), now.Day(), hour, minute, now.Second(), now.Nanosecond(), now.Location())
+	}
 	filteredTracks := schedule.FilterTracks(tracks, func(track schedule.Track) bool {
-		return track.Schedule.Period.Start.Hour < now.Hour() && track.Schedule.Period.End.Hour > now.Hour()
+		return track.Schedule.Period.Start.Hour <= now.Hour() && track.Schedule.Period.End.Hour > now.Hour()
 	})
 	println("NOW is time to do " + filteredTracks[0].Schedule.Name)
 	for _, track := range filteredTracks {
@@ -126,6 +132,16 @@ func printSchedule() {
 
 func printPipeline() {
 
+}
+
+func printNowHelp() {
+	println("This command prints tasks for a given time slot. Used without arguments, the time that will be considered will be the current time.")
+	printEmptyLine()
+	println("Usage:")
+	println("  now [time]")
+	printEmptyLine()
+	println("Arguments:")
+	println("  time 				                 : time being considered")
 }
 
 func printShowHelp() {
