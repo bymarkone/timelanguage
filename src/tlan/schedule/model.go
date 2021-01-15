@@ -1,6 +1,9 @@
 package schedule
 
-import "tlan/plan"
+import (
+	"tlan/plan"
+	"tlan/utils"
+)
 
 type Track struct {
 	Schedule Schedule
@@ -10,17 +13,7 @@ type Track struct {
 
 type Schedule struct {
 	Name   string
-	Period Period
-}
-
-type Time struct {
-	Hour   int
-	Minute int
-}
-
-type Period struct {
-	Start Time
-	End   Time
+	Period utils.Period
 }
 
 func FilterTracks(arr []*Track, cond func(track Track) bool) []*Track {

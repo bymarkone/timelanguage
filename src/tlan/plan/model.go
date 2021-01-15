@@ -1,10 +1,11 @@
 package plan
 
+import "tlan/utils"
+
 type Project struct {
 	Name              string
 	Category          string
-	Start             Day
-	End               Day
+	Period            utils.Period
 	ContributingGoals []*Goal
 	Tasks             []*Task
 	Active            bool
@@ -16,12 +17,6 @@ type Goal struct {
 
 type Task struct {
 	Description string
-}
-
-type Day struct {
-	Day   int
-	Month int
-	Year  int
 }
 
 func FilterProjects(arr []*Project, cond func(project Project) bool) []*Project {

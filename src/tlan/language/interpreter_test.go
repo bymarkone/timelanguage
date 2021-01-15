@@ -4,9 +4,13 @@ import (
 	"testing"
 	"tlan/plan"
 	"tlan/schedule"
+	"tlan/utils"
 )
 
 func TestEvalTracks(t *testing.T) {
+
+	period := utils.Period{Start: utils.DateTime{Hour: 5, Minute: 0}, End: utils.DateTime{Hour: 9, Minute: 0}}
+	expectedSchedule := schedule.Schedule{Name: "Creative Work", Period: period}
 
 	tests := []struct {
 		input    string
@@ -21,10 +25,10 @@ Creative Work [0500-0900]
 * Bible
 `,
 			[]*schedule.Track{
-				{Name: "Mathematics"},
-				{Name: "Books"},
-				{Name: "Research"},
-				{Name: "Bible"},
+				{Name: "Mathematics", Schedule: expectedSchedule},
+				{Name: "Books", Schedule: expectedSchedule},
+				{Name: "Research", Schedule: expectedSchedule},
+				{Name: "Bible", Schedule: expectedSchedule},
 			},
 		},
 	}
@@ -44,11 +48,16 @@ Creative Work [0500-0900]
 			if tracks[i].Name != r.Name {
 				t.Errorf("Track has wrong data. Got %s, want %s", tracks[i].Name, r.Name)
 			}
+			if tracks[i].Schedule != r.Schedule {
+				t.Errorf("Track has wrong data. Got %v, want %v", tracks[i].Schedule, r.Schedule)
+			}
 		}
 	}
 }
 
 func TestEvalProjects(t *testing.T) {
+
+	period := utils.Period{Start: utils.DateTime{Day: 10, Month: 1}, End: utils.DateTime{Day: 15, Month: 4}}
 
 	tests := []struct {
 		input    string
@@ -64,7 +73,7 @@ Mathematics
 `,
 			[]*plan.Project{
 				{Name: "IU Analysis II", Category: "Mathematics", Active: true},
-				{Name: "IU Modern Algebra", Category: "Mathematics", Active: true, Start: plan.Day{Day: 10, Month: 1}, End: plan.Day{Day: 15, Month: 4}},
+				{Name: "IU Modern Algebra", Category: "Mathematics", Active: true, Period: period},
 				{Name: "Study Analysis Burkin", Category: "Mathematics", Active: true},
 				{Name: "Study Logic for Mathematicians", Category: "Mathematics", Active: false},
 			},
@@ -92,8 +101,8 @@ Mathematics
 			if projects[i].Active != p.Active {
 				t.Errorf("Project has wrong attribute. Got %v, want %v", projects[i].Active, p.Active)
 			}
-			if projects[i].Start != p.Start {
-				t.Errorf("Project has wrong attribute. Got %v, want %v", projects[i].Start, p.Start)
+			if projects[i].Period.Start != p.Period.Start {
+				t.Errorf("Project has wrong attribute. Got %v, want %v", projects[i].Period.Start, p.Period.Start)
 			}
 		}
 	}
