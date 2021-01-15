@@ -32,6 +32,7 @@ func evalProject(items []*Item) {
 		project := projectFromItem(item)
 		for _, item := range item.Children {
 			subProject := projectFromItem(item)
+			subProject.Level = 1
 			project.SubProjects = append(project.SubProjects, subProject)
 		}
 		plan.AddProject(project)

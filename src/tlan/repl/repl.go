@@ -95,7 +95,7 @@ func tracks(_ []string) {
 	for n < 100 {
 		var row []interface{}
 		for _, track := range tracks {
-			row = append(row, extractName(track, n))
+			row = append(row, extractProjectName(track, n))
 		}
 		if isBlank(row) {
 			break
@@ -117,20 +117,27 @@ func isBlank(row []interface{}) bool {
 	return true
 }
 
-func extractName(track *schedule.Track, n int) string {
+func extractProjectName(track *schedule.Track, n int) string {
 	if len(track.FlattenActiveProjects()) >= n+1 {
-		return boxedName(track, n)
+		return boxedProjectName(track, n)
 	}
 	return ""
 }
 
-func boxedName(track *schedule.Track, n int) string {
-	name := track.FlattenActiveProjects()[n].Name
-	const LIMIT = 20
-	if len(name) > LIMIT {
-		return name[0:LIMIT] + "..."
+func boxedProjectName(track *schedule.Track, n int) string {
+	project := track.FlattenActiveProjects()[n]
+	name := project.Name
+	base := ""
+	if project.Level >= 1 {
+		base = "- " + name
 	} else {
-		return name
+		base = name
+	}
+	const LIMIT = 15
+	if len(base) > LIMIT {
+		return base[0:LIMIT] + "..."
+	} else {
+		return base
 	}
 }
 

@@ -9,6 +9,7 @@ type Project struct {
 	ContributingGoals []*Goal
 	SubProjects       []*Project
 	Active            bool
+	Level 						int
 }
 
 type Goal struct {
