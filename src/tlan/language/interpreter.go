@@ -1,7 +1,6 @@
 package language
 
 import (
-	"strconv"
 	"tlan/plan"
 	"tlan/schedule"
 	"tlan/utils"
@@ -35,6 +34,9 @@ func evalProject(items []*Item) {
 		project.Category = item.Category.Value
 		project.Active = !item.Marked
 		project.Period = findPeriod(item.Annotations, DATE)
+		if item.Target != "" {
+			project.ContributingGoals = append(project.ContributingGoals, &plan.Goal{Description: item.Target})
+		}
 		plan.AddProject(project)
 	}
 }
@@ -58,10 +60,8 @@ func findPeriod(anns []Annotation, periodType string) utils.Period {
 	if binary == nil {
 		return utils.Period{}
 	}
-	first, _ := strconv.Atoi(binary.Left.Value[0:2])
-	second, _ := strconv.Atoi(binary.Left.Value[2:4])
-	third, _ := strconv.Atoi(binary.Right.Value[0:2])
-	fourth, _ := strconv.Atoi(binary.Right.Value[2:4])
+	first, second := utils.Parse(binary.Left.Value)
+	third, fourth := utils.Parse(binary.Right.Value)
 	switch periodType {
 	case TIME:
 		return utils.Period{Start: utils.DateTime{Hour: first, Minute: second}, End: utils.DateTime{Hour: third, Minute: fourth}}

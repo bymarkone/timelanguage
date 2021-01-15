@@ -66,16 +66,16 @@ func TestEvalProjects(t *testing.T) {
 		{
 			`
 Mathematics
-- IU Analysis II
+- IU Analysis II >> BS Mathematics
 - IU Modern Algebra [1001-1504]
 * Study Analysis Burkin
 - (Study Logic for Mathematicians)
 `,
 			[]*plan.Project{
-				{Name: "IU Analysis II", Category: "Mathematics", Active: true},
-				{Name: "IU Modern Algebra", Category: "Mathematics", Active: true, Period: period},
-				{Name: "Study Analysis Burkin", Category: "Mathematics", Active: true},
-				{Name: "Study Logic for Mathematicians", Category: "Mathematics", Active: false},
+				{Name: "IU Analysis II", Category: "Mathematics", Active: true, ContributingGoals: []*plan.Goal{{"BS Mathematics"}}},
+				{Name: "IU Modern Algebra", Category: "Mathematics", Active: true, Period: period, ContributingGoals: []*plan.Goal{}},
+				{Name: "Study Analysis Burkin", Category: "Mathematics", Active: true, ContributingGoals: []*plan.Goal{}},
+				{Name: "Study Logic for Mathematicians", Category: "Mathematics", Active: false, ContributingGoals: []*plan.Goal{}},
 			},
 		},
 	}
@@ -104,6 +104,21 @@ Mathematics
 			if projects[i].Period.Start != p.Period.Start {
 				t.Errorf("Project has wrong attribute. Got %v, want %v", projects[i].Period.Start, p.Period.Start)
 			}
+			if !equal(projects[i].ContributingGoals, p.ContributingGoals) {
+				t.Errorf("Project has wrong goals. Got %v, want %v", projects[i].ContributingGoals, p.ContributingGoals)
+			}
 		}
 	}
+}
+
+func equal(first []*plan.Goal, second []*plan.Goal) bool {
+	if len(first) != len(second) {
+		return false
+	}
+	for i, _ := range first {
+		if !(*first[i] == *second[i]) {
+			return false
+		}
+	}
+	return true
 }
