@@ -17,8 +17,13 @@ func Eval(context string, items []*Item) {
 
 func evalSchedule(items []*Item) {
 	for _, item := range items {
-		var track = schedule.Track{}
-		track.Schedule = schedule.Schedule{Name: item.Category.Value, Period: findPeriod(item.Category.Annotations, TIME)}
+		var track = &schedule.Track{}
+		slot := schedule.GetSlot(item.Category.Value)
+		if slot == nil {
+			slot = &schedule.Slot{Name: item.Category.Value, Period: findPeriod(item.Category.Annotations, TIME)}
+			schedule.AddSlot(slot)
+		}
+		slot.Tracks = append(slot.Tracks, track)
 		track.Name = item.Name.Value
 		track.Projects = plan.ListProjectsFiltered(func(project plan.Project) bool {
 			return project.Category == item.Name.Value

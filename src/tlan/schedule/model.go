@@ -6,7 +6,7 @@ import (
 )
 
 type Track struct {
-	Schedule             Schedule
+	Slot                 *Slot
 	Name                 string
 	Projects             []*plan.Project
 	_cachedActive        []*plan.Project
@@ -27,9 +27,10 @@ func (t *Track) FlattenActiveProjects() []*plan.Project {
 	return t._cachedFlattenActive
 }
 
-type Schedule struct {
+type Slot struct {
 	Name   string
 	Period utils.Period
+	Tracks []*Track
 }
 
 func FilterTracks(arr []*Track, cond func(track Track) bool) []*Track {

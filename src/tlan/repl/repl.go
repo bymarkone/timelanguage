@@ -45,6 +45,8 @@ func Start(in io.Reader, _out io.Writer) {
 			return
 		case "tracks":
 			tracks(words)
+		case "slots":
+			slots(words)
 		case "now":
 			now(words)
 		}
@@ -71,8 +73,6 @@ func show(words []string) {
 		return
 	}
 	switch words[1] {
-	case "schedule":
-		printSchedule()
 	case "plan":
 		printPlan()
 	case "projects":
@@ -80,7 +80,14 @@ func show(words []string) {
 	}
 }
 
+func slots(_ []string) {
+	t := table.NewWriter()
+	t.SetOutputMirror(out)
+
+}
+
 func tracks(_ []string) {
+	print("Tracks:")
 	t := table.NewWriter()
 	t.SetOutputMirror(out)
 
@@ -149,9 +156,9 @@ func now(words []string) {
 		now = time.Date(now.Year(), now.Month(), now.Day(), hour, minute, now.Second(), now.Nanosecond(), now.Location())
 	}
 	filteredTracks := schedule.FilterTracks(tracks, func(track schedule.Track) bool {
-		return track.Schedule.Period.Start.Hour <= now.Hour() && track.Schedule.Period.End.Hour > now.Hour()
+		return track.Slot.Period.Start.Hour <= now.Hour() && track.Slot.Period.End.Hour > now.Hour()
 	})
-	println("NOW is time to do " + filteredTracks[0].Schedule.Name)
+	println("NOW is time to do " + filteredTracks[0].Slot.Name)
 	for _, track := range filteredTracks {
 		println(track.Name)
 		for _, project := range track.Projects {
@@ -179,14 +186,6 @@ func printProjects(words []string) {
 
 func printPlan() {
 	fmt.Printf("------------------------------------------------------------------------------------------")
-
-}
-
-func printSchedule() {
-
-}
-
-func printPipeline() {
 
 }
 
