@@ -3,6 +3,7 @@ package repl
 import (
 	"bufio"
 	"fmt"
+	"github.com/jedib0t/go-pretty/v6/table"
 	"io"
 	"os/exec"
 	"strings"
@@ -42,6 +43,8 @@ func Start(in io.Reader, _out io.Writer) {
 			clear()
 		case "exit":
 			return
+		case "tracks":
+			tracks(words)
 		case "now":
 			now(words)
 		}
@@ -77,6 +80,60 @@ func show(words []string) {
 	}
 }
 
+func tracks(_ []string) {
+	t := table.NewWriter()
+	t.SetOutputMirror(out)
+
+	tracks := schedule.ListTracks()
+
+	var header []interface{}
+	for _, track := range tracks {
+		header = append(header, track.Name)
+	}
+
+	n := 0
+	for n < 100 {
+		var row []interface{}
+		for _, track := range tracks {
+			row = append(row, extractName(track, n))
+		}
+		if isBlank(row) {
+			break
+		}
+		t.AppendRow(row)
+		n++
+	}
+
+	t.AppendHeader(header)
+	t.Render()
+}
+
+func isBlank(row []interface{}) bool {
+	for _, item := range row {
+		if item != "" {
+			return false
+		}
+	}
+	return true
+}
+
+func extractName(track *schedule.Track, n int) string {
+	if len(track.ActiveProjects()) >= n+1 {
+		return boxedName(track, n)
+	}
+	return ""
+}
+
+func boxedName(track *schedule.Track, n int) string {
+	name := track.ActiveProjects()[n].Name
+	const LIMIT = 20
+	if len(name) > LIMIT {
+		return name[0:LIMIT] + "..."
+	} else {
+		return name
+	}
+}
+
 func now(words []string) {
 	tracks := schedule.ListTracks()
 	now := time.Now()
@@ -98,21 +155,13 @@ func now(words []string) {
 	}
 }
 
-func clear() {
-	cmd := exec.Command("clear")
-	cmd.Stdout = out
-	_ = cmd.Run()
-}
-
 func printProjects(words []string) {
 	inactiveFilter := utils.Find(words, func(val string) bool {
 		return val == "--inactive" || val == "-i"
 	})
 	var projects = plan.ListProjects()
 	if inactiveFilter {
-		projects = plan.FilterProjects(projects, func(val plan.Project) bool {
-			return val.Active == false
-		})
+		projects = plan.FilterProjects(projects, plan.ByInactive)
 	}
 	fmt.Print("\nListing projects: \n\n")
 	for _, project := range projects {
@@ -183,4 +232,10 @@ func printEmptyLine() {
 
 func printTlanHeader() {
 	println("tLan - a language for time")
+}
+
+func clear() {
+	cmd := exec.Command("clear")
+	cmd.Stdout = out
+	_ = cmd.Run()
 }

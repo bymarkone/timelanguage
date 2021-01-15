@@ -2,3 +2,5 @@
 *.gr
 .idea
 /pkg
+github.com/
+gopkg.in/

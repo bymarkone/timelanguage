@@ -28,3 +28,11 @@ func FilterProjects(arr []*Project, cond func(project Project) bool) []*Project 
 	}
 	return result
 }
+
+var ByActive = func(val Project) bool {
+	return val.Active == true
+}
+
+var ByInactive = func(val Project) bool {
+	return val.Active == false
+}

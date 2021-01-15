@@ -1,14 +1,22 @@
 package schedule
 
 import (
-	"tlan/plan"
+	plan "tlan/plan"
 	"tlan/utils"
 )
 
 type Track struct {
-	Schedule Schedule
-	Name     string
-	Projects []*plan.Project
+	Schedule      Schedule
+	Name          string
+	Projects      []*plan.Project
+	_cachedActive []*plan.Project
+}
+
+func (t *Track) ActiveProjects() []*plan.Project {
+	if len(t._cachedActive) == 0 {
+		t._cachedActive = plan.FilterProjects(t.Projects, plan.ByActive)
+	}
+	return t._cachedActive
 }
 
 type Schedule struct {
