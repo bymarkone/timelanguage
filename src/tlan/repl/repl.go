@@ -97,13 +97,13 @@ func clear() {
 }
 
 func printProjects(words []string) {
-	activeFilter := utils.Find(words, func(val string) bool {
-		return val == "--active" || val == "-a"
+	inactiveFilter := utils.Find(words, func(val string) bool {
+		return val == "--inactive" || val == "-i"
 	})
 	var projects = plan.ListProjects()
-	if activeFilter {
+	if inactiveFilter {
 		projects = plan.FilterProjects(projects, func(val plan.Project) bool {
-			return val.Active == true
+			return val.Active == false
 		})
 	}
 	fmt.Print("\nListing projects: \n\n")
@@ -136,7 +136,7 @@ func printShowHelp() {
 	println("  collection                  : collection to be printed")
 	printEmptyLine()
 	println("Flags:")
-	println("  --active, -a                : filter only active objects in the collection")
+	println("  --inactive, -i              : display also inactive elements")
 }
 
 func printHelp() {
