@@ -84,6 +84,72 @@ func slots(_ []string) {
 	t := table.NewWriter()
 	t.SetOutputMirror(out)
 
+	slots := schedule.ListSlots()
+
+	var header []interface{}
+	for _, slot := range slots {
+		header = append(header, slot.Name)
+	}
+
+	n := 0
+	for n < 100 {
+		var row []interface{}
+		for _, slot := range slots {
+			row = append(row, extractSlotItemsNames(slot, n))
+		}
+		if isBlank(row) {
+			break
+		}
+		t.AppendRow(row)
+		n++
+	}
+
+	t.AppendHeader(header)
+
+	t.Render()
+}
+
+func extractSlotItemsNames(slot *schedule.Slot, n int) string {
+	if len(slot.FlattenActiveItems(flattener)) >= n+1 {
+		return boxedNameForSlots(slot, n)
+	}
+	return ""
+}
+
+func boxedNameForSlots(slot *schedule.Slot, n int) string {
+	name := slot.FlattenActiveItems(flattener)[n]
+	const LIMIT = 25
+	if len(name) > LIMIT {
+		return name[0:LIMIT] + "..."
+	} else {
+		return name
+	}
+}
+
+func flattener(arr []*schedule.Track) []string {
+	return flattenTracksAndProjects(arr)
+}
+
+func flattenTracksAndProjects(arr []*schedule.Track) []string {
+	var results []string
+	for i := range arr {
+		results = append(results, strings.ToUpper(arr[i].Name))
+		depth := plan.FlattenProjectsDepth(arr[i].Projects)
+		results = append(results, toProjectNames(depth)...)
+		results = append(results, " ")
+	}
+	return results
+}
+
+func toProjectNames(depth []*plan.Project) []string {
+	var results []string
+	for i := range depth {
+		project := depth[i]
+		if project.Active && project.Level == 0 {
+			results = append(results, "-"+project.Name)
+		}
+	}
+	return results
 }
 
 func tracks(_ []string) {
@@ -97,6 +163,7 @@ func tracks(_ []string) {
 	for _, track := range tracks {
 		header = append(header, track.Name)
 	}
+	t.AppendHeader(header)
 
 	n := 0
 	for n < 100 {
@@ -111,7 +178,6 @@ func tracks(_ []string) {
 		n++
 	}
 
-	t.AppendHeader(header)
 	t.Render()
 }
 

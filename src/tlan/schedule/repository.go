@@ -15,6 +15,10 @@ func AddSlot(slot *Slot) {
 	slots = append(slots, slot)
 }
 
+func ListSlots() []*Slot {
+	return slots
+}
+
 func GetSlot(name string) *Slot {
 	return FindSlot(slots, BySlotName(name))
 }

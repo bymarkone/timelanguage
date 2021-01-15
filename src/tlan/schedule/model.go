@@ -28,9 +28,17 @@ func (t *Track) FlattenActiveProjects() []*plan.Project {
 }
 
 type Slot struct {
-	Name   string
-	Period utils.Period
-	Tracks []*Track
+	Name                      string
+	Period                    utils.Period
+	Tracks                    []*Track
+	_cachedFlattenActiveItems []string
+}
+
+func (s *Slot) FlattenActiveItems(flattener func(arr []*Track) []string) []string {
+	if len(s._cachedFlattenActiveItems) == 0 {
+		s._cachedFlattenActiveItems = flattener(s.Tracks)
+	}
+	return s._cachedFlattenActiveItems
 }
 
 func FilterTracks(arr []*Track, cond func(track Track) bool) []*Track {

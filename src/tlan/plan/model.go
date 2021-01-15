@@ -27,14 +27,14 @@ func FilterProjects(arr []*Project, cond func(project Project) bool) []*Project 
 }
 
 func FlattenProjects(arr []*Project) []*Project {
-	return flattenProjects(arr)
+	return FlattenProjectsDepth(arr)
 }
 
-func flattenProjects(arr []*Project) []*Project {
+func FlattenProjectsDepth(arr []*Project) []*Project {
 	var results []*Project
 	for i := range arr {
 		results = append(results, arr[i])
-		results = append(results, flattenProjects(arr[i].SubProjects)...)
+		results = append(results, FlattenProjectsDepth(arr[i].SubProjects)...)
 	}
 	return results
 }
