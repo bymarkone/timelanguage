@@ -2,8 +2,8 @@ package plan
 
 var projects []*Project
 
-func AddProject(project Project) {
-	projects = append(projects, &project)
+func AddProject(project *Project) {
+	projects = append(projects, project)
 }
 
 func ListProjects() []*Project {

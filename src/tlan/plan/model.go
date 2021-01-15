@@ -7,15 +7,11 @@ type Project struct {
 	Category          string
 	Period            utils.Period
 	ContributingGoals []*Goal
-	Tasks             []*Task
+	SubProjects       []*Project
 	Active            bool
 }
 
 type Goal struct {
-	Description string
-}
-
-type Task struct {
 	Description string
 }
 

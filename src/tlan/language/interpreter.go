@@ -29,16 +29,25 @@ func evalSchedule(items []*Item) {
 
 func evalProject(items []*Item) {
 	for _, item := range items {
-		var project = plan.Project{}
-		project.Name = item.Name.Value
-		project.Category = item.Category.Value
-		project.Active = !item.Marked
-		project.Period = findPeriod(item.Annotations, DATE)
-		if item.Target != "" {
-			project.ContributingGoals = append(project.ContributingGoals, &plan.Goal{Description: item.Target})
+		project := projectFromItem(item)
+		for _, item := range item.Children {
+			subProject := projectFromItem(item)
+			project.SubProjects = append(project.SubProjects, subProject)
 		}
 		plan.AddProject(project)
 	}
+}
+
+func projectFromItem(item *Item) *plan.Project {
+	project := plan.Project{}
+	project.Name = item.Name.Value
+	project.Category = item.Category.Value
+	project.Active = !item.Marked
+	project.Period = findPeriod(item.Annotations, DATE)
+	if item.Target != "" {
+		project.ContributingGoals = append(project.ContributingGoals, &plan.Goal{Description: item.Target})
+	}
+	return &project
 }
 
 func findBinaryAnnotation(anns []Annotation) *BinaryAnnotation {
