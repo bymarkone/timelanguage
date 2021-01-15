@@ -25,6 +25,19 @@ func FilterProjects(arr []*Project, cond func(project Project) bool) []*Project 
 	return result
 }
 
+func FlattenProjects(arr []*Project) []*Project {
+	return flattenProjects(arr)
+}
+
+func flattenProjects(arr []*Project) []*Project {
+	var results []*Project
+	for i := range arr {
+		results = append(results, arr[i])
+		results = append(results, flattenProjects(arr[i].SubProjects)...)
+	}
+	return results
+}
+
 var ByActive = func(val Project) bool {
 	return val.Active == true
 }

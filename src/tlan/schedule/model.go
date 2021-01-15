@@ -6,10 +6,11 @@ import (
 )
 
 type Track struct {
-	Schedule      Schedule
-	Name          string
-	Projects      []*plan.Project
-	_cachedActive []*plan.Project
+	Schedule             Schedule
+	Name                 string
+	Projects             []*plan.Project
+	_cachedActive        []*plan.Project
+	_cachedFlattenActive []*plan.Project
 }
 
 func (t *Track) ActiveProjects() []*plan.Project {
@@ -17,6 +18,13 @@ func (t *Track) ActiveProjects() []*plan.Project {
 		t._cachedActive = plan.FilterProjects(t.Projects, plan.ByActive)
 	}
 	return t._cachedActive
+}
+
+func (t *Track) FlattenActiveProjects() []*plan.Project {
+	if len(t._cachedFlattenActive) == 0 {
+		t._cachedFlattenActive = plan.FilterProjects(plan.FlattenProjects(t.Projects), plan.ByActive)
+	}
+	return t._cachedFlattenActive
 }
 
 type Schedule struct {

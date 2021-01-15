@@ -118,14 +118,14 @@ func isBlank(row []interface{}) bool {
 }
 
 func extractName(track *schedule.Track, n int) string {
-	if len(track.ActiveProjects()) >= n+1 {
+	if len(track.FlattenActiveProjects()) >= n+1 {
 		return boxedName(track, n)
 	}
 	return ""
 }
 
 func boxedName(track *schedule.Track, n int) string {
-	name := track.ActiveProjects()[n].Name
+	name := track.FlattenActiveProjects()[n].Name
 	const LIMIT = 20
 	if len(name) > LIMIT {
 		return name[0:LIMIT] + "..."
