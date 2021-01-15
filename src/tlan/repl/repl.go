@@ -85,7 +85,9 @@ func now() {
 	for _, track := range filteredTracks {
 		println(track.Name)
 		for _, project := range track.Projects {
-			println(" -- " + project.Name)
+			if project.Active {
+				println(" -- " + project.Name)
+			}
 		}
 	}
 }
