@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"strings"
 	"time"
-	"tlan/plan"
+	"tlan/planning"
 	"tlan/schedule"
 	"tlan/utils"
 )
@@ -47,6 +47,8 @@ func Start(in io.Reader, _out io.Writer) {
 			tracks(words)
 		case "slots":
 			slots(words)
+		case "plan":
+			plan(words)
 		case "now":
 			now(words)
 		}
@@ -73,11 +75,95 @@ func show(words []string) {
 		return
 	}
 	switch words[1] {
-	case "plan":
-		printPlan()
 	case "projects":
 		printProjects(words)
 	}
+}
+
+func plan(_ []string) {
+	t := table.NewWriter()
+	t.SetOutputMirror(out)
+	rowConfigAutoMerge := table.RowConfig{AutoMerge: true}
+
+	var header []interface{}
+	header = append(header, " ")
+	header = append(header, " ")
+
+	currentMonth := time.Now()
+	for i := 0; i < 12; i++ {
+		header = append(header, currentMonth.Month().String())
+		currentMonth = currentMonth.AddDate(0, 1, 0)
+	}
+	t.AppendHeader(header)
+
+	tracks := schedule.ListTracks()
+	for _, track := range tracks {
+		now := time.Now()
+		var rows []table.Row
+		for i := 0; i < 12; i++ {
+			var names []string
+			for _, project := range track.Projects {
+				if project.Period.ActiveIn(now) {
+					names=append(names, projectNameForPlan(project))
+				}
+			}
+			for j, name := range names {
+				if len(rows) > j {
+					if rows != nil {
+						rows[j][2+i] = name
+					}
+				} else {
+					var row []interface{}
+					row = append(row, track.Slot.Name)
+					row = append(row, track.Name)
+					for i := 0; i < 12; i++ {
+						row = append(row, "")
+					}
+					row[2+i] = name
+					rows = append(rows, row)
+				}
+			}
+			now = now.AddDate(0, 1, 0)
+		}
+		t.AppendRows(rows, rowConfigAutoMerge)
+	}
+
+	t.Style().Options.SeparateRows = true
+	widthMax := 15
+	t.SetColumnConfigs([]table.ColumnConfig{
+		{Number: 1, AutoMerge: true, WidthMax: widthMax},
+		{Number: 2, AutoMerge: true, WidthMax: widthMax},
+		{Number: 3, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
+		{Number: 4, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
+		{Number: 5, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
+		{Number: 6, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
+		{Number: 7, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
+		{Number: 8, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
+		{Number: 9, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
+		{Number: 10, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
+		{Number: 11, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
+		{Number: 12, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
+		{Number: 13, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
+		{Number: 14, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
+	})
+
+	t.Render()
+}
+
+func widthMaxEnforcer(col string, maxLen int) string {
+	return strings.Join(strings.Split(col, ","), "\n")
+}
+
+func projectNameForPlan(project *planning.Project) string {
+	name := project.Name
+	const LIMIT = 20
+	if len(name) > LIMIT {
+		//return name[0:LIMIT] + "."
+		return name
+	} else {
+		return name
+	}
+	return name
 }
 
 func slots(_ []string) {
@@ -134,14 +220,14 @@ func flattenTracksAndProjects(arr []*schedule.Track) []string {
 	var results []string
 	for i := range arr {
 		results = append(results, strings.ToUpper(arr[i].Name))
-		depth := plan.FlattenProjectsDepth(arr[i].Projects)
+		depth := planning.FlattenProjectsDepth(arr[i].Projects)
 		results = append(results, toProjectNames(depth)...)
 		results = append(results, " ")
 	}
 	return results
 }
 
-func toProjectNames(depth []*plan.Project) []string {
+func toProjectNames(depth []*planning.Project) []string {
 	var results []string
 	for i := range depth {
 		project := depth[i]
@@ -169,7 +255,7 @@ func tracks(_ []string) {
 	for n < 100 {
 		var row []interface{}
 		for _, track := range tracks {
-			row = append(row, extractProjectName(track, n))
+			row = append(row, extractProjectNameForTracks(track, n))
 		}
 		if isBlank(row) {
 			break
@@ -190,14 +276,14 @@ func isBlank(row []interface{}) bool {
 	return true
 }
 
-func extractProjectName(track *schedule.Track, n int) string {
+func extractProjectNameForTracks(track *schedule.Track, n int) string {
 	if len(track.FlattenActiveProjects()) >= n+1 {
-		return boxedProjectName(track, n)
+		return boxedProjectNameForTracks(track, n)
 	}
 	return ""
 }
 
-func boxedProjectName(track *schedule.Track, n int) string {
+func boxedProjectNameForTracks(track *schedule.Track, n int) string {
 	project := track.FlattenActiveProjects()[n]
 	name := project.Name
 	base := ""
@@ -239,20 +325,15 @@ func printProjects(words []string) {
 	inactiveFilter := utils.Find(words, func(val string) bool {
 		return val == "--inactive" || val == "-i"
 	})
-	var projects = plan.ListProjects()
+	var projects = planning.ListProjects()
 	if inactiveFilter {
-		projects = plan.FilterProjects(projects, plan.ByInactive)
+		projects = planning.FilterProjects(projects, planning.ByInactive)
 	}
 	fmt.Print("\nListing projects: \n\n")
 	for _, project := range projects {
 		fmt.Printf("- %s\n", project.Name)
 	}
 	fmt.Print("\n\n")
-}
-
-func printPlan() {
-	fmt.Printf("------------------------------------------------------------------------------------------")
-
 }
 
 func printNowHelp() {

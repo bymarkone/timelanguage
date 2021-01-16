@@ -1,7 +1,7 @@
 package schedule
 
 import (
-	plan "tlan/plan"
+	plan "tlan/planning"
 	"tlan/utils"
 )
 

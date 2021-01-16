@@ -2,7 +2,7 @@ package language
 
 import (
 	"testing"
-	"tlan/plan"
+	"tlan/planning"
 	"tlan/schedule"
 	"tlan/utils"
 )
@@ -10,7 +10,7 @@ import (
 func TestEvalTracks(t *testing.T) {
 
 	period := utils.Period{Start: utils.DateTime{Hour: 5, Minute: 0}, End: utils.DateTime{Hour: 9, Minute: 0}}
-	expectedSchedule := schedule.Schedule{Name: "Creative Work", Period: period}
+	expectedSchedule := &schedule.Slot{Name: "Creative Work", Period: period}
 
 	tests := []struct {
 		input    string
@@ -25,10 +25,10 @@ Creative Work [0500-0900]
 * Bible
 `,
 			[]*schedule.Track{
-				{Name: "Mathematics", Schedule: expectedSchedule},
-				{Name: "Books", Schedule: expectedSchedule},
-				{Name: "Research", Schedule: expectedSchedule},
-				{Name: "Bible", Schedule: expectedSchedule},
+				{Name: "Mathematics", Slot: expectedSchedule},
+				{Name: "Books", Slot: expectedSchedule},
+				{Name: "Research", Slot: expectedSchedule},
+				{Name: "Bible", Slot: expectedSchedule},
 			},
 		},
 	}
@@ -48,8 +48,8 @@ Creative Work [0500-0900]
 			if tracks[i].Name != r.Name {
 				t.Errorf("Track has wrong data. Got %s, want %s", tracks[i].Name, r.Name)
 			}
-			if tracks[i].Schedule != r.Schedule {
-				t.Errorf("Track has wrong data. Got %v, want %v", tracks[i].Schedule, r.Schedule)
+			if tracks[i].Slot.Period != r.Slot.Period {
+				t.Errorf("Track has wrong slot data. Got %v, want %v", tracks[i].Slot, r.Slot)
 			}
 		}
 	}
@@ -61,7 +61,7 @@ func TestEvalProjects(t *testing.T) {
 
 	tests := []struct {
 		input    string
-		expected []*plan.Project
+		expected []*planning.Project
 	}{
 		{
 			`
@@ -72,20 +72,20 @@ Mathematics
 * Study Analysis Burkin
 - (Study Logic for Mathematicians)
 `,
-			[]*plan.Project{
+			[]*planning.Project{
 				{Name: "IU Analysis II", Category: "Mathematics", Active: true,
-					ContributingGoals: []*plan.Goal{{"BS Mathematics"}}},
+					ContributingGoals: []*planning.Goal{{"BS Mathematics"}}},
 				{Name: "IU Modern Algebra", Category: "Mathematics", Active: true, Period: period,
-					ContributingGoals: []*plan.Goal{}, SubProjects: []*plan.Project{{Name: "Read book"}}},
+					ContributingGoals: []*planning.Goal{}, SubProjects: []*planning.Project{{Name: "Read book"}}},
 				{Name: "Study Analysis Burkin", Category: "Mathematics", Active: true,
-					ContributingGoals: []*plan.Goal{}},
+					ContributingGoals: []*planning.Goal{}},
 				{Name: "Study Logic for Mathematicians", Category: "Mathematics", Active: false,
-					ContributingGoals: []*plan.Goal{}},
+					ContributingGoals: []*planning.Goal{}},
 			},
 		},
 	}
 
-	plan.Clean()
+	planning.Clean()
 
 	for _, tt := range tests {
 
@@ -94,7 +94,7 @@ Mathematics
 		items := p.Parse()
 
 		Eval("project", items)
-		projects := plan.ListProjects()
+		projects := planning.ListProjects()
 
 		for i, p := range tt.expected {
 			if projects[i].Name != p.Name {
@@ -119,7 +119,7 @@ Mathematics
 	}
 }
 
-func equalProjects(first []*plan.Project, second []*plan.Project) bool {
+func equalProjects(first []*planning.Project, second []*planning.Project) bool {
 	if len(first) != len(second) {
 		return false
 	}
@@ -131,7 +131,7 @@ func equalProjects(first []*plan.Project, second []*plan.Project) bool {
 	return true
 }
 
-func equalGoals(first []*plan.Goal, second []*plan.Goal) bool {
+func equalGoals(first []*planning.Goal, second []*planning.Goal) bool {
 	if len(first) != len(second) {
 		return false
 	}

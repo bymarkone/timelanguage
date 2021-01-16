@@ -1,7 +1,8 @@
 package language
 
 import (
-	"tlan/plan"
+	"time"
+	"tlan/planning"
 	"tlan/schedule"
 	"tlan/utils"
 )
@@ -24,8 +25,9 @@ func evalSchedule(items []*Item) {
 			schedule.AddSlot(slot)
 		}
 		slot.Tracks = append(slot.Tracks, track)
+		track.Slot = slot
 		track.Name = item.Name.Value
-		track.Projects = plan.ListProjectsFiltered(func(project plan.Project) bool {
+		track.Projects = planning.ListProjectsFiltered(func(project planning.Project) bool {
 			return project.Category == item.Name.Value
 		})
 		schedule.AddTrack(track)
@@ -40,18 +42,18 @@ func evalProject(items []*Item) {
 			subProject.Level = 1
 			project.SubProjects = append(project.SubProjects, subProject)
 		}
-		plan.AddProject(project)
+		planning.AddProject(project)
 	}
 }
 
-func projectFromItem(item *Item) *plan.Project {
-	project := plan.Project{}
+func projectFromItem(item *Item) *planning.Project {
+	project := planning.Project{}
 	project.Name = item.Name.Value
 	project.Category = item.Category.Value
 	project.Active = !item.Marked
 	project.Period = findPeriod(item.Annotations, DATE)
 	if item.Target != "" {
-		project.ContributingGoals = append(project.ContributingGoals, &plan.Goal{Description: item.Target})
+		project.ContributingGoals = append(project.ContributingGoals, &planning.Goal{Description: item.Target})
 	}
 	return &project
 }
@@ -81,7 +83,7 @@ func findPeriod(anns []Annotation, periodType string) utils.Period {
 	case TIME:
 		return utils.Period{Start: utils.DateTime{Hour: first, Minute: second}, End: utils.DateTime{Hour: third, Minute: fourth}}
 	case DATE:
-		return utils.Period{Start: utils.DateTime{Day: first, Month: second}, End: utils.DateTime{Day: third, Month: fourth}}
+		return utils.Period{Start: utils.DateTime{Day: first, Month: time.Month(second)}, End: utils.DateTime{Day: third, Month: time.Month(fourth)}}
 	}
 	return utils.Period{}
 }
