@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"io"
+	"os"
 	"os/exec"
 	"strings"
 	"time"
@@ -51,8 +52,26 @@ func Start(in io.Reader, _out io.Writer) {
 			plan(words)
 		case "now":
 			now(words)
+		case "edit":
+			edit(words)
+		case "goals":
+			goals(words)
 		}
 	}
+}
+
+func goals(_ []string) {
+	t := table.NewWriter()
+	t.SetOutputMirror(out)
+
+}
+
+func edit(words []string) {
+	cmd := exec.Command("vim", "./../../data/" + words[1] + "/" + words[2] + ".gr")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	err := cmd.Run()
+	fmt.Println(err)
 }
 
 func help(words []string) {

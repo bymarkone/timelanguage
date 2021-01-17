@@ -3,6 +3,7 @@ package language
 import (
 	"time"
 	"tlan/planning"
+	"tlan/purpose"
 	"tlan/schedule"
 	"tlan/utils"
 )
@@ -13,6 +14,17 @@ func Eval(context string, items []*Item) {
 		evalProject(items)
 	case "schedule":
 		evalSchedule(items)
+	case "goals":
+		evalGoals(items)
+	}
+}
+
+func evalGoals(items []*Item) {
+	for _, item := range items {
+		var goal = &purpose.Goal{}
+		goal.Name = item.Name.Value
+		goal.Category = item.Category.Value
+		purpose.AddGoal(goal)
 	}
 }
 
@@ -47,15 +59,20 @@ func evalProject(items []*Item) {
 }
 
 func projectFromItem(item *Item) *planning.Project {
-	project := planning.Project{}
+	project := &planning.Project{}
 	project.Name = item.Name.Value
 	project.Category = item.Category.Value
 	project.Active = !item.Marked
 	project.Period = findPeriod(item.Annotations, DATE)
 	if item.Target != "" {
-		project.ContributingGoals = append(project.ContributingGoals, &planning.Goal{Description: item.Target})
+		project.ContributingGoals = append(project.ContributingGoals, item.Target)
+		goal := purpose.GetGoal(item.Target)
+		if goal == nil {
+			goal = purpose.GetGoal(purpose.GoalLess)
+		}
+		goal.Projects = append(goal.Projects, project)
 	}
-	return &project
+	return project
 }
 
 func findBinaryAnnotation(anns []Annotation) *BinaryAnnotation {

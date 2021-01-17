@@ -3,9 +3,50 @@ package language
 import (
 	"testing"
 	"tlan/planning"
+	"tlan/purpose"
 	"tlan/schedule"
 	"tlan/utils"
 )
+
+func TestEvalGoals(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected []*purpose.Goal
+	}{
+		{
+			`
+Great Technologist [Lagging]
+- Drive strategy and execution [Leading]
+- First class engineer [Leading]
+- Democratize best practices [Leading]
+`,
+			[]*purpose.Goal{
+				{Name: "Drive strategy and execution", Tags: []string{"Leading"}, Category: "Great Technologist"},
+				{Name: "First class engineer", Tags: []string{"Leading"}, Category: "Great Technologist"},
+				{Name: "Democratize best practices", Tags: []string{"Leading"}, Category: "Great Technologist"},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		l := NewLexer(tt.input)
+		p := NewParser(l)
+		items := p.Parse()
+
+		Eval("goals", items)
+		goals := purpose.ListGoals()
+
+		for i, g := range tt.expected {
+			if goals[i].Name != g.Name {
+				t.Errorf("Goal has the wrong name. Got %s, want %s", goals[i].Name, g.Name)
+			}
+			if goals[i].Category != g.Category {
+				t.Errorf("Goal has the wrong category. Got %s, want %s", goals[i].Category, g.Category)
+			}
+		}
+	}
+
+}
 
 func TestEvalTracks(t *testing.T) {
 
@@ -74,13 +115,13 @@ Mathematics
 `,
 			[]*planning.Project{
 				{Name: "IU Analysis II", Category: "Mathematics", Active: true,
-					ContributingGoals: []*planning.Goal{{"BS Mathematics"}}},
+					ContributingGoals: []string{"BS Mathematics"}},
 				{Name: "IU Modern Algebra", Category: "Mathematics", Active: true, Period: period,
-					ContributingGoals: []*planning.Goal{}, SubProjects: []*planning.Project{{Name: "Read book"}}},
+					ContributingGoals: []string{}, SubProjects: []*planning.Project{{Name: "Read book"}}},
 				{Name: "Study Analysis Burkin", Category: "Mathematics", Active: true,
-					ContributingGoals: []*planning.Goal{}},
+					ContributingGoals: []string{}},
 				{Name: "Study Logic for Mathematicians", Category: "Mathematics", Active: false,
-					ContributingGoals: []*planning.Goal{}},
+					ContributingGoals: []string{}},
 			},
 		},
 	}
@@ -131,12 +172,12 @@ func equalProjects(first []*planning.Project, second []*planning.Project) bool {
 	return true
 }
 
-func equalGoals(first []*planning.Goal, second []*planning.Goal) bool {
+func equalGoals(first []string, second []string) bool {
 	if len(first) != len(second) {
 		return false
 	}
 	for i, _ := range first {
-		if !(*first[i] == *second[i]) {
+		if !(first[i] == second[i]) {
 			return false
 		}
 	}

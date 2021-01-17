@@ -10,7 +10,7 @@ import (
 	"tlan/repl"
 )
 
-const DATA_FOLDER = "./../../data"
+const DataFolder = "./../../data"
 
 func main() {
 	user, err := user.Current()
@@ -32,7 +32,7 @@ func load() {
 	}
 }
 func loadContext(context string) {
-	baseFolder := DATA_FOLDER + "/" + context
+	baseFolder := DataFolder + "/" + context
 	filesInfo, err := ioutil.ReadDir(baseFolder)
 	if err != nil {
 		log.Fatal(err)

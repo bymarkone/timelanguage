@@ -1,20 +1,20 @@
 package planning
 
-import "tlan/utils"
+import (
+	"tlan/utils"
+)
 
 type Project struct {
 	Name              string
 	Category          string
 	Period            utils.Period
-	ContributingGoals []*Goal
+	ContributingGoals []string
 	SubProjects       []*Project
 	Active            bool
 	Level 						int
 }
 
-type Goal struct {
-	Description string
-}
+
 
 func FilterProjects(arr []*Project, cond func(project Project) bool) []*Project {
 	var result []*Project
