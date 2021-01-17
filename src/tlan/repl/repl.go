@@ -69,7 +69,7 @@ func goals(_ []string) {
 
 	var header []interface{}
 	var headerNames []string
-	for category, _ := range goalsByCategory {
+	for category := range goalsByCategory {
 		header = append(header, category)
 		headerNames = append(headerNames, category)
 	}
@@ -82,9 +82,9 @@ func goals(_ []string) {
 			row = append(row, "")
 		}
 		for i, headerName := range headerNames {
-			goals := goalsByCategory[headerName]
+			goals := flattenGoalsAndProjects(goalsByCategory[headerName])
 			if len(goals) > n && row != nil {
-				row[i] = goals[n].Name
+				row[i] = goals[n]
 			}
 		}
 		if isBlank(row) {
@@ -95,6 +95,27 @@ func goals(_ []string) {
 	}
 
 	t.Render()
+}
+
+func flattenGoalsAndProjects(arr []*purpose.Goal) []string {
+	var results []string
+	for i := range arr {
+		results = append(results, strings.ToUpper(arr[i].Name))
+		results = append(results, toProjectNamesForGoals(arr[i].Projects)...)
+		results = append(results, " ")
+	}
+	return results
+}
+
+func toProjectNamesForGoals(depth []*planning.Project) []string {
+	var results []string
+	for i := range depth {
+		project := depth[i]
+		if project.Level == 0 {
+			results = append(results, "-"+project.Name)
+		}
+	}
+	return results
 }
 
 func edit(words []string) {
@@ -200,7 +221,7 @@ func plan(_ []string) {
 	t.Render()
 }
 
-func widthMaxEnforcer(col string, maxLen int) string {
+func widthMaxEnforcer(col string, _ int) string {
 	return strings.Join(strings.Split(col, ","), "\n")
 }
 
@@ -213,7 +234,6 @@ func projectNameForPlan(project *planning.Project) string {
 	} else {
 		return name
 	}
-	return name
 }
 
 func slots(_ []string) {
