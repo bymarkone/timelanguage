@@ -4,3 +4,4 @@
 /pkg
 github.com/
 gopkg.in/
+.DS_Store
