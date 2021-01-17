@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 	"tlan/planning"
+	"tlan/purpose"
 	"tlan/schedule"
 	"tlan/utils"
 )
@@ -64,10 +65,40 @@ func goals(_ []string) {
 	t := table.NewWriter()
 	t.SetOutputMirror(out)
 
+	goalsByCategory := purpose.GoalsByCategory()
+
+	var header []interface{}
+	var headerNames []string
+	for category, _ := range goalsByCategory {
+		header = append(header, category)
+		headerNames = append(headerNames, category)
+	}
+	t.AppendHeader(header)
+
+	n := 0
+	for n < 100 {
+		var row []interface{}
+		for range headerNames {
+			row = append(row, "")
+		}
+		for i, headerName := range headerNames {
+			goals := goalsByCategory[headerName]
+			if len(goals) > n && row != nil {
+				row[i] = goals[n].Name
+			}
+		}
+		if isBlank(row) {
+			break
+		}
+		t.AppendRow(row)
+		n++
+	}
+
+	t.Render()
 }
 
 func edit(words []string) {
-	cmd := exec.Command("vim", "./../../data/" + words[1] + "/" + words[2] + ".gr")
+	cmd := exec.Command("vim", "./../../data/"+words[1]+"/"+words[2]+".gr")
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	err := cmd.Run()
@@ -123,7 +154,7 @@ func plan(_ []string) {
 			var names []string
 			for _, project := range track.Projects {
 				if project.Period.ActiveIn(now) {
-					names=append(names, projectNameForPlan(project))
+					names = append(names, projectNameForPlan(project))
 				}
 			}
 			for j, name := range names {

@@ -26,7 +26,7 @@ func main() {
 
 func load() {
 	fmt.Printf("Loading data... \n")
-	contexts := []string{"project", "schedule"}
+	contexts := []string{"goals", "project", "schedule"}
 	for _, context := range contexts {
 		loadContext(context)
 	}

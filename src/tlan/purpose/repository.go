@@ -3,10 +3,11 @@ package purpose
 var goals []*Goal
 
 const GoalLess = "GoalLess"
+
 var goalLess *Goal
 
 func init() {
-	goalLess  = &Goal{Name: GoalLess, Category: GoalLess}
+	goalLess = &Goal{Name: GoalLess, Category: GoalLess}
 }
 
 func AddGoal(goal *Goal) {
@@ -34,6 +35,14 @@ func FindGoal(arr []*Goal, cond func(goal Goal) bool) *Goal {
 		if cond(*arr[i]) {
 			result = arr[i]
 		}
+	}
+	return result
+}
+
+func GoalsByCategory() map[string][]*Goal {
+	var result = make(map[string][]*Goal)
+	for _, goal := range goals {
+		result[goal.Category] = append(result[goal.Category], goal)
 	}
 	return result
 }
