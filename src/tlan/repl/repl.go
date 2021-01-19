@@ -10,12 +10,12 @@ import (
 	"strings"
 	"time"
 	"tlan/planning"
-	"tlan/purpose"
 	"tlan/schedule"
 	"tlan/utils"
 )
 
-const PROMPT = ">> "
+const Prompt = ">> "
+const MaxTableLines = 100
 
 var out io.Writer
 
@@ -24,7 +24,7 @@ func Start(in io.Reader, _out io.Writer) {
 	out = _out
 
 	for {
-		print(PROMPT)
+		print(Prompt)
 		scanned := scanner.Scan()
 		if !scanned {
 			return
@@ -59,63 +59,6 @@ func Start(in io.Reader, _out io.Writer) {
 			goals(words)
 		}
 	}
-}
-
-func goals(_ []string) {
-	t := table.NewWriter()
-	t.SetOutputMirror(out)
-
-	goalsByCategory := purpose.GoalsByCategory()
-
-	var header []interface{}
-	var headerNames []string
-	for category := range goalsByCategory {
-		header = append(header, category)
-		headerNames = append(headerNames, category)
-	}
-	t.AppendHeader(header)
-
-	n := 0
-	for n < 100 {
-		var row []interface{}
-		for range headerNames {
-			row = append(row, "")
-		}
-		for i, headerName := range headerNames {
-			goals := flattenGoalsAndProjects(goalsByCategory[headerName])
-			if len(goals) > n && row != nil {
-				row[i] = goals[n]
-			}
-		}
-		if isBlank(row) {
-			break
-		}
-		t.AppendRow(row)
-		n++
-	}
-
-	t.Render()
-}
-
-func flattenGoalsAndProjects(arr []*purpose.Goal) []string {
-	var results []string
-	for i := range arr {
-		results = append(results, strings.ToUpper(arr[i].Name))
-		results = append(results, toProjectNamesForGoals(arr[i].Projects)...)
-		results = append(results, " ")
-	}
-	return results
-}
-
-func toProjectNamesForGoals(depth []*planning.Project) []string {
-	var results []string
-	for i := range depth {
-		project := depth[i]
-		if project.Level == 0 {
-			results = append(results, "-"+project.Name)
-		}
-	}
-	return results
 }
 
 func edit(words []string) {
@@ -200,7 +143,7 @@ func plan(_ []string) {
 	}
 
 	t.Style().Options.SeparateRows = true
-	widthMax := 15
+	widthMax := 14
 	t.SetColumnConfigs([]table.ColumnConfig{
 		{Number: 1, AutoMerge: true, WidthMax: widthMax},
 		{Number: 2, AutoMerge: true, WidthMax: widthMax},

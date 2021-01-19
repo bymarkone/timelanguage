@@ -13,14 +13,14 @@ import (
 const DataFolder = "./../../data"
 
 func main() {
-	user, err := user.Current()
+	currentUser, err := user.Current()
 
 	if err != nil {
 		panic(err)
 	}
 
 	load()
-	fmt.Printf("Hello %s! Welcome to tlan\n", user.Username)
+	fmt.Printf("Hello %s! Welcome to tlan\n", currentUser.Username)
 	repl.Start(os.Stdin, os.Stdout)
 }
 

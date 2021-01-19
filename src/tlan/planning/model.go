@@ -11,10 +11,8 @@ type Project struct {
 	ContributingGoals []string
 	SubProjects       []*Project
 	Active            bool
-	Level 						int
+	Level             int
 }
-
-
 
 func FilterProjects(arr []*Project, cond func(project Project) bool) []*Project {
 	var result []*Project
