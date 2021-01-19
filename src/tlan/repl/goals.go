@@ -7,9 +7,15 @@ import (
 	"tlan/purpose"
 )
 
-func goals(_ []string) {
+var goalsFlags []string
+
+const GoalsShallow = "shallow"
+
+func goals(words []string) {
 	t := table.NewWriter()
 	t.SetOutputMirror(out)
+
+	goalsFlags = extractFlags(words)
 
 	goalsByCategory := purpose.GoalsByCategory()
 
@@ -44,9 +50,14 @@ func goals(_ []string) {
 
 func flattenGoalsAndProjects(arr []*purpose.Goal) []string {
 	var results []string
+	isShallow := hasFlags(goalsFlags, GoalsShallow)
 	for i := range arr {
-		results = append(results, strings.ToUpper(arr[i].Name))
-		results = append(results, toProjectNamesForGoals(arr[i].Projects)...)
+		if isShallow {
+			results = append(results, arr[i].Name)
+		} else {
+			results = append(results, strings.ToUpper(arr[i].Name))
+			results = append(results, toProjectNamesForGoals(arr[i].Projects)...)
+		}
 		results = append(results, " ")
 	}
 	return results

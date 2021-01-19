@@ -405,3 +405,26 @@ func clear() {
 	cmd.Stdout = out
 	_ = cmd.Run()
 }
+
+func extractFlags(words []string) []string {
+	var results []string
+	for _, word := range words {
+		if strings.HasPrefix(word, "-") {
+			results = append(results, strings.ReplaceAll(word, "-", ""))
+		}
+	}
+	return results
+}
+
+func hasFlags(flags []string, shallow string) bool {
+	return contains(flags, shallow)
+}
+
+func contains(flags []string, shallow string) bool {
+	for _, item := range flags {
+		if item == shallow {
+			return true
+		}
+	}
+	return false
+}
