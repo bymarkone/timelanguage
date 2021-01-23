@@ -11,6 +11,21 @@ var goalsFlags []string
 
 const GoalsShallow = "shallow"
 
+func init() {
+	command := Command{
+		Description: "This command prints the dashboard of goals",
+		Usage:       "goals {flags}",
+		Arguments: []Argument{
+			{Name: "some", Description: "sobre description"},
+		},
+		Flags: []Flag{
+			{Name: "shallow", Shortcut: "s", Description: "Show only goals (i.e. hide projects related to goals)"},
+		},
+		function: goals,
+	}
+	registerCommands("goals", command)
+}
+
 func goals(words []string) {
 	t := table.NewWriter()
 	t.SetOutputMirror(out)

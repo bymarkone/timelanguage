@@ -17,6 +17,13 @@ import (
 const Prompt = ">> "
 const MaxTableLines = 100
 
+var commands = make(map[string]Command)
+
+func registerCommands(name string, command Command) {
+	fmt.Print("Registering '" + name + "' \n")
+	commands[name] = command
+}
+
 var out io.Writer
 
 func Start(in io.Reader, _out io.Writer) {
@@ -56,7 +63,7 @@ func Start(in io.Reader, _out io.Writer) {
 		case "edit":
 			edit(words)
 		case "goals":
-			goals(words)
+			commands["goals"].function(words)
 		}
 	}
 }
@@ -80,6 +87,8 @@ func help(words []string) {
 		printShowHelp()
 	case "now":
 		printNowHelp()
+	case "goals":
+		printCommand(commands[words[1]])
 	}
 }
 
