@@ -18,8 +18,9 @@ func (dt DateTime) toTime() time.Time {
 }
 
 type Period struct {
-	Start DateTime
-	End   DateTime
+	Weekdays []time.Weekday
+	Start    DateTime
+	End      DateTime
 }
 
 func (p Period) ActiveIn(date time.Time) bool {

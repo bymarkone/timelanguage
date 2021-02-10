@@ -1,7 +1,9 @@
 package language
 
 import (
+	"reflect"
 	"testing"
+	"time"
 	"tlan/planning"
 	"tlan/purpose"
 	"tlan/schedule"
@@ -50,8 +52,10 @@ Great Technologist [Lagging]
 
 func TestEvalTracks(t *testing.T) {
 
-	period := utils.Period{Start: utils.DateTime{Hour: 5, Minute: 0}, End: utils.DateTime{Hour: 9, Minute: 0}}
+	period := utils.Period{Start: utils.DateTime{Hour: 5, Minute: 0}, End: utils.DateTime{Hour: 9, Minute: 0}, Weekdays: allWeekDays}
 	expectedSchedule := &schedule.Slot{Name: "Creative Work", Period: period}
+	periodForBooks := utils.Period{Start: utils.DateTime{Hour: 5, Minute: 0}, End: utils.DateTime{Hour: 9, Minute: 0}, Weekdays: []time.Weekday{time.Monday, time.Tuesday}}
+	expectedScheduleForBook := &schedule.Slot{Name: "Creative Work", Period: periodForBooks}
 
 	tests := []struct {
 		input    string
@@ -59,15 +63,15 @@ func TestEvalTracks(t *testing.T) {
 	}{
 		{
 			`
-Creative Work [0500-0900]
+Creative Work [Daily, 0500-0900]
 * Mathematics
-* Books
+* Books [MonTue]
 * Research
 * Bible
 `,
 			[]*schedule.Track{
 				{Name: "Mathematics", Slot: expectedSchedule},
-				{Name: "Books", Slot: expectedSchedule},
+				{Name: "Books", Slot: expectedScheduleForBook},
 				{Name: "Research", Slot: expectedSchedule},
 				{Name: "Bible", Slot: expectedSchedule},
 			},
@@ -89,7 +93,13 @@ Creative Work [0500-0900]
 			if tracks[i].Name != r.Name {
 				t.Errorf("Track has wrong data. Got %s, want %s", tracks[i].Name, r.Name)
 			}
-			if tracks[i].Slot.Period != r.Slot.Period {
+			if tracks[i].Slot.Period.Start != r.Slot.Period.Start {
+				t.Errorf("Track has wrong slot data. Got %v, want %v", tracks[i].Slot, r.Slot)
+			}
+			if tracks[i].Slot.Period.End != r.Slot.Period.End {
+				t.Errorf("Track has wrong slot data. Got %v, want %v", tracks[i].Slot, r.Slot)
+			}
+			if !reflect.DeepEqual(tracks[i].Slot.Period.Weekdays, r.Slot.Period.Weekdays) {
 				t.Errorf("Track has wrong slot data. Got %v, want %v", tracks[i].Slot, r.Slot)
 			}
 		}

@@ -31,11 +31,11 @@ func evalGoals(items []*Item) {
 func evalSchedule(items []*Item) {
 	for _, item := range items {
 		var track = &schedule.Track{}
-		slot := schedule.GetSlot(item.Category.Value)
-		if slot == nil {
-			slot = &schedule.Slot{Name: item.Category.Value, Period: findPeriod(item.Category.Annotations, TIME)}
-			schedule.AddSlot(slot)
-		}
+
+		slotPeriod := findPeriod(item.Category.Annotations, TIME, utils.Period{Weekdays: allWeekDays})
+		trackPeriod := findPeriod(item.Annotations, TIME, slotPeriod)
+		slot := &schedule.Slot{Name: item.Category.Value, Period: trackPeriod}
+
 		slot.Tracks = append(slot.Tracks, track)
 		track.Slot = slot
 		track.Name = item.Name.Value
@@ -63,7 +63,7 @@ func projectFromItem(item *Item) *planning.Project {
 	project.Name = item.Name.Value
 	project.Category = item.Category.Value
 	project.Active = !item.Marked
-	project.Period = findPeriod(item.Annotations, DATE)
+	project.Period = findPeriod(item.Annotations, DATE, utils.Period{})
 	if item.Target != "" {
 		project.ContributingGoals = append(project.ContributingGoals, item.Target)
 		goal := purpose.GetGoal(item.Target)
@@ -75,6 +75,78 @@ func projectFromItem(item *Item) *planning.Project {
 	return project
 }
 
+const (
+	TIME = "TIME"
+	DATE = "DATE"
+)
+
+func findPeriod(anns []Annotation, periodType string, parentPeriod utils.Period) utils.Period {
+	binary := findBinaryAnnotation(anns)
+	unary := findUnaryAnnotation(anns)
+
+	weekdays := parentPeriod.Weekdays
+	start := parentPeriod.Start
+	end := parentPeriod.End
+
+	if unary != nil {
+		weekdays = computeWeekdays(unary.Name.Value)
+	}
+
+	if binary != nil {
+		first, second := utils.Parse(binary.Left.Value)
+		third, fourth := utils.Parse(binary.Right.Value)
+		switch periodType {
+		case TIME:
+			start = utils.DateTime{Hour: first, Minute: second}
+			end = utils.DateTime{Hour: third, Minute: fourth}
+		case DATE:
+			start = utils.DateTime{Day: first, Month: time.Month(second)}
+			end = utils.DateTime{Day: third, Month: time.Month(fourth)}
+		}
+	}
+
+	return utils.Period{Start: start, End: end, Weekdays: weekdays}
+}
+
+var shortWeekdays = map[string]time.Weekday{
+	"Sun": time.Sunday,
+	"Mon": time.Monday,
+	"Tue": time.Tuesday,
+	"Wed": time.Wednesday,
+	"Thu": time.Thursday,
+	"Fri": time.Friday,
+	"Sat": time.Saturday,
+}
+
+var allWeekDays = []time.Weekday{time.Sunday, time.Monday, time.Tuesday, time.Wednesday, time.Thursday, time.Friday, time.Sunday}
+
+func computeWeekdays(pattern string) []time.Weekday {
+	var weekdays []time.Weekday
+	switch pattern {
+	case "Daily":
+		weekdays = allWeekDays
+	default:
+		res := ""
+		for i, r := range pattern {
+			res = res + string(r)
+			if i > 0 && (i+1)%3 == 0 {
+				weekdays = append(weekdays, shortWeekdays[res])
+				res = ""
+			}
+		}
+	}
+	return weekdays
+}
+
+func findUnaryAnnotation(anns []Annotation) *UnaryAnnotation {
+	for _, ann := range anns {
+		if ann.Type() == UNARY {
+			return ann.(*UnaryAnnotation)
+		}
+	}
+	return nil
+}
+
 func findBinaryAnnotation(anns []Annotation) *BinaryAnnotation {
 	for _, ann := range anns {
 		if ann.Type() == BINARY {
@@ -82,25 +154,4 @@ func findBinaryAnnotation(anns []Annotation) *BinaryAnnotation {
 		}
 	}
 	return nil
-}
-
-const (
-	TIME = "TIME"
-	DATE = "DATE"
-)
-
-func findPeriod(anns []Annotation, periodType string) utils.Period {
-	binary := findBinaryAnnotation(anns)
-	if binary == nil {
-		return utils.Period{}
-	}
-	first, second := utils.Parse(binary.Left.Value)
-	third, fourth := utils.Parse(binary.Right.Value)
-	switch periodType {
-	case TIME:
-		return utils.Period{Start: utils.DateTime{Hour: first, Minute: second}, End: utils.DateTime{Hour: third, Minute: fourth}}
-	case DATE:
-		return utils.Period{Start: utils.DateTime{Day: first, Month: time.Month(second)}, End: utils.DateTime{Day: third, Month: time.Month(fourth)}}
-	}
-	return utils.Period{}
 }

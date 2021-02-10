@@ -330,7 +330,7 @@ func now(words []string) {
 		now = time.Date(now.Year(), now.Month(), now.Day(), hour, minute, now.Second(), now.Nanosecond(), now.Location())
 	}
 	filteredTracks := schedule.FilterTracks(tracks, func(track schedule.Track) bool {
-		return track.Slot.Period.Start.Hour <= now.Hour() && track.Slot.Period.End.Hour > now.Hour()
+		return track.Slot.Period.Start.Hour <= now.Hour() && track.Slot.Period.End.Hour > now.Hour() && containsWeekday(track.Slot.Period.Weekdays, now.Weekday())
 	})
 	println("NOW is time to do " + filteredTracks[0].Slot.Name)
 	for _, track := range filteredTracks {
@@ -341,6 +341,15 @@ func now(words []string) {
 			}
 		}
 	}
+}
+
+func containsWeekday(weekdays []time.Weekday, weekday time.Weekday) bool {
+	for _, item := range weekdays {
+		if item == weekday {
+			return true
+		}
+	}
+	return false
 }
 
 func printProjects(words []string) {
