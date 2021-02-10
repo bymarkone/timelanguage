@@ -11,6 +11,7 @@ AI
 - Foundations [Unary, 3101-0112]
 * Books 
 - (Research)
+  + Follow other list
 `
 	cases := []struct {
 		expectedType    TokenType
@@ -51,6 +52,9 @@ AI
 		{LP, "("},
 		{IDENT, "Research"},
 		{RP, ")"},
+		{LEVEL, "  "},
+		{PLUS, "+"},
+		{IDENT, "Follow other list"},
 	}
 
 	lexer := NewLexer(input)

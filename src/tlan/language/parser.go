@@ -66,6 +66,8 @@ func (p *Parser) parseItem() {
 		item.Type = &ItemType{Value: p.curToken.Literal, Token: p.curToken}
 	} else if p.expectPeek(STAR) {
 		item.Type = &ItemType{Value: p.curToken.Literal, Token: p.curToken}
+	} else if p.expectPeek(PLUS) {
+		item.Type = &ItemType{Value: p.curToken.Literal, Token: p.curToken}
 	} else {
 		return
 	}

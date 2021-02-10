@@ -23,4 +23,5 @@ const (
 	RSB       = "RIGHT_SQUARE_BRACKETS"
 	ARROW     = "ARROW"
 	DUALARROW = "DUAL_ARROW"
+	PLUS      = "PLUS"
 )

@@ -42,6 +42,8 @@ func (l *Lexer) NextToken() Token {
 		tok = newToken(COMMA, l.ch)
 	case ']':
 		tok = newToken(RSB, l.ch)
+	case '+':
+		tok = newToken(PLUS, l.ch)
 	case '>':
 		l.readChar()
 		if l.ch == '>' {

@@ -109,8 +109,9 @@ func TestEvalProjects(t *testing.T) {
 Mathematics
 - IU Analysis II >> BS Mathematics
 - IU Modern Algebra [1001-1504]
-  - Read book
-* Study Analysis Burkin
+  * Read book
+- Study Analysis Burkin
+  + Follow another list
 - (Study Logic for Mathematicians)
 `,
 			[]*planning.Project{
@@ -119,7 +120,7 @@ Mathematics
 				{Name: "IU Modern Algebra", Category: "Mathematics", Active: true, Period: period,
 					ContributingGoals: []string{}, SubProjects: []*planning.Project{{Name: "Read book"}}},
 				{Name: "Study Analysis Burkin", Category: "Mathematics", Active: true,
-					ContributingGoals: []string{}},
+					ContributingGoals: []string{}, SubProjects: []*planning.Project{{Name: "Follow another list"}}},
 				{Name: "Study Logic for Mathematicians", Category: "Mathematics", Active: false,
 					ContributingGoals: []string{}},
 			},

@@ -10,6 +10,7 @@ AI
 - Foundations [Unary, 1501-0612]
 * Books
 - (Research)
+  + Follow another list
 `
 	cases := []struct {
 		itemType    string
@@ -25,7 +26,7 @@ AI
 		{"-", "Math", "", 1, "AI", 1, false, []string{}, "Mathematician"},
 		{"-", "Foundations", "", 1, "AI", 0, false, []string{"Unary", "1501-0612"}, ""},
 		{"*", "Books", "", 1, "AI", 0, false, []string{}, ""},
-		{"-", "Research", "", 1, "AI", 0, true, []string{}, ""},
+		{"-", "Research", "", 1, "AI", 1, true, []string{}, ""},
 	}
 
 	lexer := NewLexer(input)
