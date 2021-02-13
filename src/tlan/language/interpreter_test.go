@@ -36,7 +36,7 @@ Great Technologist [Lagging]
 		items := p.Parse()
 
 		Eval("goals", items)
-		goals := purpose.ListGoals()
+		goals := purpose.GetRepository().ListGoals()
 
 		for i, g := range tt.expected {
 			if goals[i].Name != g.Name {
@@ -63,7 +63,7 @@ func TestEvalTracks(t *testing.T) {
 	}{
 		{
 			`
-Creative Work [Daily, 0500-0900]
+Creative Work [Daily, 05:00-09:00]
 * Mathematics
 * Books [MonTue]
 * Research
@@ -78,7 +78,7 @@ Creative Work [Daily, 0500-0900]
 		},
 	}
 
-	schedule.Clean()
+	schedule.CreateRepository()
 
 	for _, tt := range tests {
 
@@ -87,7 +87,7 @@ Creative Work [Daily, 0500-0900]
 		items := p.Parse()
 
 		Eval("schedule", items)
-		tracks := schedule.ListTracks()
+		tracks := schedule.GetRepository().ListTracks()
 
 		for i, r := range tt.expected {
 			if tracks[i].Name != r.Name {
@@ -118,7 +118,7 @@ func TestEvalProjects(t *testing.T) {
 			`
 Mathematics
 - IU Analysis II >> BS Mathematics
-- IU Modern Algebra [1001-1504]
+- IU Modern Algebra [10/01-15/04]
   * Read book
 - Study Analysis Burkin
   + Follow another list
@@ -137,7 +137,7 @@ Mathematics
 		},
 	}
 
-	planning.Clean()
+	planning.CreateRepository()
 
 	for _, tt := range tests {
 
@@ -146,7 +146,7 @@ Mathematics
 		items := p.Parse()
 
 		Eval("project", items)
-		projects := planning.ListProjects()
+		projects := planning.GetRepository().ListProjects()
 
 		for i, p := range tt.expected {
 			if projects[i].Name != p.Name {

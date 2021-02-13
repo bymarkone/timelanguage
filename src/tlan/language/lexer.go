@@ -26,8 +26,6 @@ func (l *Lexer) NextToken() Token {
 	case '"':
 		tok.Type = STRING
 		tok.Literal = l.readString()
-	case ':':
-		tok = newToken(SEMICOLON, l.ch)
 	case '-':
 		tok = newToken(DASH, l.ch)
 	case '*':
@@ -68,7 +66,7 @@ func (l *Lexer) NextToken() Token {
 		tok.Literal = ""
 		tok.Type = EOF
 	default:
-		if isLetter(l.ch) || isNumber(l.ch) {
+		if isLetter(l.ch) || isNumber(l.ch) || isSlash(l.ch) || isColon(l.ch) {
 			tok.Type = IDENT
 			tok.Literal = l.readIdentifier()
 			return tok
@@ -107,7 +105,7 @@ func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for {
 		l.readChar()
-		if !(isLetter(l.ch) || isNumber(l.ch) || isSpace(l.ch)) {
+		if !(isLetter(l.ch) || isNumber(l.ch) || isSpace(l.ch) || isSlash(l.ch) || isColon(l.ch)) {
 			break
 		}
 	}
@@ -143,4 +141,12 @@ func isNumber(ch byte) bool {
 
 func isSpace(ch byte) bool {
 	return ch == ' '
+}
+
+func isSlash(ch byte) bool {
+	return ch == '\\' || ch == '/'
+}
+
+func isColon(ch byte) bool {
+	return ch == ':'
 }

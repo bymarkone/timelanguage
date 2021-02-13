@@ -7,8 +7,8 @@ func TestTreeCreation(t *testing.T) {
 AI
 - Math >> Mathematician
   - Bachelors Degree 
-- Foundations [Unary, 1501-0612]
-* Books
+- Foundations [Unary, 15/01-06/12]
+* Books [Unary, 05:00-07:00]
 - (Research)
   + Follow another list
 `
@@ -24,8 +24,8 @@ AI
 		target      string
 	}{
 		{"-", "Math", "", 1, "AI", 1, false, []string{}, "Mathematician"},
-		{"-", "Foundations", "", 1, "AI", 0, false, []string{"Unary", "1501-0612"}, ""},
-		{"*", "Books", "", 1, "AI", 0, false, []string{}, ""},
+		{"-", "Foundations", "", 1, "AI", 0, false, []string{"Unary", "15/01-06/12"}, ""},
+		{"*", "Books", "", 1, "AI", 0, false, []string{"Unary", "05:00-07:00"}, ""},
 		{"-", "Research", "", 1, "AI", 1, true, []string{}, ""},
 	}
 

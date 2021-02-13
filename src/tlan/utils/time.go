@@ -29,6 +29,6 @@ func (p Period) ActiveIn(date time.Time) bool {
 
 func Parse(value string) (int, int) {
 	first, _ := strconv.Atoi(value[0:2])
-	second, _ := strconv.Atoi(value[2:4])
+	second, _ := strconv.Atoi(value[3:5])
 	return first, second
 }
