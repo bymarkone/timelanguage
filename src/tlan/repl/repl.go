@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"io"
+	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
 	"time"
+	"tlan/language"
 	"tlan/planning"
 	"tlan/schedule"
 	"tlan/utils"
@@ -19,16 +22,55 @@ const MaxTableLines = 100
 
 var commands = make(map[string]Command)
 
+type Loader struct {
+	BaseFolder string
+	loaded     map[string]string
+}
+
+func (l *Loader) Load() {
+	contexts := []string{"goals", "project", "schedule"}
+	l.loaded = make(map[string] string)
+	for _, context := range contexts {
+		l.loadContext(context)
+	}
+}
+
+func (l *Loader) loadContext(context string) {
+	baseFolder := l.BaseFolder + "/" + context
+	filesInfo, err := ioutil.ReadDir(baseFolder)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	for _, file := range filesInfo {
+		//fmt.Printf("Processing file %s \n", file.Name())
+		fileAddress := baseFolder + "/" + file.Name()
+		content, err := ioutil.ReadFile(fileAddress)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		l.loaded[file.Name()] = fileAddress
+		text := string(content)
+		l := language.NewLexer(text)
+		p := language.NewParser(l)
+		items := p.Parse()
+		language.Eval(context, items)
+	}
+}
+
 func registerCommands(name string, command Command) {
-	fmt.Print("Registering '" + name + "' \n")
+	//fmt.Print("Registering '" + name + "' \n")
 	commands[name] = command
 }
 
 var out io.Writer
+var loader Loader
 
-func Start(in io.Reader, _out io.Writer) {
-	scanner := bufio.NewScanner(in)
+func Start(_in io.Reader, _out io.Writer, _loader Loader) {
+	scanner := bufio.NewScanner(_in)
 	out = _out
+	loader = _loader
 
 	for {
 		print(Prompt)
