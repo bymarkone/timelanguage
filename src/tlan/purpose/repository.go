@@ -1,7 +1,5 @@
 package purpose
 
-var goals []*Goal
-
 const GoalLess = "GoalLess"
 
 var goalLess *Goal
@@ -10,19 +8,33 @@ func init() {
 	goalLess = &Goal{Name: GoalLess, Category: GoalLess}
 }
 
-func AddGoal(goal *Goal) {
-	goals = append(goals, goal)
+type Repository struct {
+	goals []*Goal
 }
 
-func ListGoals() []*Goal {
-	return goals
+var repository Repository
+
+func CreateRepository() {
+	repository = Repository{}
 }
 
-func GetGoal(name string) *Goal {
+func GetRepository() *Repository {
+	return &repository
+}
+
+func (r *Repository) AddGoal(goal *Goal) {
+	r.goals = append(r.goals, goal)
+}
+
+func (r *Repository) ListGoals() []*Goal {
+	return r.goals
+}
+
+func (r *Repository) GetGoal(name string) *Goal {
 	if name == GoalLess {
 		return goalLess
 	}
-	return FindGoal(goals, ByGoalName(name))
+	return FindGoal(r.goals, ByGoalName(name))
 }
 
 func ByGoalName(name string) func(goal Goal) bool {
@@ -41,7 +53,7 @@ func FindGoal(arr []*Goal, cond func(goal Goal) bool) *Goal {
 
 func GoalsByCategory() map[string][]*Goal {
 	var result = make(map[string][]*Goal)
-	for _, goal := range goals {
+	for _, goal := range repository.goals {
 		result[goal.Category] = append(result[goal.Category], goal)
 	}
 	return result

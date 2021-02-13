@@ -1,19 +1,27 @@
 package planning
 
-var projects []*Project
+var repository Repository
 
-func AddProject(project *Project) {
-	projects = append(projects, project)
+type Repository struct {
+	projects []*Project
 }
 
-func ListProjects() []*Project {
-	return projects
+func CreateRepository() {
+	repository = Repository{}
 }
 
-func ListProjectsFiltered(cond func(project Project) bool) []*Project {
-	return FilterProjects(projects, cond)
+func GetRepository() *Repository {
+	return &repository
 }
 
-func Clean() {
-	projects = []*Project{}
+func (r *Repository) AddProject(project *Project) {
+	r.projects = append(r.projects, project)
+}
+
+func (r *Repository) ListProjects() []*Project {
+	return r.projects
+}
+
+func (r *Repository) ListProjectsFiltered(cond func(project Project) bool) []*Project {
+	return FilterProjects(r.projects, cond)
 }

@@ -7,12 +7,12 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"os"
 	"os/exec"
 	"strings"
 	"time"
 	"tlan/language"
 	"tlan/planning"
+	"tlan/purpose"
 	"tlan/schedule"
 	"tlan/utils"
 )
@@ -28,6 +28,9 @@ type Loader struct {
 }
 
 func (l *Loader) Load() {
+	planning.CreateRepository()
+	schedule.CreateRepository()
+	purpose.CreateRepository()
 	contexts := []string{"goals", "project", "schedule"}
 	l.loaded = make(map[string] string)
 	for _, context := range contexts {
@@ -50,7 +53,7 @@ func (l *Loader) loadContext(context string) {
 			log.Fatal(err)
 			return
 		}
-		l.loaded[file.Name()] = fileAddress
+		l.loaded[strings.ReplaceAll(file.Name(), ".gr", "")] = fileAddress
 		text := string(content)
 		l := language.NewLexer(text)
 		p := language.NewParser(l)
@@ -103,19 +106,11 @@ func Start(_in io.Reader, _out io.Writer, _loader Loader) {
 		case "now":
 			now(words)
 		case "edit":
-			edit(words)
+			commands["edit"].function(words)
 		case "goals":
 			commands["goals"].function(words)
 		}
 	}
-}
-
-func edit(words []string) {
-	cmd := exec.Command("vim", "./../../data/"+words[1]+"/"+words[2]+".gr")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	err := cmd.Run()
-	fmt.Println(err)
 }
 
 func help(words []string) {
@@ -161,7 +156,7 @@ func plan(_ []string) {
 	}
 	t.AppendHeader(header)
 
-	tracks := schedule.ListTracks()
+	tracks := schedule.GetRepository().ListTracks()
 	for _, track := range tracks {
 		now := time.Now()
 		var rows []table.Row
@@ -234,7 +229,7 @@ func slots(_ []string) {
 	t := table.NewWriter()
 	t.SetOutputMirror(out)
 
-	slots := schedule.ListSlots()
+	slots := schedule.GetRepository().ListSlots()
 
 	var header []interface{}
 	for _, slot := range slots {
@@ -307,7 +302,7 @@ func tracks(_ []string) {
 	t := table.NewWriter()
 	t.SetOutputMirror(out)
 
-	tracks := schedule.ListTracks()
+	tracks := schedule.GetRepository().ListTracks()
 
 	var header []interface{}
 	for _, track := range tracks {
@@ -365,7 +360,7 @@ func boxedProjectNameForTracks(track *schedule.Track, n int) string {
 }
 
 func now(words []string) {
-	tracks := schedule.ListTracks()
+	tracks := schedule.GetRepository().ListTracks()
 	now := time.Now()
 	if len(words) > 1 {
 		hour, minute := utils.Parse(words[1])
@@ -398,7 +393,7 @@ func printProjects(words []string) {
 	inactiveFilter := utils.Find(words, func(val string) bool {
 		return val == "--inactive" || val == "-i"
 	})
-	var projects = planning.ListProjects()
+	var projects = planning.GetRepository().ListProjects()
 	if inactiveFilter {
 		projects = planning.FilterProjects(projects, planning.ByInactive)
 	}

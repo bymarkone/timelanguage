@@ -21,4 +21,3 @@ func main() {
 	fmt.Printf("Hello %s! Welcome to tlan\n", currentUser.Username)
 	repl.Start(os.Stdin, os.Stdout, loader)
 }
-

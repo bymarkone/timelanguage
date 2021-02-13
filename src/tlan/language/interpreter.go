@@ -20,15 +20,17 @@ func Eval(context string, items []*Item) {
 }
 
 func evalGoals(items []*Item) {
+	repository := purpose.GetRepository()
 	for _, item := range items {
 		var goal = &purpose.Goal{}
 		goal.Name = item.Name.Value
 		goal.Category = item.Category.Value
-		purpose.AddGoal(goal)
+		repository.AddGoal(goal)
 	}
 }
 
 func evalSchedule(items []*Item) {
+	repository := schedule.GetRepository()
 	for _, item := range items {
 		var track = &schedule.Track{}
 
@@ -39,14 +41,15 @@ func evalSchedule(items []*Item) {
 		slot.Tracks = append(slot.Tracks, track)
 		track.Slot = slot
 		track.Name = item.Name.Value
-		track.Projects = planning.ListProjectsFiltered(func(project planning.Project) bool {
+		track.Projects = planning.GetRepository().ListProjectsFiltered(func(project planning.Project) bool {
 			return project.Category == item.Name.Value
 		})
-		schedule.AddTrack(track)
+		repository.AddTrack(track)
 	}
 }
 
 func evalProject(items []*Item) {
+	repository := planning.GetRepository()
 	for _, item := range items {
 		project := projectFromItem(item)
 		for _, item := range item.Children {
@@ -54,11 +57,12 @@ func evalProject(items []*Item) {
 			subProject.Level = 1
 			project.SubProjects = append(project.SubProjects, subProject)
 		}
-		planning.AddProject(project)
+		repository.AddProject(project)
 	}
 }
 
 func projectFromItem(item *Item) *planning.Project {
+	repository := purpose.GetRepository()
 	project := &planning.Project{}
 	project.Name = item.Name.Value
 	project.Category = item.Category.Value
@@ -66,9 +70,9 @@ func projectFromItem(item *Item) *planning.Project {
 	project.Period = findPeriod(item.Annotations, DATE, utils.Period{})
 	if item.Target != "" {
 		project.ContributingGoals = append(project.ContributingGoals, item.Target)
-		goal := purpose.GetGoal(item.Target)
+		goal := repository.GetGoal(item.Target)
 		if goal == nil {
-			goal = purpose.GetGoal(purpose.GoalLess)
+			goal = repository.GetGoal(purpose.GoalLess)
 		}
 		goal.Projects = append(goal.Projects, project)
 	}

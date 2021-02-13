@@ -1,26 +1,38 @@
 package schedule
 
-var tracks []*Track
-var slots []*Slot
-
-func AddTrack(track *Track) {
-	tracks = append(tracks, track)
+type Repository struct {
+	tracks []*Track
+	slots  []*Slot
 }
 
-func ListTracks() []*Track {
-	return tracks
+var repository Repository
+
+func CreateRepository() {
+	repository = Repository{}
 }
 
-func AddSlot(slot *Slot) {
-	slots = append(slots, slot)
+func GetRepository() *Repository {
+	return &repository
 }
 
-func ListSlots() []*Slot {
-	return slots
+func (r *Repository) AddTrack(track *Track) {
+	r.tracks = append(r.tracks, track)
 }
 
-func GetSlot(name string) *Slot {
-	return FindSlot(slots, BySlotName(name))
+func (r *Repository) ListTracks() []*Track {
+	return r.tracks
+}
+
+func (r *Repository) AddSlot(slot *Slot) {
+	r.slots = append(r.slots, slot)
+}
+
+func (r *Repository) ListSlots() []*Slot {
+	return r.slots
+}
+
+func (r *Repository) GetSlot(name string) *Slot {
+	return FindSlot(r.slots, BySlotName(name))
 }
 
 func BySlotName(name string) func(slot Slot) bool {
@@ -35,8 +47,4 @@ func FindSlot(arr []*Slot, cond func(slot Slot) bool) *Slot {
 		}
 	}
 	return result
-}
-
-func Clean() {
-	tracks = []*Track{}
 }
