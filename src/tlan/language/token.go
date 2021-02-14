@@ -11,6 +11,7 @@ const (
 	DASH      = "DASH"
 	STAR      = "STAR"
 	COMMA     = "COMMA"
+	DOT       = "DOT"
 	IDENT     = "IDENT"
 	STRING    = "STRING"
 	LEVEL     = "LEVEL"

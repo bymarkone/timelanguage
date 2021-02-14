@@ -66,7 +66,8 @@ func (l *Lexer) NextToken() Token {
 		tok.Literal = ""
 		tok.Type = EOF
 	default:
-		if isLetter(l.ch) || isNumber(l.ch) || isSlash(l.ch) || isColon(l.ch) {
+		if isLetter(l.ch) || isNumber(l.ch) || isSlash(l.ch) || isColon(l.ch) ||
+			isComma(l.ch) || isDot(l.ch) || isBang(l.ch) || isHash(l.ch) {
 			tok.Type = IDENT
 			tok.Literal = l.readIdentifier()
 			return tok
@@ -105,7 +106,8 @@ func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for {
 		l.readChar()
-		if !(isLetter(l.ch) || isNumber(l.ch) || isSpace(l.ch) || isSlash(l.ch) || isColon(l.ch)) {
+		if !(isLetter(l.ch) || isNumber(l.ch) || isSpace(l.ch) || isSlash(l.ch) || isColon(l.ch) ||
+			isComma(l.ch) || isDot(l.ch) || isBang(l.ch) || isHash(l.ch)) {
 			break
 		}
 	}
@@ -149,4 +151,20 @@ func isSlash(ch byte) bool {
 
 func isColon(ch byte) bool {
 	return ch == ':'
+}
+
+func isComma(ch byte) bool {
+	return ch == ','
+}
+
+func isDot(ch byte) bool {
+	return ch == '.'
+}
+
+func isBang(ch byte) bool {
+	return ch == '!'
+}
+
+func isHash(ch byte) bool {
+	return ch == '#'
 }
