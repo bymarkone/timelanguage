@@ -9,7 +9,7 @@ import (
 
 var goalsFlags []string
 
-const GoalsShallow = "shallow"
+const GoalsDeep = "deep"
 
 func init() {
 	command := Command{
@@ -19,7 +19,7 @@ func init() {
 			{Name: "some", Description: "sobre description"},
 		},
 		Flags: []Flag{
-			{Name: "shallow", Shortcut: "s", Description: "Show only goals (i.e. hide projects related to goals)"},
+			{Name: GoalsDeep, Shortcut: "d", Description: "Display projects related to goals"},
 		},
 		function: goals,
 	}
@@ -65,15 +65,15 @@ func goals(words []string) {
 
 func flattenGoalsAndProjects(arr []*purpose.Goal) []string {
 	var results []string
-	isShallow := hasFlags(goalsFlags, GoalsShallow)
+	isDeep := hasFlags(goalsFlags, GoalsDeep)
 	for i := range arr {
-		if isShallow {
-			results = append(results, arr[i].Name)
-		} else {
+		if isDeep {
 			results = append(results, strings.ToUpper(arr[i].Name))
 			results = append(results, toProjectNamesForGoals(arr[i].Projects)...)
+			results = append(results, " ")
+		} else {
+			results = append(results, arr[i].Name)
 		}
-		results = append(results, " ")
 	}
 	return results
 }
