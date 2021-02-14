@@ -137,15 +137,12 @@ Mathematics
 		},
 	}
 
-	planning.CreateRepository()
-
 	for _, tt := range tests {
-
 		l := NewLexer(tt.input)
 		p := NewParser(l)
 		items := p.Parse()
 
-		Eval("project", items)
+		Eval("projects", items)
 		projects := planning.GetRepository().ListProjects()
 
 		for i, p := range tt.expected {

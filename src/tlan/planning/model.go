@@ -15,6 +15,15 @@ type Project struct {
 	Level             int
 }
 
+func (p *Project) AllSubProjects() []*Project {
+	var result []*Project
+	for _, subProject := range p.SubProjects {
+		result = append(result, subProject)
+		result = append(result, subProject.AllSubProjects()...)
+	}
+	return result
+}
+
 func FilterProjects(arr []*Project, cond func(project Project) bool) []*Project {
 	var result []*Project
 	for i := range arr {

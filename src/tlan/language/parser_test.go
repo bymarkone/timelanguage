@@ -23,10 +23,10 @@ AI
 		annotations []string
 		target      string
 	}{
-		{"-", "Math", "", 1, "AI", 1, false, []string{}, "Mathematician"},
-		{"-", "Foundations", "", 1, "AI", 0, false, []string{"Unary", "15/01-06/12"}, ""},
-		{"*", "Books", "", 1, "AI", 0, false, []string{"Unary", "05:00-07:00"}, ""},
-		{"-", "Research", "", 1, "AI", 1, true, []string{}, ""},
+		{"Project", "Math", "", 1, "AI", 1, false, []string{}, "Mathematician"},
+		{"Project", "Foundations", "", 1, "AI", 0, false, []string{"Unary", "15/01-06/12"}, ""},
+		{"Task", "Books", "", 1, "AI", 0, false, []string{"Unary", "05:00-07:00"}, ""},
+		{"Project", "Research", "", 1, "AI", 1, true, []string{}, ""},
 	}
 
 	lexer := NewLexer(input)
@@ -34,8 +34,8 @@ AI
 	items := parser.Parse()
 
 	for i, tt := range cases {
-		if items[i].Type.TokenLiteral() != tt.itemType {
-			t.Fatalf("Expecting %s got %s", tt.itemType, items[i].Type.TokenLiteral())
+		if items[i].Type != tt.itemType {
+			t.Fatalf("Expecting %s got %s", tt.itemType, items[i].Type)
 		}
 
 		if items[i].Name.TokenLiteral() != tt.name {

@@ -98,7 +98,7 @@ func Start(_in io.Reader, _out io.Writer, _loader Loader) {
 		case "plan":
 			plan(words)
 		case "now":
-			now(words)
+			commands["now"].function(words)
 		case "edit":
 			commands["edit"].function(words)
 		case "goals":
@@ -300,7 +300,7 @@ func tracks(_ []string) {
 
 	var header []interface{}
 	for _, track := range tracks {
-		header = append(header, track.Name)
+		header = append(header, track.Name + " " + track.Slot.Period.ToString())
 	}
 	t.AppendHeader(header)
 
@@ -351,36 +351,6 @@ func boxedProjectNameForTracks(track *schedule.Track, n int) string {
 	} else {
 		return base
 	}
-}
-
-func now(words []string) {
-	tracks := schedule.GetRepository().ListTracks()
-	now := time.Now()
-	if len(words) > 1 {
-		hour, minute := utils.Parse(words[1])
-		now = time.Date(now.Year(), now.Month(), now.Day(), hour, minute, now.Second(), now.Nanosecond(), now.Location())
-	}
-	filteredTracks := schedule.FilterTracks(tracks, func(track schedule.Track) bool {
-		return track.Slot.Period.Start.Hour <= now.Hour() && track.Slot.Period.End.Hour > now.Hour() && containsWeekday(track.Slot.Period.Weekdays, now.Weekday())
-	})
-	println("NOW is time to do " + filteredTracks[0].Slot.Name)
-	for _, track := range filteredTracks {
-		println(track.Name)
-		for _, project := range track.Projects {
-			if project.Active {
-				println(" -- " + project.Name)
-			}
-		}
-	}
-}
-
-func containsWeekday(weekdays []time.Weekday, weekday time.Weekday) bool {
-	for _, item := range weekdays {
-		if item == weekday {
-			return true
-		}
-	}
-	return false
 }
 
 func printProjects(words []string) {

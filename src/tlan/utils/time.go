@@ -13,6 +13,10 @@ type DateTime struct {
 	Year   int
 }
 
+func (p DateTime) ToString() string {
+	return strconv.Itoa(p.Hour) + ":" + strconv.Itoa(p.Minute)
+}
+
 func (dt DateTime) toTime() time.Time {
 	return time.Date(2021, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, 0, time.Now().Location())
 }
@@ -21,6 +25,10 @@ type Period struct {
 	Weekdays []time.Weekday
 	Start    DateTime
 	End      DateTime
+}
+
+func (p Period) ToString() string {
+	return p.Start.ToString() + "-" + p.End.ToString()
 }
 
 func (p Period) ActiveIn(date time.Time) bool {
