@@ -31,29 +31,23 @@ func (l *Loader) Load() {
 	planning.CreateRepository()
 	schedule.CreateRepository()
 	purpose.CreateRepository()
-	contexts := []string{"goals", "project", "schedule"}
-	l.loaded = make(map[string] string)
-	for _, context := range contexts {
-		l.loadContext(context)
-	}
-}
+	l.loaded = make(map[string]string)
 
-func (l *Loader) loadContext(context string) {
-	baseFolder := l.BaseFolder + "/" + context
-	filesInfo, err := ioutil.ReadDir(baseFolder)
+	filesInfo, err := ioutil.ReadDir(l.BaseFolder)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 	for _, file := range filesInfo {
 		//fmt.Printf("Processing file %s \n", file.Name())
-		fileAddress := baseFolder + "/" + file.Name()
+		fileAddress := l.BaseFolder + "/" + file.Name()
 		content, err := ioutil.ReadFile(fileAddress)
 		if err != nil {
 			log.Fatal(err)
 			return
 		}
-		l.loaded[strings.ReplaceAll(file.Name(), ".gr", "")] = fileAddress
+		context := strings.ReplaceAll(file.Name(), ".gr", "")
+		l.loaded[context] = fileAddress
 		text := string(content)
 		l := language.NewLexer(text)
 		p := language.NewParser(l)

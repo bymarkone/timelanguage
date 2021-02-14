@@ -10,7 +10,7 @@ import (
 
 func Eval(context string, items []*Item) {
 	switch context {
-	case "project":
+	case "projects":
 		evalProject(items)
 	case "schedule":
 		evalSchedule(items)
