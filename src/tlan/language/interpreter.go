@@ -1,6 +1,7 @@
 package language
 
 import (
+	"fmt"
 	"time"
 	"tlan/planning"
 	"tlan/purpose"
@@ -68,13 +69,15 @@ func projectFromItem(item *Item) *planning.Project {
 	project.Category = item.Category.Value
 	project.Active = !item.Marked
 	project.Period = findPeriod(item.Annotations, DATE, utils.Period{})
+	project.Type = item.Type
 	if item.Target != "" {
 		project.ContributingGoals = append(project.ContributingGoals, item.Target)
 		goal := repository.GetGoal(item.Target)
 		if goal == nil {
-			goal = repository.GetGoal(purpose.GoalLess)
+			fmt.Printf("Invalid goal for project %s \n", project.Name)
+		} else {
+			goal.Projects = append(goal.Projects, project)
 		}
-		goal.Projects = append(goal.Projects, project)
 	}
 	return project
 }

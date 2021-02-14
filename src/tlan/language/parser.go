@@ -63,11 +63,11 @@ func (p *Parser) parseItem() {
 	var level = p.findLevel()
 	var item = &Item{Category: p.currentCategory}
 	if p.expectPeek(DASH) {
-		item.Type = &ItemType{Value: p.curToken.Literal, Token: p.curToken}
+		item.Type = Project
 	} else if p.expectPeek(STAR) {
-		item.Type = &ItemType{Value: p.curToken.Literal, Token: p.curToken}
+		item.Type = Task
 	} else if p.expectPeek(PLUS) {
-		item.Type = &ItemType{Value: p.curToken.Literal, Token: p.curToken}
+		item.Type = Pointer
 	} else {
 		return
 	}

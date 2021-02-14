@@ -7,6 +7,7 @@ import (
 type Project struct {
 	Name              string
 	Category          string
+	Type              string
 	Period            utils.Period
 	ContributingGoals []string
 	SubProjects       []*Project

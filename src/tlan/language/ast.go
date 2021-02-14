@@ -6,7 +6,7 @@ type Node interface {
 
 type Item struct {
 	Token       Token
-	Type        *ItemType
+	Type        string
 	Name        *Name
 	Description *Description
 	Category    *Category
@@ -18,12 +18,11 @@ type Item struct {
 
 func (s *Item) TokenLiteral() string { return s.Token.Literal }
 
-type ItemType struct {
-	Token Token
-	Value string
-}
-
-func (s *ItemType) TokenLiteral() string { return s.Token.Literal }
+const (
+	Task    = "Task"
+	Project = "Project"
+	Pointer = "Pointer"
+)
 
 type Name struct {
 	Token Token
