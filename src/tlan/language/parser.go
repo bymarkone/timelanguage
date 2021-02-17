@@ -11,6 +11,7 @@ type Parser struct {
 	Errors          []ParseError
 	currentCategory *Category
 	currentItem     *Item
+	currentParent   *Item
 	currentLevel    int
 	firstLevelItems []*Item
 }
@@ -74,9 +75,9 @@ func (p *Parser) parseItem() {
 
 	if level == 0 {
 		p.firstLevelItems = append(p.firstLevelItems, item)
-	}
-	if level > p.currentLevel {
-		p.currentItem.Children = append(p.currentItem.Children, item)
+	} else {
+		currentParent := p.firstLevelItems[len(p.firstLevelItems)-1]
+		currentParent.Children = append(currentParent.Children, item)
 	}
 	p.currentItem = item
 	p.currentLevel = level
