@@ -17,6 +17,22 @@ func Eval(context string, items []*Item) {
 		evalSchedule(items)
 	case "goals":
 		evalGoals(items)
+	case "tasks":
+		evalTasks(items)
+	}
+}
+
+func evalTasks(items []*Item) {
+	repository := planning.GetRepository()
+	for _, item := range items {
+		var project = projectFromItem(item)
+		parent := repository.GetProject(item.Category.Value)
+		if parent == nil {
+			parent = &planning.Project{}
+			parent.Name = item.Category.Value
+			repository.AddProject(parent)
+		}
+		parent.SubProjects = append(parent.SubProjects, project)
 	}
 }
 

@@ -66,8 +66,7 @@ func (l *Lexer) NextToken() Token {
 		tok.Literal = ""
 		tok.Type = EOF
 	default:
-		if isLetter(l.ch) || isNumber(l.ch) || isSlash(l.ch) || isColon(l.ch) ||
-			isDot(l.ch) || isBang(l.ch) || isHash(l.ch) {
+		if isLetter(l.ch) || isNumber(l.ch) || isBang(l.ch) {
 			tok.Type = IDENT
 			tok.Literal = l.readIdentifier()
 			return tok

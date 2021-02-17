@@ -33,6 +33,10 @@ func now(words []string) {
 	filteredTracks := schedule.FilterTracks(tracks, func(track schedule.Track) bool {
 		return track.Slot.Period.Start.Hour <= now.Hour() && track.Slot.Period.End.Hour > now.Hour() && containsWeekday(track.Slot.Period.Weekdays, now.Weekday())
 	})
+	if len(filteredTracks) == 0 {
+		println("It seems you have nothing to do")
+		return
+	}
 	println("NOW is time to do " + filteredTracks[0].Slot.Name)
 	for _, track := range filteredTracks {
 		println(track.Name)

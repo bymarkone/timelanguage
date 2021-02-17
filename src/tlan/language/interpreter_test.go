@@ -106,6 +106,49 @@ Creative Work [Daily, 05:00-09:00]
 	}
 }
 
+func TestEvalTasks(t *testing.T) {
+
+	tests := []struct {
+		projectInput string
+		taskInput string
+	}{{
+		`
+Developer
+- Data Platform
+`,
+		`
+Data Platform
+* !Do something urgent
+* Do something else
+Debt
+* Do something now
+`,
+	}}
+
+	for _, tt := range tests {
+		l1 := NewLexer(tt.projectInput)
+		p1 := NewParser(l1)
+		items1 := p1.Parse()
+		Eval("projects", items1)
+
+		l2 := NewLexer(tt.taskInput)
+		p2 := NewParser(l2)
+		items2 := p2.Parse()
+		Eval("tasks", items2)
+
+
+		project := planning.GetRepository().GetProject("Data Platform")
+		if len(project.SubProjects) != 2 {
+			t.Errorf("Tasks were not added to project. Got %d, want %d", len(project.SubProjects), 2)
+		}
+
+		debt := planning.GetRepository().GetProject("Debt")
+		if len(debt.SubProjects) != 1 {
+			t.Errorf("Tasks were not added to Debt project. Got %d, want %d", len(debt.SubProjects), 2)
+		}
+	}
+}
+
 func TestEvalProjects(t *testing.T) {
 
 	period := utils.Period{Start: utils.DateTime{Day: 10, Month: 1}, End: utils.DateTime{Day: 15, Month: 4}}
@@ -138,6 +181,8 @@ Mathematics
 	}
 
 	for _, tt := range tests {
+		planning.CreateRepository()
+
 		l := NewLexer(tt.input)
 		p := NewParser(l)
 		items := p.Parse()
