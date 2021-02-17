@@ -11,6 +11,7 @@ type Project struct {
 	Period            utils.Period
 	ContributingGoals []string
 	SubProjects       []*Project
+	Parent            *Project
 	Active            bool
 	Level             int
 }

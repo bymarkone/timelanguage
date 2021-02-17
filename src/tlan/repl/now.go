@@ -39,16 +39,51 @@ func now(words []string) {
 	}
 	println("NOW is time to do " + filteredTracks[0].Slot.Name)
 	for _, track := range filteredTracks {
+		subProjects := extractSubProjects(track)
+		if len(subProjects) == 0 {
+			continue
+		}
+		println(" ")
 		println(track.Name)
-		for _, project := range track.Projects {
-			for _, subProject := range planning.FilterProjects(project.AllSubProjects(), func(item planning.Project) bool {
-				return item.Active && (item.Type == "Task" || item.Type == "Pointer")
-			}) {
-				println(" -- " + subProject.Name + " [" + project.Name + "]")
-			}
+		for _, project := range subProjects {
+			println(" -- " + project.Name + " [" + project.Parent.Name + "]")
 		}
 		println(" ")
 	}
+	printPriorities()
+	printDebt()
+}
+
+func printPriorities() {
+	priorities := planning.GetRepository().GetProject("Priority")
+	if len(priorities.SubProjects) > 0 {
+		println("You have also some Priorities")
+		for _, project := range priorities.SubProjects {
+			println(" -- " + project.Name)
+		}
+	}
+	println(" ")
+}
+
+func printDebt() {
+	debt := planning.GetRepository().GetProject("Debt")
+	if len(debt.SubProjects) > 0 {
+		println("And some Debt")
+		for _, project := range debt.SubProjects {
+			println(" -- " + project.Name)
+		}
+	}
+	println(" ")
+}
+
+func extractSubProjects(track *schedule.Track) []*planning.Project {
+	var subProjects []*planning.Project
+	for _, project := range track.Projects {
+		subProjects = append(subProjects, planning.FilterProjects(project.AllSubProjects(), func(item planning.Project) bool {
+			return item.Active && (item.Type == "Task" || item.Type == "Pointer")
+		})...)
+	}
+	return subProjects
 }
 
 func containsWeekday(weekdays []time.Weekday, weekday time.Weekday) bool {

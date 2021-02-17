@@ -209,6 +209,11 @@ Mathematics
 			if !equalProjects(projects[i].SubProjects, p.SubProjects) {
 				t.Errorf("Project has wrong subprojects. Got %v, want %v", projects[i].SubProjects, p.SubProjects)
 			}
+			for _, sub := range projects[i].SubProjects {
+				if sub.Parent == nil {
+					t.Errorf("Project parent cannot be nil, project %s", sub.Name)
+				}
+			}
 		}
 	}
 }

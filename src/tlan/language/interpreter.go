@@ -32,6 +32,7 @@ func evalTasks(items []*Item) {
 			parent.Name = item.Category.Value
 			repository.AddProject(parent)
 		}
+		project.Parent = parent
 		parent.SubProjects = append(parent.SubProjects, project)
 	}
 }
@@ -72,6 +73,7 @@ func evalProject(items []*Item) {
 		for _, item := range item.Children {
 			subProject := projectFromItem(item)
 			subProject.Level = 1
+			subProject.Parent = project
 			project.SubProjects = append(project.SubProjects, subProject)
 		}
 		repository.AddProject(project)
