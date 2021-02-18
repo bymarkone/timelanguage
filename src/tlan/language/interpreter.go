@@ -134,16 +134,16 @@ func findPeriod(anns []Annotation, periodType string, parentPeriod utils.Period)
 }
 
 var shortWeekdays = map[string]time.Weekday{
-	"Sun": time.Sunday,
 	"Mon": time.Monday,
 	"Tue": time.Tuesday,
 	"Wed": time.Wednesday,
 	"Thu": time.Thursday,
 	"Fri": time.Friday,
 	"Sat": time.Saturday,
+	"Sun": time.Sunday,
 }
 
-var allWeekDays = []time.Weekday{time.Sunday, time.Monday, time.Tuesday, time.Wednesday, time.Thursday, time.Friday, time.Sunday}
+var allWeekDays = []time.Weekday{time.Monday, time.Tuesday, time.Wednesday, time.Thursday, time.Friday, time.Saturday, time.Sunday}
 
 func computeWeekdays(pattern string) []time.Weekday {
 	var weekdays []time.Weekday

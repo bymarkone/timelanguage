@@ -1,6 +1,7 @@
 package repl
 
 import (
+	"io"
 	"time"
 	"tlan/planning"
 	"tlan/schedule"
@@ -18,12 +19,12 @@ func init() {
 		Flags: []Flag{
 			{Name: " ", Shortcut: " ", Description: " "},
 		},
-		function: now,
+		Function: now,
 	}
-	registerCommands("now", command)
+	RegisterCommands("now", command)
 }
 
-func now(words []string) {
+func now(out io.Writer, words []string) {
 	tracks := schedule.GetRepository().ListTracks()
 	now := time.Now()
 	if len(words) > 1 {
@@ -31,7 +32,7 @@ func now(words []string) {
 		now = time.Date(now.Year(), now.Month(), now.Day(), hour, minute, now.Second(), now.Nanosecond(), now.Location())
 	}
 	filteredTracks := schedule.FilterTracks(tracks, func(track schedule.Track) bool {
-		return track.Slot.Period.Start.Hour <= now.Hour() && track.Slot.Period.End.Hour > now.Hour() && containsWeekday(track.Slot.Period.Weekdays, now.Weekday())
+		return track.Slot.Period.Start.Hour <= now.Hour() && track.Slot.Period.End.Hour > now.Hour() && ContainsWeekday(track.Slot.Period.Weekdays, now.Weekday())
 	})
 	if len(filteredTracks) == 0 {
 		println("It seems you have nothing to do")
@@ -86,7 +87,7 @@ func extractSubProjects(track *schedule.Track) []*planning.Project {
 	return subProjects
 }
 
-func containsWeekday(weekdays []time.Weekday, weekday time.Weekday) bool {
+func ContainsWeekday(weekdays []time.Weekday, weekday time.Weekday) bool {
 	for _, item := range weekdays {
 		if item == weekday {
 			return true

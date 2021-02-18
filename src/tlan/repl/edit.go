@@ -2,6 +2,7 @@ package repl
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 )
@@ -16,12 +17,12 @@ func init() {
 		Flags: []Flag{
 			{Name: "", Shortcut: "", Description: ""},
 		},
-		function: edit,
+		Function: edit,
 	}
-	registerCommands("edit", command)
+	RegisterCommands("edit", command)
 }
 
-func edit(words []string) {
+func edit(out io.Writer ,words []string) {
 	if len(words) == 1 {
 		cmd := exec.Command("vim", "-O", loader.loaded["goals"], loader.loaded["projects"], loader.loaded["tracks"])
 		cmd.Stdin = os.Stdin

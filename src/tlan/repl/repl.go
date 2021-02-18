@@ -20,7 +20,7 @@ import (
 const Prompt = ">> "
 const MaxTableLines = 100
 
-var commands = make(map[string]Command)
+var allCommands = make(map[string]Command)
 
 type Loader struct {
 	BaseFolder string
@@ -56,9 +56,9 @@ func (l *Loader) Load() {
 	}
 }
 
-func registerCommands(name string, command Command) {
+func RegisterCommands(name string, command Command) {
 	//fmt.Print("Registering '" + name + "' \n")
-	commands[name] = command
+	allCommands[name] = command
 }
 
 var out io.Writer
@@ -98,11 +98,13 @@ func Start(_in io.Reader, _out io.Writer, _loader Loader) {
 		case "plan":
 			plan(words)
 		case "now":
-			commands["now"].function(words)
+			allCommands["now"].Function(out, words)
 		case "edit":
-			commands["edit"].function(words)
+			allCommands["edit"].Function(out, words)
+		case "week":
+			allCommands["week"].Function(out, words)
 		case "goals":
-			commands["goals"].function(words)
+			allCommands["goals"].Function(out, words)
 		}
 	}
 }
@@ -119,7 +121,7 @@ func help(words []string) {
 	case "now":
 		printNowHelp()
 	case "goals":
-		printCommand(commands[words[1]])
+		printCommand(allCommands[words[1]])
 	}
 }
 
@@ -300,7 +302,7 @@ func tracks(_ []string) {
 
 	var header []interface{}
 	for _, track := range tracks {
-		header = append(header, track.Name + " " + track.Slot.Period.ToString())
+		header = append(header, track.Name+" "+track.Slot.Period.ToString())
 	}
 	t.AppendHeader(header)
 
@@ -447,3 +449,4 @@ func contains(flags []string, shallow string) bool {
 	}
 	return false
 }
+

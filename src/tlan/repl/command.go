@@ -1,6 +1,7 @@
 package repl
 
 import (
+	"io"
 	"text/template"
 )
 
@@ -9,7 +10,7 @@ type Command struct {
 	Usage       string
 	Arguments   []Argument
 	Flags       []Flag
-	function    func([]string)
+	Function    func(io.Writer, []string)
 }
 
 type Argument struct {

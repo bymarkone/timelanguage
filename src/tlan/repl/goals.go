@@ -2,6 +2,7 @@ package repl
 
 import (
 	"github.com/jedib0t/go-pretty/table"
+	"io"
 	"strings"
 	"tlan/planning"
 	"tlan/purpose"
@@ -21,12 +22,12 @@ func init() {
 		Flags: []Flag{
 			{Name: GoalsDeep, Shortcut: "d", Description: "Display projects related to goals"},
 		},
-		function: goals,
+		Function: goals,
 	}
-	registerCommands("goals", command)
+	RegisterCommands("goals", command)
 }
 
-func goals(words []string) {
+func goals(out io.Writer,words []string) {
 	t := table.NewWriter()
 	t.SetOutputMirror(out)
 
