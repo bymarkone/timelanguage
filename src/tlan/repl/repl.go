@@ -50,7 +50,7 @@ func (l *Loader) Load() {
 		l.loaded[context] = fileAddress
 		text := string(content)
 		l := language.NewLexer(text)
-		p := language.NewParser(l)
+		p := language.NewParser(file.Name(), l)
 		items := p.Parse()
 		language.Eval(context, items)
 	}

@@ -30,7 +30,7 @@ AI
 	}
 
 	lexer := NewLexer(input)
-	parser := NewParser(lexer)
+	parser := NewParser("test", lexer)
 	items := parser.Parse()
 
 	for i, tt := range cases {

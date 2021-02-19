@@ -8,11 +8,13 @@ type Lexer struct {
 	input        string
 	position     int
 	readPosition int
+	line         int
+	col          int
 	ch           byte
 }
 
 func NewLexer(input string) *Lexer {
-	l := &Lexer{input: input}
+	l := &Lexer{input: input, line: 1, col: 0}
 	l.readChar()
 	return l
 }
@@ -88,6 +90,7 @@ func (l *Lexer) readChar() {
 	}
 	l.position = l.readPosition
 	l.readPosition += 1
+	l.col += 1
 }
 
 func (l *Lexer) readString() string {
@@ -123,6 +126,8 @@ func (l *Lexer) peekChar() byte {
 
 func (l *Lexer) skipNewLine() {
 	for l.ch == '\n' || l.ch == '\r' {
+		l.line += 1
+		l.col = 0
 		l.readChar()
 	}
 }
@@ -150,10 +155,6 @@ func isSlash(ch byte) bool {
 
 func isColon(ch byte) bool {
 	return ch == ':'
-}
-
-func isComma(ch byte) bool {
-	return ch == ','
 }
 
 func isDot(ch byte) bool {

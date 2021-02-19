@@ -57,6 +57,9 @@ func now(out io.Writer, words []string) {
 
 func printPriorities() {
 	priorities := planning.GetRepository().GetProject("Priority")
+	if priorities == nil {
+		return
+	}
 	if len(priorities.SubProjects) > 0 {
 		println("You have also some Priorities")
 		for _, project := range priorities.SubProjects {
@@ -68,6 +71,9 @@ func printPriorities() {
 
 func printDebt() {
 	debt := planning.GetRepository().GetProject("Debt")
+	if debt == nil {
+		return
+	}
 	if len(debt.SubProjects) > 0 {
 		println("And some Debt")
 		for _, project := range debt.SubProjects {

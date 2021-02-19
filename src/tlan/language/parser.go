@@ -5,6 +5,7 @@ import (
 )
 
 type Parser struct {
+	filename        string
 	lexer           *Lexer
 	curToken        Token
 	peekToken       Token
@@ -17,8 +18,9 @@ type Parser struct {
 }
 
 type ParseError struct {
-	expected TokenType
+	expected []TokenType
 	got      TokenType
+	literal  string
 	line     int
 	column   int
 }
@@ -27,9 +29,10 @@ func (pe *ParseError) message() string {
 	return fmt.Sprintf("Parse error, expected '%s', got '%s'", pe.expected, pe.got)
 }
 
-func NewParser(lexer *Lexer) *Parser {
+func NewParser(filename string, lexer *Lexer) *Parser {
 	parser := &Parser{
-		lexer: lexer,
+		lexer:    lexer,
+		filename: filename,
 	}
 
 	parser.nextToken()
@@ -40,7 +43,8 @@ func (p *Parser) Parse() []*Item {
 	for !p.peekTokenIs(EOF) {
 		if !p.parseCategory() {
 			for _, err := range p.Errors {
-				fmt.Printf("Expected %s, got %s\n", err.expected, err.got)
+				fmt.Printf("Error parsing file %s (line %d,column %d). Expected %s, got %s (%s) \n",
+					p.filename, err.line, err.column, err.expected, err.got, err.literal)
 			}
 			break
 		}
@@ -63,13 +67,14 @@ func (p *Parser) parseCategory() bool {
 func (p *Parser) parseItem() {
 	var level = p.findLevel()
 	var item = &Item{Category: p.currentCategory}
-	if p.expectPeek(DASH) {
+	if p.couldPeek(DASH) {
 		item.Type = Project
-	} else if p.expectPeek(STAR) {
+	} else if p.couldPeek(STAR) {
 		item.Type = Task
-	} else if p.expectPeek(PLUS) {
+	} else if p.couldPeek(PLUS) {
 		item.Type = Pointer
 	} else {
+		p.peekErrors(DASH, STAR, PLUS)
 		return
 	}
 
@@ -91,7 +96,7 @@ func (p *Parser) parseItem() {
 	p.expectSkip(RP)
 	p.expectSkip(SEMICOLON)
 
-	if p.peekTokenIs(LEVEL) || p.peekTokenIs(DASH) || p.peekTokenIs(STAR) {
+	if p.peekTokenIs(LEVEL) || p.peekTokenIs(DASH) || p.peekTokenIs(STAR) || p.peekTokenIs(PLUS) {
 		p.parseItem()
 	}
 }
@@ -111,14 +116,14 @@ func (p *Parser) parseName() {
 }
 
 func (p *Parser) parseDescription() {
-	if !p.expectPeek(STRING) {
+	if !p.couldPeek(STRING) {
 		return
 	}
 	p.currentItem.Description = &Description{Token: p.curToken, Value: p.curToken.Literal}
 }
 
 func (p *Parser) parseTarget() {
-	if !p.expectPeek(DUALARROW) {
+	if !p.couldPeek(DUALARROW) {
 		return
 	}
 	if !p.expectPeek(IDENT) {
@@ -128,7 +133,7 @@ func (p *Parser) parseTarget() {
 }
 
 func (p *Parser) parseAnnotations() {
-	if !p.expectPeek(LSB) {
+	if !p.couldPeek(LSB) {
 		return
 	}
 	for !p.peekTokenIs(RSB) {
@@ -173,7 +178,7 @@ func (p *Parser) addAnnotationTo(ann Annotation) {
 
 func (p *Parser) findLevel() int {
 	level := 0
-	for p.expectPeek(LEVEL) {
+	for p.couldPeek(LEVEL) {
 		level += 1
 	}
 	return level
@@ -188,6 +193,14 @@ func (p *Parser) expectSkip(t TokenType) {
 	if p.peekTokenIs(t) {
 		p.nextToken()
 	}
+}
+
+func (p *Parser) couldPeek(t TokenType) bool {
+	if p.peekTokenIs(t) {
+		p.nextToken()
+		return true
+	}
+	return false
 }
 
 func (p *Parser) expectPeek(t TokenType) bool {
@@ -209,6 +222,11 @@ func (p *Parser) curTokenIs(t TokenType) bool {
 }
 
 func (p *Parser) peekError(t TokenType) {
-	parseError := ParseError{expected: t, got: p.peekToken.Type}
+	parseError := ParseError{expected: []TokenType{t}, got: p.peekToken.Type, column: p.lexer.col - 1, line: p.lexer.line, literal: p.peekToken.Literal}
+	p.Errors = append(p.Errors, parseError)
+}
+
+func (p *Parser) peekErrors(t ...TokenType) {
+	parseError := ParseError{expected: t, got: p.peekToken.Type, column: p.lexer.col - 1, line: p.lexer.line, literal: p.peekToken.Literal}
 	p.Errors = append(p.Errors, parseError)
 }
