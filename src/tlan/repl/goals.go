@@ -17,7 +17,7 @@ func init() {
 		Description: "This command prints the dashboard of goals",
 		Usage:       "goals {flags}",
 		Arguments: []Argument{
-			{Name: "some", Description: "sobre description"},
+			{Name: "", Description: ""},
 		},
 		Flags: []Flag{
 			{Name: GoalsDeep, Shortcut: "d", Description: "Display projects related to goals"},
