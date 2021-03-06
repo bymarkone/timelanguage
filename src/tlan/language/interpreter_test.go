@@ -17,12 +17,14 @@ func TestEvalGoals(t *testing.T) {
 	}{
 		{
 			`
+Great Goal [Lagging]
 Great Technologist [Lagging]
 - Drive strategy and execution [Leading]
 - First class engineer [Leading]
 - Democratize best practices [Leading]
 `,
 			[]*purpose.Goal{
+				{Name: "Great Goal", Tags: []string{"Lagging"}, Category: "Great Goal"},
 				{Name: "Drive strategy and execution", Tags: []string{"Leading"}, Category: "Great Technologist"},
 				{Name: "First class engineer", Tags: []string{"Leading"}, Category: "Great Technologist"},
 				{Name: "Democratize best practices", Tags: []string{"Leading"}, Category: "Great Technologist"},
@@ -33,9 +35,9 @@ Great Technologist [Lagging]
 	for _, tt := range tests {
 		l := NewLexer(tt.input)
 		p := NewParser("test_goals", l)
-		_, items := p.Parse()
+		categories, items := p.Parse()
 
-		Eval("goals", items)
+		Eval("goals", categories, items)
 		goals := purpose.GetRepository().ListGoals()
 
 		for i, g := range tt.expected {
@@ -84,9 +86,9 @@ Creative Work [Daily, 05:00-09:00]
 
 		l := NewLexer(tt.input)
 		p := NewParser("test_schedule", l)
-		_, items := p.Parse()
+		categories, items := p.Parse()
 
-		Eval("schedule", items)
+		Eval("schedule", categories, items)
 		tracks := schedule.GetRepository().ListTracks()
 
 		for i, r := range tt.expected {
@@ -110,7 +112,7 @@ func TestEvalTasks(t *testing.T) {
 
 	tests := []struct {
 		projectInput string
-		taskInput string
+		taskInput    string
 	}{{
 		`
 Developer
@@ -128,14 +130,13 @@ Debt
 	for _, tt := range tests {
 		l1 := NewLexer(tt.projectInput)
 		p1 := NewParser("test_tasks_projects", l1)
-		_, items1 := p1.Parse()
-		Eval("projects", items1)
+		categories1, items1 := p1.Parse()
+		Eval("projects", categories1, items1)
 
 		l2 := NewLexer(tt.taskInput)
 		p2 := NewParser("test_tasks", l2)
-		_, items2 := p2.Parse()
-		Eval("tasks", items2)
-
+		categories2, items2 := p2.Parse()
+		Eval("tasks", categories2, items2)
 
 		project := planning.GetRepository().GetProject("Data Platform")
 		if len(project.SubProjects) != 2 {
@@ -185,9 +186,9 @@ Mathematics
 
 		l := NewLexer(tt.input)
 		p := NewParser("test_projects", l)
-		_, items := p.Parse()
+		categories, items := p.Parse()
 
-		Eval("projects", items)
+		Eval("projects", categories, items)
 		projects := planning.GetRepository().ListProjects()
 
 		for i, p := range tt.expected {

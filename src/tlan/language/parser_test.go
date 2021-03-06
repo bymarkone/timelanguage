@@ -4,6 +4,7 @@ import "testing"
 
 func TestTreeCreation(t *testing.T) {
 	input := `
+First Category
 AI
 - Math >> Mathematician
   - Bachelors Degree 
@@ -31,7 +32,11 @@ AI
 
 	lexer := NewLexer(input)
 	parser := NewParser("test", lexer)
-	_, items := parser.Parse()
+	categories, items := parser.Parse()
+
+	if categories[0].Value != "First Category" {
+		t.Fatalf("Expecting %s got %s", "First Category", categories[0].Value)
+	}
 
 	for i, tt := range cases {
 		if items[i].Type != tt.itemType {

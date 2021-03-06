@@ -9,14 +9,14 @@ import (
 	"tlan/utils"
 )
 
-func Eval(context string, items []*Item) {
+func Eval(context string, categories []*Category, items []*Item) {
 	switch context {
 	case "projects":
 		evalProject(items)
 	case "schedule":
 		evalSchedule(items)
 	case "goals":
-		evalGoals(items)
+		evalGoals(categories, items)
 	case "tasks":
 		evalTasks(items)
 	}
@@ -37,8 +37,22 @@ func evalTasks(items []*Item) {
 	}
 }
 
-func evalGoals(items []*Item) {
+func evalGoals(categories []*Category, items []*Item) {
 	repository := purpose.GetRepository()
+	for _, category := range categories {
+		var isChildless = true
+		for _, item := range items {
+			if category.Value == item.Category.Value {
+				isChildless = false
+			}
+		}
+		if isChildless {
+			var goal = &purpose.Goal{}
+			goal.Name = category.Value
+			goal.Category = category.Value
+			repository.AddGoal(goal)
+		}
+	}
 	for _, item := range items {
 		var goal = &purpose.Goal{}
 		goal.Name = item.Name.Value

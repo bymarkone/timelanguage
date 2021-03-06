@@ -51,8 +51,8 @@ func (l *Loader) Load() {
 		text := string(content)
 		l := language.NewLexer(text)
 		p := language.NewParser(file.Name(), l)
-		_, items := p.Parse()
-		language.Eval(context, items)
+		categories, items := p.Parse()
+		language.Eval(context, categories, items)
 	}
 }
 
