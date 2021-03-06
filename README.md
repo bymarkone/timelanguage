@@ -2,7 +2,7 @@
 
 TLan is a console application for time management.
 
-Time management is a topic that can be applied in many contexts, from trivial things such as having a list of tasks for the day, to more profound topics such as how to enjoy life and how can I make the best out of my time (see list of quotes in the end).
+Time management is a topic that can be applied in many contexts, from trivial things such as having a list of tasks for the day, to more profound topics such as how to enjoy life and how to make the best out of time (see list of quotes in the end).
 
 TLan takes a holistic approach to the problem. One starts by defining **purpose**, which speaks to values and goals for a given timeframe. Then **planning** helps with defining the steps to get there. **Schedule** is about organizing how things will be executed on daily basis. And, finally, **tracking** is about getting data to make the adjustments necessary to make a better use of time.
 
@@ -63,39 +63,39 @@ In the context of purpose, you can try the command ```goals```.
 ## Commands
 
 ## Quotes
-*"Take care of the minutes and the hours will take care of themselves."* - Lord Chesterfield
+- *"Take care of the minutes and the hours will take care of themselves."* - Lord Chesterfield
 
-*"I must govern the clock, not be governed by it."* - Golda Meir
+- *"I must govern the clock, not be governed by it."* - Golda Meir
 
-*"Most of us spend too much time on what is urgent, and not enough time on what is important."* - Steven Covey
+- *"Most of us spend too much time on what is urgent, and not enough time on what is important."* - Steven Covey
 
-*“When you buy something, you’re not paying money for it. You’re paying with the hours of your life you had to spend earning that money. The difference is that life is one thing money can’t buy. Life only gets shorter, and it is pitiful to waste one’s life and freedom that way.”* - José Mujica
+- *“When you buy something, you’re not paying money for it. You’re paying with the hours of your life you had to spend earning that money. The difference is that life is one thing money can’t buy. Life only gets shorter, and it is pitiful to waste one’s life and freedom that way.”* - José Mujica
 
-*"Don't be fooled by the calendar. There are only as many days in the year as you make use of. One man gets only a week's value out of a year while another man gets a full year's value out of a week."* - Charles Richards
+- *"Don't be fooled by the calendar. There are only as many days in the year as you make use of. One man gets only a week's value out of a year while another man gets a full year's value out of a week."* - Charles Richards
 
-*"The common man is not concerned about the passage of time, the man of talent is driven by it."* - Shoppenhauer
+- *"The common man is not concerned about the passage of time, the man of talent is driven by it."* - Shoppenhauer
 
-*“I wish it need not have happened in my time,” said Frodo.
+- *“I wish it need not have happened in my time,” said Frodo.
 “So do I,” said Gandalf, “and so do all who live to see such times. But that is not for them to decide. All we have to decide is what to do with the time that is given us.”* - J.R.R. Tolkien, The Fellowship of the Ring
 
-*"It's not enough to be busy, so are the ants. The question is, what are we busy about?"* - Henry David Thoreau
+- *"It's not enough to be busy, so are the ants. The question is, what are we busy about?"* - Henry David Thoreau
 
-*"Let our advance worrying become advance thinking and planning."* - Winston Churchill
+- *"Let our advance worrying become advance thinking and planning."* - Winston Churchill
 
-*"Better to be three hours too soon, than a minute too late."* - William Shakespeare
+- *"Better to be three hours too soon, than a minute too late."* - William Shakespeare
 
-*"Yesterday is gone. Tomorrow has not yet come. We have only today. Let us begin."* - Mother Teresa
+- *"Yesterday is gone. Tomorrow has not yet come. We have only today. Let us begin."* - Mother Teresa
 
-*"The shorter way to do many things is to only do one thing at a time."* - Mozart
+- *"The shorter way to do many things is to only do one thing at a time."* - Mozart
 
-*"Give me six hours to chop down a tree and I will spend the first four sharpening the axe."* - Abraham Lincoln
+- *"Give me six hours to chop down a tree and I will spend the first four sharpening the axe."* - Abraham Lincoln
 
-*"Determine never to be idle. No person will have occasion to complain of the want of time who never loses any. It is wonderful how much can be done if we are always doing."* - Thomas Jefferson
+- *"Determine never to be idle. No person will have occasion to complain of the want of time who never loses any. It is wonderful how much can be done if we are always doing."* - Thomas Jefferson
 
-*"Once you have mastered time, you will understand how true it is that most people overestimate what they can accomplish in a year - and underestimate what they can achieve in a decade!"* -- Tony Robbins
+- *"Once you have mastered time, you will understand how true it is that most people overestimate what they can accomplish in a year - and underestimate what they can achieve in a decade!"* -- Tony Robbins
 
-*“The bad news is time flies. The good news is you’re the pilot”* - Michael Altshuler
+- *“The bad news is time flies. The good news is you’re the pilot”* - Michael Altshuler
 
-*“You may delay, but time will not.”* - Benjamin Franklin
+- *“You may delay, but time will not.”* - Benjamin Franklin
 
-*“A man who dares to waste one hour of life has not discovered the value of life.”* - Charles Darwin
+- *“A man who dares to waste one hour of life has not discovered the value of life.”* - Charles Darwin
