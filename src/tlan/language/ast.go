@@ -4,7 +4,8 @@ type Node interface {
 	TokenLiteral() string
 }
 
-type Item struct {
+type
+Item struct {
 	Token       Token
 	Type        string
 	Name        *Name

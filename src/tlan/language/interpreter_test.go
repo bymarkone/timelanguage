@@ -33,7 +33,7 @@ Great Technologist [Lagging]
 	for _, tt := range tests {
 		l := NewLexer(tt.input)
 		p := NewParser("test_goals", l)
-		items := p.Parse()
+		_, items := p.Parse()
 
 		Eval("goals", items)
 		goals := purpose.GetRepository().ListGoals()
@@ -84,7 +84,7 @@ Creative Work [Daily, 05:00-09:00]
 
 		l := NewLexer(tt.input)
 		p := NewParser("test_schedule", l)
-		items := p.Parse()
+		_, items := p.Parse()
 
 		Eval("schedule", items)
 		tracks := schedule.GetRepository().ListTracks()
@@ -128,12 +128,12 @@ Debt
 	for _, tt := range tests {
 		l1 := NewLexer(tt.projectInput)
 		p1 := NewParser("test_tasks_projects", l1)
-		items1 := p1.Parse()
+		_, items1 := p1.Parse()
 		Eval("projects", items1)
 
 		l2 := NewLexer(tt.taskInput)
 		p2 := NewParser("test_tasks", l2)
-		items2 := p2.Parse()
+		_, items2 := p2.Parse()
 		Eval("tasks", items2)
 
 
@@ -185,7 +185,7 @@ Mathematics
 
 		l := NewLexer(tt.input)
 		p := NewParser("test_projects", l)
-		items := p.Parse()
+		_, items := p.Parse()
 
 		Eval("projects", items)
 		projects := planning.GetRepository().ListProjects()

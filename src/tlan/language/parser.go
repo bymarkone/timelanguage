@@ -15,6 +15,7 @@ type Parser struct {
 	currentParent   *Item
 	currentLevel    int
 	firstLevelItems []*Item
+	categories      []*Category
 }
 
 type ParseError struct {
@@ -39,7 +40,7 @@ func NewParser(filename string, lexer *Lexer) *Parser {
 	return parser
 }
 
-func (p *Parser) Parse() []*Item {
+func (p *Parser) Parse() ([]*Category, []*Item) {
 	for !p.peekTokenIs(EOF) {
 		if !p.parseCategory() {
 			for _, err := range p.Errors {
@@ -49,7 +50,7 @@ func (p *Parser) Parse() []*Item {
 			break
 		}
 	}
-	return p.firstLevelItems
+	return p.categories, p.firstLevelItems
 }
 
 func (p *Parser) parseCategory() bool {
@@ -59,6 +60,7 @@ func (p *Parser) parseCategory() bool {
 
 	p.currentItem = nil
 	p.currentCategory = &Category{Token: p.curToken, Value: p.curToken.Literal}
+	p.categories = append(p.categories, p.currentCategory)
 	p.parseAnnotations()
 	p.parseItem()
 	return true

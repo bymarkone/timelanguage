@@ -31,7 +31,7 @@ AI
 
 	lexer := NewLexer(input)
 	parser := NewParser("test", lexer)
-	items := parser.Parse()
+	_, items := parser.Parse()
 
 	for i, tt := range cases {
 		if items[i].Type != tt.itemType {

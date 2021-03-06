@@ -51,7 +51,7 @@ func (l *Loader) Load() {
 		text := string(content)
 		l := language.NewLexer(text)
 		p := language.NewParser(file.Name(), l)
-		items := p.Parse()
+		_, items := p.Parse()
 		language.Eval(context, items)
 	}
 }
@@ -449,4 +449,3 @@ func contains(flags []string, shallow string) bool {
 	}
 	return false
 }
-
