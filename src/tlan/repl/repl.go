@@ -143,52 +143,52 @@ func plan(_ []string) {
 
 	var header []interface{}
 	header = append(header, " ")
-	header = append(header, " ")
 
 	currentMonth := time.Now()
+	currentMonth = time.Date(currentMonth.Year(), currentMonth.Month(), 1, currentMonth.Hour(),
+		currentMonth.Minute(), currentMonth.Second(), currentMonth.Nanosecond(), currentMonth.Location())
 	for i := 0; i < 12; i++ {
 		header = append(header, currentMonth.Month().String())
 		currentMonth = currentMonth.AddDate(0, 1, 0)
 	}
 	t.AppendHeader(header)
 
-	tracks := schedule.GetRepository().ListTracks()
-	for _, track := range tracks {
-		now := time.Now()
-		var rows []table.Row
-		for i := 0; i < 12; i++ {
-			var names []string
-			for _, project := range track.Projects {
-				if project.Period.ActiveIn(now) {
-					names = append(names, projectNameForPlan(project))
-				}
+	projects := planning.GetRepository().ListProjects()
+	now := time.Now()
+	now = time.Date(now.Year(), now.Month(), 1, now.Hour(),
+		now.Minute(), now.Second(), now.Nanosecond(), now.Location())
+	var rows []table.Row
+	for i := 0; i < 12; i++ {
+		var activeProjects []*planning.Project
+		for _, project := range projects {
+			if project.Period.ActiveIn(now) {
+				activeProjects = append(activeProjects, project)
 			}
-			for j, name := range names {
-				if len(rows) > j {
-					if rows != nil {
-						rows[j][2+i] = name
-					}
-				} else {
-					var row []interface{}
-					row = append(row, track.Slot.Name)
-					row = append(row, track.Name)
-					for i := 0; i < 12; i++ {
-						row = append(row, "")
-					}
-					row[2+i] = name
-					rows = append(rows, row)
-				}
-			}
-			now = now.AddDate(0, 1, 0)
 		}
-		t.AppendRows(rows, rowConfigAutoMerge)
+		for j, project := range activeProjects {
+			if len(rows) > j {
+				if rows != nil {
+					rows[j][1+i] = projectNameForPlan(project)
+				}
+			} else {
+				var row []interface{}
+				row = append(row, project.Category)
+				for i := 0; i < 12; i++ {
+					row = append(row, "")
+				}
+				row[1+i] = projectNameForPlan(project)
+				rows = append(rows, row)
+			}
+		}
+		now = now.AddDate(0, 1, 0)
 	}
+	t.AppendRows(rows, rowConfigAutoMerge)
 
 	t.Style().Options.SeparateRows = true
 	widthMax := 14
 	t.SetColumnConfigs([]table.ColumnConfig{
-		{Number: 1, AutoMerge: true, WidthMax: widthMax},
-		{Number: 2, AutoMerge: true, WidthMax: widthMax},
+		{Number: 1, AutoMerge: true},
+		{Number: 2, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
 		{Number: 3, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
 		{Number: 4, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
 		{Number: 5, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
@@ -200,7 +200,6 @@ func plan(_ []string) {
 		{Number: 11, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
 		{Number: 12, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
 		{Number: 13, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
-		{Number: 14, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},
 	})
 
 	t.Render()
