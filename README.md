@@ -67,10 +67,10 @@ You can define goals in a file named `projects.gr`:
 
 ```
 // samples/projects.gr
-- IU Analysis II [01/01-10/05]
-- IU Modern Algebra I [01/01-10/05]
-- IU Number Theory [10/05-31/08]
-- IU Modern Algebra II [10/05-31/08]
+- Analysis II [01/01-10/05]
+- Modern Algebra I [01/01-10/05]
+- Number Theory [10/05-31/08]
+- Modern Algebra II [10/05-31/08]
 - Advanced Mathematics [01/07-31/12]
 - CS221 AI [01/04-31/05]
 - TLan [01/01-31/03]
@@ -98,13 +98,13 @@ You can also add tasks to your projects. Tasks are activities that usually canno
 
 ```
 Mathematics
-- IU Analysis II [01/01-10/05] >> BS in Mathematics
+- Analysis II [01/01-10/05] >> BS in Mathematics
   * Read chapter from Burke
   * Read chapter from Lay
   * Do weekly homework
-- IU Modern Algebra I [01/01-10/05] >> BS in Mathematics
-- IU Number Theory [10/05-31/08] >> BS in Mathematics
-- IU Modern Algebra II [10/05-31/08] >> BS in Mathematics
+- Modern Algebra I [01/01-10/05] >> BS in Mathematics
+- Number Theory [10/05-31/08] >> BS in Mathematics
+- Modern Algebra II [10/05-31/08] >> BS in Mathematics
 - Advanced Mathematics [01/09-31/12]
 
 AI
@@ -120,9 +120,9 @@ Once you have defined projects, you can use the command `plan` to see how your p
 +-------------------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+---------+----------+
 |                         | MARCH          | APRIL          | MAY            | JUNE           | JULY           | AUGUST         | SEPTEMBER      | OCTOBER        | NOVEMBER       | DECEMBER       | JANUARY | FEBRUARY |
 +-------------------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+---------+----------+
-| Mathematics             |                  IU Analysis II                  |                 IU Number Theory                 |                        Advanced Mathematics                       |                    |
+| Mathematics             |                    Analysis II                   |                  Number Theory                   |                        Advanced Mathematics                       |                    |
 |                         +--------------------------------------------------+--------------------------------------------------+-------------------------------------------------------------------+--------------------+
-|                         |                IU Modern Algebra I               |               IU Modern Algebra II               |                                                                                        |
+|                         |                 Modern Algebra I                 |                Modern Algebra II                 |                                                                                        |
 +-------------------------+----------------+---------------------------------+--------------------------------------------------+----------------------------------------------------------------------------------------+
 | AI                      | TLan           |             CS221 AI            |                                                                                                                                           |
 +-------------------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+---------+----------+
@@ -135,10 +135,10 @@ Now you can call `goals --deep` and this will display not only the goals as we d
 | EXPLORE AND BUILD AI          | WRITE CODE AND INFLUENCE TECH |
 +-------------------------------+-------------------------------+
 | BS IN MATHEMATICS             | WORK IN MANY INDUSTRIES       |
-| -IU Analysis II               |                               |
-| -IU Modern Algebra I          | BE A FIRST CLASS ENGINEER     |
-| -IU Number Theory             |                               |
-| -IU Modern Algebra II         | SPEAK IN CONFERENCES          |
+| -Analysis II                  |                               |
+| -Modern Algebra I             | BE A FIRST CLASS ENGINEER     |
+| -Number Theory                |                               |
+| -Modern Algebra II            | SPEAK IN CONFERENCES          |
 |                               |                               |
 | STANFORD AI CERTIFICATE       |                               |
 | -CS221 AI                     |                               |
