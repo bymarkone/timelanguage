@@ -24,7 +24,7 @@ func init() {
 	RegisterCommands("now", command)
 }
 
-func now(out io.Writer, words []string) {
+func now(_ io.Writer, words []string) {
 	tracks := schedule.GetRepository().ListTracks()
 	now := time.Now()
 	if len(words) > 1 {
