@@ -14,7 +14,7 @@ type DateTime struct {
 }
 
 func (p DateTime) ToString() string {
-	return strconv.Itoa(p.Hour) + ":" + strconv.Itoa(p.Minute)
+	return strconv.Itoa(p.Hour)
 }
 
 func (dt DateTime) toTime() time.Time {
@@ -28,7 +28,15 @@ type Period struct {
 }
 
 func (p Period) ToString() string {
-	return p.Start.ToString() + "-" + p.End.ToString()
+	results := ""
+	if len(p.Weekdays) == 7 {
+		results = "daily"
+	} else {
+		for _, weekday := range p.Weekdays {
+			results = results + weekday.String()[0:3]
+		}
+	}
+	return results + ", " + p.Start.ToString() + "-" + p.End.ToString()
 }
 
 func (p Period) ActiveIn(date time.Time) bool {

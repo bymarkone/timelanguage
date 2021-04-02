@@ -3,7 +3,6 @@ package repl
 import (
 	"bufio"
 	"fmt"
-	"github.com/jedib0t/go-pretty/v6/table"
 	"io"
 	"io/ioutil"
 	"log"
@@ -91,7 +90,7 @@ func Start(_in io.Reader, _out io.Writer, _loader Loader) {
 		case "exit":
 			return
 		case "tracks":
-			tracks(words)
+			allCommands["tracks"].Function(out, words)
 		case "plan":
 			allCommands["plan"].Function(out, words)
 		case "now":
@@ -130,68 +129,6 @@ func show(words []string) {
 	switch words[1] {
 	case "projects":
 		printProjects(words)
-	}
-}
-
-func tracks(_ []string) {
-	print("Tracks:")
-	t := table.NewWriter()
-	t.SetOutputMirror(out)
-
-	tracks := schedule.GetRepository().ListTracks()
-
-	var header []interface{}
-	for _, track := range tracks {
-		header = append(header, track.Name+" "+track.Slot.Period.ToString())
-	}
-	t.AppendHeader(header)
-
-	n := 0
-	for n < 100 {
-		var row []interface{}
-		for _, track := range tracks {
-			row = append(row, extractProjectNameForTracks(track, n))
-		}
-		if isBlank(row) {
-			break
-		}
-		t.AppendRow(row)
-		n++
-	}
-
-	t.Render()
-}
-
-func isBlank(row []interface{}) bool {
-	for _, item := range row {
-		if item != "" {
-			return false
-		}
-	}
-	return true
-}
-
-func extractProjectNameForTracks(track *schedule.Track, n int) string {
-	if len(track.FlattenActiveProjects()) >= n+1 {
-		return boxedProjectNameForTracks(track, n)
-	}
-	return ""
-}
-
-func boxedProjectNameForTracks(track *schedule.Track, n int) string {
-	project := track.FlattenActiveProjects()[n]
-	name := project.Name
-	base := ""
-	if project.Level >= 1 {
-		base = "- " + name
-	} else {
-		base = name
-	}
-	const LIMIT = 15
-	if len(base) > LIMIT {
-		return base[0:LIMIT] + "..."
-	} else {
-		return base
 	}
 }
 
