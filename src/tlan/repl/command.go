@@ -30,12 +30,12 @@ func printCommand(command Command) {
 
 Usage:
   {{.Usage}}
-
-Arguments: {{ range $index, $val := .Arguments }}
+{{if .Arguments}} Arguments: {{ range $index, $val := .Arguments }}
   {{$val.Name}}                      : {{$val.Description}}{{ end }}
-            
-Flags: {{ range $index, $val := .Flags }}
+{{end}} 
+{{if .Flags}} Flags: {{ range $index, $val := .Flags }}
   --{{$val.Name}}, -{{$val.Shortcut}}     : {{$val.Description}}{{ end }}
+{{end}} 
 `)
 
 	if err != nil {

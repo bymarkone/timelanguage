@@ -9,14 +9,12 @@ import (
 
 func init() {
 	command := Command{
-		Description: "This command edit file for objects",
-		Usage:       "edit <object>}",
+		Description: "Edit file for objects",
+		Usage:       "edit <object>",
 		Arguments: []Argument{
 			{Name: "object", Description: "The object to be edited"},
 		},
-		Flags: []Flag{
-			{Name: "", Shortcut: "", Description: ""},
-		},
+		Flags: []Flag{ },
 		Function: edit,
 	}
 	RegisterCommands("edit", command)

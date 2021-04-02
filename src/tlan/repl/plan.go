@@ -10,15 +10,10 @@ import (
 
 func init() {
 	command := Command{
-		Description: "This command prints a plan for each month in the next twelve months",
+		Description: "Prints a plan for each month in the next twelve months",
 		Usage:       "plan",
-		Arguments: []Argument{
-			{Name: " ", Description: " "},
-			{Name: " ", Description: " "},
-		},
-		Flags: []Flag{
-			{Name: " ", Shortcut: " ", Description: " "},
-		},
+		Arguments: []Argument{ },
+		Flags: []Flag{ },
 		Function: plan,
 	}
 	RegisterCommands("plan", command)

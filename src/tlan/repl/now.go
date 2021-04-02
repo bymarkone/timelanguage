@@ -10,15 +10,13 @@ import (
 
 func init() {
 	command := Command{
-		Description: "This command prints what you should be doing now",
+		Description: "Prints what you should be doing now",
 		Usage:       "now <hour> <weekday>",
 		Arguments: []Argument{
 			{Name: "<hour>", Description: "hour to be considered when printing"},
 			{Name: "<weekday>", Description: "weekday to be considered when printing"},
 		},
-		Flags: []Flag{
-			{Name: " ", Shortcut: " ", Description: " "},
-		},
+		Flags: []Flag{ },
 		Function: now,
 	}
 	RegisterCommands("now", command)

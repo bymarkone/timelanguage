@@ -8,15 +8,10 @@ import (
 
 func init() {
 	command := Command{
-		Description: "This command prints list of tracks and the activities within it",
+		Description: "Prints list of tracks and the activities within it",
 		Usage:       "tracks",
-		Arguments: []Argument{
-			{Name: " ", Description: " "},
-			{Name: " ", Description: " "},
-		},
-		Flags: []Flag{
-			{Name: " ", Shortcut: " ", Description: " "},
-		},
+		Arguments: []Argument{ },
+		Flags: []Flag{ },
 		Function: tracks,
 	}
 	RegisterCommands("tracks", command)

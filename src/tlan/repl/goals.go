@@ -14,11 +14,9 @@ const GoalsDeep = "deep"
 
 func init() {
 	command := Command{
-		Description: "This command prints the dashboard of goals",
+		Description: "Prints the dashboard of goals",
 		Usage:       "goals {flags}",
-		Arguments: []Argument{
-			{Name: "", Description: ""},
-		},
+		Arguments: []Argument{ },
 		Flags: []Flag{
 			{Name: GoalsDeep, Shortcut: "d", Description: "Display projects related to goals"},
 		},

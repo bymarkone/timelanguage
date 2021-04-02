@@ -12,7 +12,6 @@ import (
 	"tlan/planning"
 	"tlan/purpose"
 	"tlan/schedule"
-	"tlan/utils"
 )
 
 const Prompt = ">> "
@@ -55,7 +54,6 @@ func (l *Loader) Load() {
 }
 
 func RegisterCommands(name string, command Command) {
-	//fmt.Print("Registering '" + name + "' \n")
 	allCommands[name] = command
 }
 
@@ -81,14 +79,12 @@ func Start(_in io.Reader, _out io.Writer, _loader Loader) {
 		}
 
 		switch words[0] {
-		case "show":
-			show(words)
-		case "help":
-			help(words)
 		case "clear":
 			clear()
 		case "exit":
 			return
+		case "help":
+			allCommands["help"].Function(out, words)
 		case "tracks":
 			allCommands["tracks"].Function(out, words)
 		case "plan":
@@ -103,82 +99,6 @@ func Start(_in io.Reader, _out io.Writer, _loader Loader) {
 			allCommands["goals"].Function(out, words)
 		}
 	}
-}
-
-func help(words []string) {
-	if len(words) == 1 {
-		printHelp()
-		return
-	}
-
-	switch words[1] {
-	case "show":
-		printShowHelp()
-	case "now":
-		printNowHelp()
-	case "goals":
-		printCommand(allCommands[words[1]])
-	}
-}
-
-func show(words []string) {
-	if len(words) == 1 {
-		println("Incorrect number of arguments. Type 'help show' to see usage.")
-		return
-	}
-	switch words[1] {
-	case "projects":
-		printProjects(words)
-	}
-}
-
-func printProjects(words []string) {
-	inactiveFilter := utils.Find(words, func(val string) bool {
-		return val == "--inactive" || val == "-i"
-	})
-	var projects = planning.GetRepository().ListProjects()
-	if inactiveFilter {
-		projects = planning.FilterProjects(projects, planning.ByInactive)
-	}
-	fmt.Print("\nListing projects: \n\n")
-	for _, project := range projects {
-		fmt.Printf("- %s\n", project.Name)
-	}
-	fmt.Print("\n\n")
-}
-
-func printNowHelp() {
-	println("This command prints tasks for a given time slot. Used without arguments, the time that will be considered will be the current time.")
-	printEmptyLine()
-	println("Usage:")
-	println("  now [time]")
-	printEmptyLine()
-	println("Arguments:")
-	println("  time 				                 : time being considered")
-}
-
-func printShowHelp() {
-	println("This command prints elements of a given collection.")
-	printEmptyLine()
-	println("Usage:")
-	println("  show <collection> {flags}")
-	printEmptyLine()
-	println("Arguments:")
-	println("  collection                  : collection to be printed")
-	printEmptyLine()
-	println("Flags:")
-	println("  --inactive, -i              : display also inactive elements")
-}
-
-func printHelp() {
-	printEmptyLine()
-	printTlanHeader()
-	println("Commands:")
-	println("  help [command]              : prints help information for commands")
-	println("  show <collection>           : prints elements of a given collection")
-	println("  now                         : shows tasks to be performed now (i.e the current time slot)")
-	println("  exit                        : exits the application")
-	printEmptyLine()
 }
 
 func println(what string) {

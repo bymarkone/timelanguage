@@ -11,14 +11,10 @@ import (
 
 func init() {
 	command := Command{
-		Description: "This command edit file for objects",
-		Usage:       "edit <object>}",
-		Arguments: []Argument{
-			{Name: "object", Description: "The object to be edited"},
-		},
-		Flags: []Flag{
-			{Name: "", Shortcut: "", Description: ""},
-		},
+		Description: "Prints the plan for the week",
+		Usage:       "week",
+		Arguments: []Argument{ },
+		Flags: []Flag{ },
 		Function: week,
 	}
 	RegisterCommands("week", command)
