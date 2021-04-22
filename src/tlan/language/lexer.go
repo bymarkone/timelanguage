@@ -42,6 +42,8 @@ func (l *Lexer) NextToken() Token {
 		tok = newToken(COMMA, l.ch)
 	case ']':
 		tok = newToken(RSB, l.ch)
+	case '.':
+		tok = newToken(DOT, l.ch)
 	case '+':
 		tok = newToken(PLUS, l.ch)
 	case '>':
@@ -108,8 +110,7 @@ func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for {
 		l.readChar()
-		if !(isLetter(l.ch) || isNumber(l.ch) || isSpace(l.ch) || isSlash(l.ch) || isColon(l.ch) ||
-			isDot(l.ch) || isBang(l.ch) || isHash(l.ch)) {
+		if isNewline(l.ch) || isComparison(l.ch) || isBracket(l.ch) || isDot(l.ch) || isDash(l.ch) || isParenthesis(l.ch) {
 			break
 		}
 	}
@@ -137,6 +138,10 @@ func newToken(tokenType TokenType, ch byte) Token {
 	return Token{Type: tokenType, Literal: string(ch)}
 }
 
+func isNewline(ch byte) bool {
+	return ch == '\n' || ch == '\r'
+}
+
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
@@ -157,14 +162,30 @@ func isColon(ch byte) bool {
 	return ch == ':'
 }
 
+func isHash(ch byte) bool {
+	return ch == '#'
+}
+
+func isDash(ch byte) bool {
+	return ch == '-'
+}
+
 func isDot(ch byte) bool {
 	return ch == '.'
 }
 
-func isBang(ch byte) bool {
-	return ch == '!'
+func isComparison(ch byte) bool {
+	return ch == '>'
 }
 
-func isHash(ch byte) bool {
-	return ch == '#'
+func isBracket(ch byte) bool {
+	return ch == '[' || ch == ']'
+}
+
+func isParenthesis(ch byte) bool {
+	return ch == '(' || ch == ')'
+}
+
+func isBang(ch byte) bool {
+	return ch == '!'
 }

@@ -148,7 +148,7 @@ func (p *Parser) parseAnnotation() {
 	if !p.expectPeek(IDENT) {
 		return
 	}
-	if p.peekTokenIs(RSB) || p.peekTokenIs(COMMA) {
+	if p.peekTokenIs(RSB) || p.peekTokenIs(DOT) {
 		unary := &UnaryAnnotation{Token: p.curToken, Name: Name{Token: p.curToken, Value: p.curToken.Literal}}
 		p.addAnnotationTo(unary)
 	} else if p.peekTokenIs(DASH) {
@@ -167,7 +167,7 @@ func (p *Parser) parseAnnotation() {
 			Right:    right}
 		p.addAnnotationTo(binary)
 	}
-	p.expectSkip(COMMA)
+	p.expectSkip(DOT)
 }
 
 func (p *Parser) addAnnotationTo(ann Annotation) {

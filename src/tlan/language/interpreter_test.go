@@ -65,7 +65,7 @@ func TestEvalTracks(t *testing.T) {
 	}{
 		{
 			`
-Creative Work [Daily, 05:00-09:00]
+Creative Work [Daily. 05:00-09:00]
 * Mathematics
 * Books [MonTue]
 * Research

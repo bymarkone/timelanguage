@@ -8,10 +8,10 @@ First Category
 AI
 - Math >> Mathematician
   - Bachelors Degree 
-- Foundations [Unary, 15/01-06/12]
-* Books [Unary, 05:00-07:00]
+- Foundations [Unary. 15/01-06/12]
+* Books [Unary. 05:00-07:00]
 - (Research)
-  + Follow another list
+  + Follow another list, but not too "eagerly"
 `
 	cases := []struct {
 		itemType    string

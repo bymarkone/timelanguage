@@ -6,12 +6,12 @@ func TestAnything(t *testing.T) {
 	input := `
 AI
 - Math >> Mathematician
-  - Bachelors Degree [Unary, 15/01-10/12]
+  - Bachelors Degree [Unary. 15/01-10/12]
   - (Cambridge Part III)
-- Foundations [Unary, 05:00-10:00]
+- Foundations [Unary. 05:00-10:00]
 * Books 
 - (Research)
-  + Follow other list
+  + Follow other list, but not too "eagerly"
 `
 	cases := []struct {
 		expectedType    TokenType
@@ -27,7 +27,7 @@ AI
 		{IDENT, "Bachelors Degree"},
 		{LSB, "["},
 		{IDENT, "Unary"},
-		{COMMA, ","},
+		{DOT, "."},
 		{IDENT, "15/01"},
 		{DASH, "-"},
 		{IDENT, "10/12"},
@@ -41,7 +41,7 @@ AI
 		{IDENT, "Foundations"},
 		{LSB, "["},
 		{IDENT, "Unary"},
-		{COMMA, ","},
+		{DOT, "."},
 		{IDENT, "05:00"},
 		{DASH, "-"},
 		{IDENT, "10:00"},
@@ -54,7 +54,7 @@ AI
 		{RP, ")"},
 		{LEVEL, "  "},
 		{PLUS, "+"},
-		{IDENT, "Follow other list"},
+		{IDENT, "Follow other list, but not too \"eagerly\""},
 	}
 
 	lexer := NewLexer(input)
