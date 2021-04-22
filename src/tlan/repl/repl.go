@@ -83,6 +83,8 @@ func Start(_in io.Reader, _out io.Writer, _loader Loader) {
 			clear()
 		case "exit":
 			return
+		case "reload":
+			loader.Load()
 		case "help":
 			allCommands["help"].Function(out, words)
 		case "tracks":
