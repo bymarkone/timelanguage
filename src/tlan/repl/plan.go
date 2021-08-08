@@ -71,6 +71,8 @@ func plan(out io.Writer, _ []string) {
 				}
 			}
 			now = now.AddDate(0, 1, 0)
+			now = time.Date(now.Year(), now.Month(), 1, now.Hour(),
+				now.Minute(), now.Second(), now.Nanosecond(), now.Location())
 		}
 		now = time.Now()
 		now = time.Date(now.Year(), now.Month(), 1, now.Hour(),
@@ -79,7 +81,7 @@ func plan(out io.Writer, _ []string) {
 	t.AppendRows(rows, rowConfigAutoMerge)
 
 	t.Style().Options.SeparateRows = true
-	widthMax := 14
+	widthMax := 16
 	t.SetColumnConfigs([]table.ColumnConfig{
 		{Number: 1, AutoMerge: true},
 		{Number: 2, WidthMax: widthMax, WidthMaxEnforcer: widthMaxEnforcer},

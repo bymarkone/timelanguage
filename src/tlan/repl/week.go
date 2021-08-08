@@ -48,7 +48,7 @@ func week(out io.Writer, _ []string) {
 	tracks := schedule.GetRepository().ListTracks()
 	var rows []table.Row
 	for _, timeSlot := range times {
-		hour, minute := utils.Parse(timeSlot)
+		hour, minute, _ := utils.Parse(timeSlot)
 		row := table.Row{}
 		row = append(row, timeSlot)
 		for _, weekday := range weekdays {

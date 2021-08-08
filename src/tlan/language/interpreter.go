@@ -133,19 +133,27 @@ func findPeriod(anns []Annotation, periodType string, parentPeriod utils.Period)
 	}
 
 	if binary != nil {
-		first, second := utils.Parse(binary.Left.Value)
-		third, fourth := utils.Parse(binary.Right.Value)
+		first, second, third := utils.Parse(binary.Left.Value)
+		fourth, fifth, sixth := utils.Parse(binary.Right.Value)
 		switch periodType {
 		case TIME:
 			start = utils.DateTime{Hour: first, Minute: second}
-			end = utils.DateTime{Hour: third, Minute: fourth}
+			end = utils.DateTime{Hour: fourth, Minute: fifth}
 		case DATE:
-			start = utils.DateTime{Day: first, Month: time.Month(second)}
-			end = utils.DateTime{Day: third, Month: time.Month(fourth)}
+			start = utils.DateTime{Day: first, Month: time.Month(second), Year: findYear(third)}
+			end = utils.DateTime{Day: fourth, Month: time.Month(fifth), Year: findYear(sixth)}
 		}
 	}
 
 	return utils.Period{Start: start, End: end, Weekdays: weekdays}
+}
+
+func findYear(sixth int) int {
+	if sixth == 0 {
+		return time.Now().Year()
+	} else {
+		return sixth
+	}
 }
 
 var shortWeekdays = map[string]time.Weekday{

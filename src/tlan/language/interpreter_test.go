@@ -152,7 +152,7 @@ Debt
 
 func TestEvalProjects(t *testing.T) {
 
-	period := utils.Period{Start: utils.DateTime{Day: 10, Month: 1}, End: utils.DateTime{Day: 15, Month: 4}}
+	period := utils.Period{Start: utils.DateTime{Day: 10, Month: 1, Year: 2022}, End: utils.DateTime{Day: 15, Month: 4, Year: 2022}}
 
 	tests := []struct {
 		input    string
@@ -162,7 +162,7 @@ func TestEvalProjects(t *testing.T) {
 			`
 Mathematics
 - IU Analysis II >> BS Mathematics
-- IU Modern Algebra [10/01-15/04]
+- IU Modern Algebra [10/01/2022-15/04/2022]
   * Read book
 - Study Analysis Burkin
   + Follow another list
@@ -203,6 +203,9 @@ Mathematics
 			}
 			if projects[i].Period.Start != p.Period.Start {
 				t.Errorf("Project has wrong attribute. Got %v, want %v", projects[i].Period.Start, p.Period.Start)
+			}
+			if projects[i].Period.End != p.Period.End {
+				t.Errorf("Project has wrong attribute. Got %v, want %v", projects[i].Period.End, p.Period.End)
 			}
 			if !equalGoals(projects[i].ContributingGoals, p.ContributingGoals) {
 				t.Errorf("Project has wrong goals. Got %v, want %v", projects[i].ContributingGoals, p.ContributingGoals)

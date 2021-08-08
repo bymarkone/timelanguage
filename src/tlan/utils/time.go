@@ -18,7 +18,7 @@ func (p DateTime) ToString() string {
 }
 
 func (dt DateTime) toTime() time.Time {
-	return time.Date(2021, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, 0, time.Now().Location())
+	return time.Date(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, 0, time.Now().Location())
 }
 
 type Period struct {
@@ -43,8 +43,12 @@ func (p Period) ActiveIn(date time.Time) bool {
 	return p.Start.toTime().Before(date) && p.End.toTime().After(date) || p.Start.toTime().Equal(date)
 }
 
-func Parse(value string) (int, int) {
+func Parse(value string) (int, int, int) {
 	first, _ := strconv.Atoi(value[0:2])
 	second, _ := strconv.Atoi(value[3:5])
-	return first, second
+	third := 0
+	if len(value) > 5 {
+		third, _ = strconv.Atoi(value[6:10])
+	}
+	return first, second, third
 }

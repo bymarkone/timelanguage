@@ -26,7 +26,7 @@ func now(_ io.Writer, words []string) {
 	tracks := schedule.GetRepository().ListTracks()
 	now := time.Now()
 	if len(words) > 1 {
-		hour, minute := utils.Parse(words[1])
+		hour, minute, _ := utils.Parse(words[1])
 		now = time.Date(now.Year(), now.Month(), now.Day(), hour, minute, now.Second(), now.Nanosecond(), now.Location())
 	}
 	filteredTracks := schedule.FilterTracks(tracks, func(track schedule.Track) bool {
