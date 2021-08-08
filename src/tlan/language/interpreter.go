@@ -70,6 +70,8 @@ func evalSchedule(items []*Item) {
 		trackPeriod := findPeriod(item.Annotations, TIME, slotPeriod)
 		slot := &schedule.Slot{Name: item.Category.Value, Period: trackPeriod}
 
+		repository.AddSlot(slot)
+
 		track.Slot = slot
 		track.Name = item.Name.Value
 		track.Projects = planning.GetRepository().ListProjectsFiltered(func(project planning.Project) bool {

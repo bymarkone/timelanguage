@@ -44,13 +44,15 @@ func plan(out io.Writer, _ []string) {
 		now.Minute(), now.Second(), now.Nanosecond(), now.Location())
 
 	var rows []table.Row
-	for _, track := range schedule.GetRepository().ListTracks() {
+	for _, slot := range schedule.GetRepository().ListSlots() {
 		baseRow := len(rows)
 		for i := 0; i < 12; i++ {
 			var activeProjects []*planning.Project
-			for _, project := range categoriesWithProjects[track.Name] {
-				if project.Period.ActiveIn(now) {
-					activeProjects = append(activeProjects, project)
+			for _, track := range schedule.GetRepository().TracksBySlot(*slot) {
+				for _, project := range categoriesWithProjects[track.Name] {
+					if project.Period.ActiveIn(now) {
+						activeProjects = append(activeProjects, project)
+					}
 				}
 			}
 			for j, project := range activeProjects {
@@ -60,7 +62,7 @@ func plan(out io.Writer, _ []string) {
 					}
 				} else {
 					var row []interface{}
-					row = append(row, track.Slot.Name)
+					row = append(row, slot.Name)
 					for i := 0; i < 12; i++ {
 						row = append(row, "")
 					}

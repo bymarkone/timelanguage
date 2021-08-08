@@ -38,7 +38,10 @@ func FilterTracksBySlots(arr []*Track, cond func(slot Slot) bool) []*Track {
 }
 
 func (r *Repository) AddSlot(slot *Slot) {
-	r.slots = append(r.slots, slot)
+	existing := r.GetSlot(slot.Name)
+	if existing == nil {
+		r.slots = append(r.slots, slot)
+	}
 }
 
 func (r *Repository) ListSlots() []*Slot {
