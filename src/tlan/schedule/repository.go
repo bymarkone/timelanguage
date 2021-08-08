@@ -23,6 +23,20 @@ func (r *Repository) ListTracks() []*Track {
 	return r.tracks
 }
 
+func (r *Repository) TracksBySlot(slot Slot) []*Track {
+	return FilterTracksBySlots(r.tracks, BySlotName(slot.Name))
+}
+
+func FilterTracksBySlots(arr []*Track, cond func(slot Slot) bool) []*Track {
+	var result []*Track
+	for i := range arr {
+		if cond(*arr[i].Slot) {
+			result = append(result, arr[i])
+		}
+	}
+	return result
+}
+
 func (r *Repository) AddSlot(slot *Slot) {
 	r.slots = append(r.slots, slot)
 }

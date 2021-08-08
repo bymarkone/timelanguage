@@ -6,15 +6,16 @@ import (
 	"strings"
 	"time"
 	"tlan/planning"
+	"tlan/schedule"
 )
 
 func init() {
 	command := Command{
 		Description: "Prints a plan for each month in the next twelve months",
 		Usage:       "plan",
-		Arguments: []Argument{ },
-		Flags: []Flag{ },
-		Function: plan,
+		Arguments:   []Argument{},
+		Flags:       []Flag{},
+		Function:    plan,
 	}
 	RegisterCommands("plan", command)
 }
@@ -37,30 +38,29 @@ func plan(out io.Writer, _ []string) {
 	t.AppendHeader(header)
 
 	categoriesWithProjects := planning.GetRepository().ProjectsByCategory()
-	categories := planning.GetRepository().ListCategories()
 
 	now := time.Now()
 	now = time.Date(now.Year(), now.Month(), 1, now.Hour(),
 		now.Minute(), now.Second(), now.Nanosecond(), now.Location())
 
 	var rows []table.Row
-	for _, category := range categories {
+	for _, track := range schedule.GetRepository().ListTracks() {
 		baseRow := len(rows)
 		for i := 0; i < 12; i++ {
 			var activeProjects []*planning.Project
-			for _, project := range categoriesWithProjects[category] {
+			for _, project := range categoriesWithProjects[track.Name] {
 				if project.Period.ActiveIn(now) {
 					activeProjects = append(activeProjects, project)
 				}
 			}
 			for j, project := range activeProjects {
-				if len(rows) > baseRow + j {
+				if len(rows) > baseRow+j {
 					if rows != nil {
-						rows[baseRow + j][1+i] = projectNameForPlan(project)
+						rows[baseRow+j][1+i] = projectNameForPlan(project)
 					}
 				} else {
 					var row []interface{}
-					row = append(row, category)
+					row = append(row, track.Slot.Name)
 					for i := 0; i < 12; i++ {
 						row = append(row, "")
 					}

@@ -36,7 +36,7 @@ func (l *Loader) Load() {
 		return
 	}
 	for _, file := range filesInfo {
-		//fmt.Printf("Processing file %s \n", file.Name())
+		fmt.Printf("Processing file %s \n", file.Name())
 		fileAddress := l.BaseFolder + "/" + file.Name()
 		content, err := ioutil.ReadFile(fileAddress)
 		if err != nil {

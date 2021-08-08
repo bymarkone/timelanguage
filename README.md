@@ -4,16 +4,16 @@ TLan is a console application for time management.
 
 Time management is a topic that can be applied in many contexts, from trivial things such as having a list of tasks for the day, to more profound topics such as how to enjoy life and how to make the best out of time (see list of quotes in the end).
 
-TLan takes a holistic approach to the problem. One starts by defining **purpose**, which speaks to values and goals for a given timeframe. Then **planning** helps with defining the steps to get there. **Schedule** is about organizing how things will be executed on daily basis. And, finally, **tracking** is about getting data to make the adjustments necessary to make a better use of time.
+TLan takes a holistic approach to the problem. One starts by defining **purpose**, which speaks to values and goals for a given timeframe. Then **planning** helps with defining the steps to achieve a purpose. **Schedule** is about organizing how things will be executed on daily basis. And, finally, **tracking** is about getting data to make the adjustments necessary to make better use of time.
 
-All these definitions (and more!) and made through a repl. In the repl one can execute commands, like `edit goals`, `goals` and `schedule`. Commands like `edit goals` will open a vi editor where you can start typing goals (see below). Commands like `goals` and `schedule` will display the contents of the system in a customized UI.
+All these definitions (and more!) are made through a repl. In the repl one can execute commands, like `edit goals`, `goals`, and `schedule`. Commands like `edit goals` will open a vi editor where you can start typing goals (see below). Commands like `goals` and `schedule` will display the contents of the system in a customized UI.
 
 ## Model for Time Management
 
 ### Purpose
-We consider two aspects of purpose in this application: values and goals. Values represent things that are valuable for you, that you want to spend time with, but that don't a specific goal involved. Examples of values are spending time with family and friend, doing meditation, etc. Goals are also valuable but, well, they have a clear goal, i.e., a desired end state. Examples goals are: to become an AI specialist or moving to a country or becoming a CEO.
+We consider two aspects of purpose in this application: values and goals. Values represent things that are valuable for you, that you want to spend time with, but that doesn't have a specific goal involved. Examples of values are spending time with family and friends, doing meditation, etc. Goals are also valuable but, well, they have a clear goal, i.e., a desired end state. Examples of goals are: to become an AI specialist or moving to a country or becoming a CEO.
 
-In order to define goals, create a file `goals.gr` and add it to the `data` folder. The layout of this file follows a Domain-Specific Language. We will first show an example and then the definition of this language. 
+In order to define goals, create a file named `goals.gr` and add it to the `data` folder. The layout of this file follows a Domain-Specific Language. We will first show an example and then the definition of this language. 
 
 ```
 // samples/goals.gr
@@ -24,7 +24,7 @@ Goals
 - Have an Intelligent Assistant
 ``` 
 
-Each of these lines is defining goals. If you want to add high level themes for the goals, you can add them before the goals in a phrase without the dash (-).
+Each of these lines is defining goals. If you want to add high-level themes for the goals, you can add them before the goals in a phrase without the dash (-).
 ```
 // samples/goals.gr
 Explore and Build AI 
@@ -34,7 +34,7 @@ Explore and Build AI
 - Have an Intelligent Assistant
 Write Code and Influence Tech
 - Work in many industries
-- Be a first class engineer
+- Be a first-class engineer
 - Speak in conferences 
 ``` 
 
@@ -45,7 +45,7 @@ go run main.go samples
 
 ```
 
-What you will see next is the prompt of the repl. As we mentioned before, TLan is a terminal app, and operates through the repl. You can type commands related to all the four domains (i.e, purpose, planning, schedule and tracking). These commands allow you to do things like editing files and seeing dashboards.
+What you will see next is the prompt of the repl. As we mentioned before, TLan is a terminal app, and operates through the repl. You can type commands related to all the four domains (i.e, purpose, planning, schedule, and tracking). These commands allow you to do things like editing files and seeing dashboards.
 
 In the context of purpose, you can try the command ```goals```.
 ```
@@ -54,16 +54,16 @@ In the context of purpose, you can try the command ```goals```.
 | EXPLORE AND BUILD AI            | WRITE CODE AND INFLUENCE TECH |
 +---------------------------------+-------------------------------+
 | Second bachelors in Mathematics | Work in many industries       |
-| Stanford AI certificate         | Be a first class engineer     |
+| Stanford AI certificate         | Be a first-class engineer     |
 | Write a book                    | Speak in conferences          |
 | Have an Intelligent Assistant   |                               |
 +---------------------------------+-------------------------------+
 ```
 
 ### Planning
-Planning is all about organizing a way to reach your goals. A plan consists of a set to steps taking you from where you are today to your goal. These steps can be either **projects** or **tasks**. Projects are a big set of activities, and they usually take many days or weeks to completes. Tasks are more usually atomic, i.e, things that doesn't make sense to split anymore.
+Planning is all about organizing a way to reach your goals. A plan consists of a set to steps taking you from where you are today to the goal. These steps can be either **projects** or **tasks**. Projects are a big set of activities, and they usually take many days or weeks to completes. Tasks are more usually atomic, i.e, things that don't make sense to split anymore.
 
-You can define goals in a file named `projects.gr`:
+You can define projects in a file named `projects.gr`:
 
 ```
 // samples/projects.gr
@@ -114,7 +114,7 @@ AI
 
 ```
 
-Once you have defined projects, you can use the command `plan` to see how your plan for the next feel months look like.
+Once you have defined projects, you can use the command `plan` to see how your plan for the next few months looks like.
 
 ```
 +-------------------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+---------+----------+
@@ -153,7 +153,7 @@ Now you can call `goals --deep` and this will display not only the goals as we d
 
 ### Schedule
 
-Now that you have goals and projects, you can start managing the time that you will be dedicating to these projects on a more practical way. That is why you need a schedule. In a schedule you separate the days and the time slots that you will be dedicating to each project.
+Now that you have goals and projects, you can start managing the time that you will be dedicated to these projects in a more practical way. That is why you need a schedule. In a schedule, you separate the days and the time slots that you will be reserving to each project.
 
 The file `schedule.gr` defines your schedule.
 

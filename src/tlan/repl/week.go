@@ -71,16 +71,16 @@ func week(out io.Writer, _ []string) {
 	t.AppendRows(rows, rowConfigAutoMerge)
 
 	t.Style().Options.SeparateRows = true
-	widthMin := 18
+	widthMax := 30
 	t.SetColumnConfigs([]table.ColumnConfig{
-		{Number: 1, AutoMerge: true, WidthMin: widthMin},
-		{Number: 2, AutoMerge: true, WidthMin: widthMin},
-		{Number: 3, AutoMerge: true, WidthMin: widthMin},
-		{Number: 4, AutoMerge: true, WidthMin: widthMin},
-		{Number: 5, AutoMerge: true, WidthMin: widthMin},
-		{Number: 6, AutoMerge: true, WidthMin: widthMin},
-		{Number: 7, AutoMerge: true, WidthMin: widthMin},
-		{Number: 8, AutoMerge: true, WidthMin: widthMin},
+		{Number: 1, AutoMerge: true, WidthMax: widthMax},
+		{Number: 2, AutoMerge: true, WidthMax: widthMax},
+		{Number: 3, AutoMerge: true, WidthMax: widthMax},
+		{Number: 4, AutoMerge: true, WidthMax: widthMax},
+		{Number: 5, AutoMerge: true, WidthMax: widthMax},
+		{Number: 6, AutoMerge: true, WidthMax: widthMax},
+		{Number: 7, AutoMerge: true, WidthMax: widthMax},
+		{Number: 8, AutoMerge: true, WidthMax: widthMax},
 	})
 	t.Render()
 }
