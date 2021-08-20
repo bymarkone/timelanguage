@@ -3,7 +3,6 @@ package repl
 import (
 	"github.com/jedib0t/go-pretty/v6/table"
 	"io"
-	"strings"
 	"time"
 	"tlan/planning"
 	"tlan/schedule"
@@ -102,12 +101,13 @@ func plan(out io.Writer, _ []string) {
 }
 
 func widthMaxEnforcer(col string, _ int) string {
-	return strings.Join(strings.Split(col, ","), "\n")
+	return col
+	//return strings.Join(strings.Split(col, ","), "\n")
 }
 
 func projectNameForPlan(project *planning.Project) string {
 	name := project.Name
-	const LIMIT = 20
+	const LIMIT = 15
 	if len(name) > LIMIT {
 		//return name[0:LIMIT] + "."
 		return name
