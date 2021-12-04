@@ -6,7 +6,7 @@ func TestAnything(t *testing.T) {
 	input := `
 AI
 - Math >> Mathematician
-  - Bachelors Degree [Unary. 15/01-10/12]
+  - Bachelors Degree [Unary. 15/01/21-10/12/22]
   - (Cambridge Part III)
 - Foundations [Unary. 05:00-10:00]
 * Books 
@@ -28,9 +28,9 @@ AI
 		{LSB, "["},
 		{IDENT, "Unary"},
 		{DOT, "."},
-		{IDENT, "15/01"},
+		{IDENT, "15/01/21"},
 		{DASH, "-"},
-		{IDENT, "10/12"},
+		{IDENT, "10/12/22"},
 		{RSB, "]"},
 		{LEVEL, "  "},
 		{DASH, "-"},

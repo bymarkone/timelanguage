@@ -48,7 +48,7 @@ func Parse(value string) (int, int, int) {
 	second, _ := strconv.Atoi(value[3:5])
 	third := 0
 	if len(value) > 5 {
-		third, _ = strconv.Atoi(value[6:10])
+		third, _ = strconv.Atoi("20" + value[6:8])
 	}
 	return first, second, third
 }

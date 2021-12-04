@@ -152,7 +152,7 @@ Debt
 
 func TestEvalProjects(t *testing.T) {
 
-	period := utils.Period{Start: utils.DateTime{Day: 10, Month: 1, Year: 2022}, End: utils.DateTime{Day: 15, Month: 4, Year: 2022}}
+	period := utils.Period{Start: utils.DateTime{Day: 10, Month: 1, Year: 2021}, End: utils.DateTime{Day: 15, Month: 4, Year: 2022}}
 
 	tests := []struct {
 		input    string
@@ -162,7 +162,7 @@ func TestEvalProjects(t *testing.T) {
 			`
 Mathematics
 - IU Analysis II >> BS Mathematics
-- IU Modern Algebra [10/01/2022-15/04/2022]
+- IU Modern Algebra [10/01/21-15/04/22]
   * Read book
 - Study Analysis Burkin
   + Follow another list

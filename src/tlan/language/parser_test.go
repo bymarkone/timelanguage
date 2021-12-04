@@ -8,7 +8,7 @@ First Category
 AI
 - Math >> Mathematician
   - Bachelors Degree 
-- Foundations [Unary. 15/01-06/12]
+- Foundations [Unary. 15/01/21-06/12/22]
 * Books [Unary. 05:00-07:00]
 - (Research)
   + Follow another list, but not too "eagerly"
@@ -25,7 +25,7 @@ AI
 		target      string
 	}{
 		{"Project", "Math", "", 1, "AI", 1, false, []string{}, "Mathematician"},
-		{"Project", "Foundations", "", 1, "AI", 0, false, []string{"Unary", "15/01-06/12"}, ""},
+		{"Project", "Foundations", "", 1, "AI", 0, false, []string{"Unary", "15/01/21-06/12/22"}, ""},
 		{"Task", "Books", "", 1, "AI", 0, false, []string{"Unary", "05:00-07:00"}, ""},
 		{"Project", "Research", "", 1, "AI", 1, true, []string{}, ""},
 	}
