@@ -43,16 +43,14 @@ changelog:
       - '^test:'
 
 brews:
-  - name: tlan
+  - name: timelanguage
     tap:
       owner: bymarkone
       name: homebrew-tap
     folder: Formula
-    homepage:  https://github.com/bymarkone/timelanguage.com
+    homepage:  https://github.com/bymarkone/timelanguage.git
     description: A language to manage time
     license: MIT
-    test: |
-      system "#{bin}/goreleaser -v"
     dependencies:
       - name: go
         type: optional
