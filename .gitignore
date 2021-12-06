@@ -5,3 +5,5 @@
 github.com/
 gopkg.in/
 .DS_Store
+
+dist/
