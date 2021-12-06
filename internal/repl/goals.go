@@ -1,11 +1,11 @@
 package repl
 
 import (
+	"github.com/bymarkone/timelanguage/internal/planning"
+	"github.com/bymarkone/timelanguage/internal/purpose"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"io"
 	"strings"
-	"tlan/planning"
-	"tlan/purpose"
 )
 
 var goalsFlags []string

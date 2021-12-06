@@ -1,7 +1,7 @@
 package planning
 
 import (
-	"tlan/utils"
+	"github.com/bymarkone/timelanguage/internal/utils"
 )
 
 type Project struct {

@@ -1,6 +1,8 @@
 package purpose
 
-import plan "tlan/planning"
+import (
+	plan "github.com/bymarkone/timelanguage/internal/planning"
+)
 
 type Goal struct {
 	Category string

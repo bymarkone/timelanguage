@@ -3,15 +3,15 @@ package repl
 import (
 	"bufio"
 	"fmt"
+	"github.com/bymarkone/timelanguage/internal/language"
+	"github.com/bymarkone/timelanguage/internal/planning"
+	"github.com/bymarkone/timelanguage/internal/purpose"
+	"github.com/bymarkone/timelanguage/internal/schedule"
 	"io"
 	"io/ioutil"
 	"log"
 	"os/exec"
 	"strings"
-	"tlan/language"
-	"tlan/planning"
-	"tlan/purpose"
-	"tlan/schedule"
 )
 
 const Prompt = ">> "

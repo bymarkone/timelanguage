@@ -1,9 +1,9 @@
 package repl
 
 import (
+	"github.com/bymarkone/timelanguage/internal/schedule"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"io"
-	"tlan/schedule"
 )
 
 func init() {

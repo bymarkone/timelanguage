@@ -1,11 +1,11 @@
 package repl
 
 import (
+	"github.com/bymarkone/timelanguage/internal/planning"
+	"github.com/bymarkone/timelanguage/internal/schedule"
+	"github.com/bymarkone/timelanguage/internal/utils"
 	"io"
 	"time"
-	"tlan/planning"
-	"tlan/schedule"
-	"tlan/utils"
 )
 
 func init() {

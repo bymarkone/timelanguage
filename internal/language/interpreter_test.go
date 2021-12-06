@@ -1,13 +1,13 @@
 package language
 
 import (
+	"github.com/bymarkone/timelanguage/internal/planning"
+	"github.com/bymarkone/timelanguage/internal/purpose"
+	"github.com/bymarkone/timelanguage/internal/schedule"
+	"github.com/bymarkone/timelanguage/internal/utils"
 	"reflect"
 	"testing"
 	"time"
-	"tlan/planning"
-	"tlan/purpose"
-	"tlan/schedule"
-	"tlan/utils"
 )
 
 func TestEvalGoals(t *testing.T) {

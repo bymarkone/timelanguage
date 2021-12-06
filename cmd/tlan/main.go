@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/bymarkone/timelanguage/internal/repl"
 	"os"
 	"os/user"
-	"tlan/repl"
 )
 
 const BaseFolder = "./../.."

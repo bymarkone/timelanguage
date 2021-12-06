@@ -1,8 +1,8 @@
 package schedule
 
 import (
-	plan "tlan/planning"
-	"tlan/utils"
+	plan "github.com/bymarkone/timelanguage/internal/planning"
+	"github.com/bymarkone/timelanguage/internal/utils"
 )
 
 type Track struct {

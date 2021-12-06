@@ -1,12 +1,12 @@
 package repl
 
 import (
+	"github.com/bymarkone/timelanguage/internal/schedule"
+	"github.com/bymarkone/timelanguage/internal/utils"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"io"
 	"strings"
 	"time"
-	"tlan/schedule"
-	"tlan/utils"
 )
 
 func init() {
