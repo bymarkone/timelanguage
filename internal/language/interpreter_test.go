@@ -162,7 +162,7 @@ func TestEvalProjects(t *testing.T) {
 			`
 Mathematics
 - IU Analysis II >> BS Mathematics
-- IU Modern Algebra [10/01/21-15/04/22]
+- IU Modern Algebra [Algebra. 10/01/21-15/04/22]
   * Read book
 - Study Analysis Burkin
   + Follow another list
@@ -171,7 +171,7 @@ Mathematics
 			[]*planning.Project{
 				{Name: "IU Analysis II", Category: "Mathematics", Active: true,
 					ContributingGoals: []string{"BS Mathematics"}},
-				{Name: "IU Modern Algebra", Category: "Mathematics", Active: true, Period: period,
+				{Id: "Algebra", Name: "IU Modern Algebra", Category: "Mathematics", Active: true, Period: period,
 					ContributingGoals: []string{}, SubProjects: []*planning.Project{{Name: "Read book"}}},
 				{Name: "Study Analysis Burkin", Category: "Mathematics", Active: true,
 					ContributingGoals: []string{}, SubProjects: []*planning.Project{{Name: "Follow another list"}}},
@@ -192,6 +192,9 @@ Mathematics
 		projects := planning.GetRepository().ListProjects()
 
 		for i, p := range tt.expected {
+			if projects[i].Id != p.Id {
+				t.Errorf("Project has wrong data. Got %s, want %s", projects[i].Id, p.Id)
+			}
 			if projects[i].Name != p.Name {
 				t.Errorf("Project has wrong data. Got %s, want %s", projects[i].Name, p.Name)
 			}

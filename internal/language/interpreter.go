@@ -96,8 +96,12 @@ func evalProject(items []*Item) {
 }
 
 func projectFromItem(item *Item) *planning.Project {
+	annotation := findUnaryAnnotation(item.Annotations)
 	repository := purpose.GetRepository()
 	project := &planning.Project{}
+	if annotation != nil {
+		project.Id = annotation.Name.Value
+	}
 	project.Name = item.Name.Value
 	project.Category = item.Category.Value
 	project.Active = !item.Marked

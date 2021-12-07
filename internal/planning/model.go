@@ -5,6 +5,7 @@ import (
 )
 
 type Project struct {
+	Id                string
 	Name              string
 	Category          string
 	Type              string
