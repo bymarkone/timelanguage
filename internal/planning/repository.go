@@ -50,8 +50,16 @@ func (r *Repository) GetProject(name string) *Project {
 	return FindProject(r.projects, ByProjectName(name))
 }
 
+func (r *Repository) GetProjectById(id string) *Project {
+	return FindProject(r.projects, ByProjectId(id))
+}
+
 func ByProjectName(name string) func(project Project) bool {
 	return func(project Project) bool { return project.Name == name }
+}
+
+func ByProjectId(id string) func(project Project) bool {
+	return func(project Project) bool { return project.Id == id }
 }
 
 func FindProject(arr []*Project, cond func(project Project) bool) *Project {

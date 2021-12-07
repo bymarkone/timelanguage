@@ -117,13 +117,13 @@ func TestEvalTasks(t *testing.T) {
 		`
 Developer
 - Data Platform
+- Debt
 `,
 		`
-Data Platform
-* !Do something urgent
-* Do something else
-Debt
-* Do something now
+Tasks
+* !Do something urgent [Data Platform]
+* Do something else [Data Platform]
+* Do something now [Debt]
 `,
 	}}
 

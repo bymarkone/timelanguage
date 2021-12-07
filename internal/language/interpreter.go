@@ -25,15 +25,21 @@ func Eval(context string, categories []*Category, items []*Item) {
 func evalTasks(items []*Item) {
 	repository := planning.GetRepository()
 	for _, item := range items {
-		var project = projectFromItem(item)
-		parent := repository.GetProject(item.Category.Value)
-		if parent == nil {
-			parent = &planning.Project{}
-			parent.Name = item.Category.Value
-			repository.AddProject(parent)
+		var task = projectFromItem(item)
+		projectAnnotation := findUnaryAnnotation(item.Annotations)
+		var parent = &planning.Project{}
+		if projectAnnotation != nil {
+			projectName := projectAnnotation.Name.Value
+			parent = repository.GetProjectById(projectName)
+			if parent == nil {
+				parent = repository.GetProject(projectName)
+			}
+			if parent == nil {
+				panic("Project id exists, but project is not valid: " + projectName)
+			}
 		}
-		project.Parent = parent
-		parent.SubProjects = append(parent.SubProjects, project)
+		task.Parent = parent
+		parent.SubProjects = append(parent.SubProjects, task)
 	}
 }
 
