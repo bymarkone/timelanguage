@@ -43,7 +43,7 @@ changelog:
       - '^test:'
 
 brews:
-  - name: timelanguage
+  - name: tlan
     tap:
       owner: bymarkone
       name: homebrew-tap
