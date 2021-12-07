@@ -117,7 +117,7 @@ func TestEvalTasks(t *testing.T) {
 		`
 Developer
 - Data Platform
-- Debt
+- Debt, Other
 `,
 		`
 Tasks
@@ -143,7 +143,7 @@ Tasks
 			t.Errorf("Tasks were not added to project. Got %d, want %d", len(project.SubProjects), 2)
 		}
 
-		debt := planning.GetRepository().GetProject("Debt")
+		debt := planning.GetRepository().GetProject("Debt, Other")
 		if len(debt.SubProjects) != 1 {
 			t.Errorf("Tasks were not added to Debt project. Got %d, want %d", len(debt.SubProjects), 2)
 		}

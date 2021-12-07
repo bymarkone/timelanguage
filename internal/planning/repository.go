@@ -1,5 +1,9 @@
 package planning
 
+import (
+	"strings"
+)
+
 var repository Repository
 
 type Repository struct {
@@ -52,6 +56,15 @@ func (r *Repository) GetProject(name string) *Project {
 
 func (r *Repository) GetProjectById(id string) *Project {
 	return FindProject(r.projects, ByProjectId(id))
+}
+
+func (r *Repository) GetProjectsWithText(id string) *Project {
+	for _, project := range r.ListProjects() {
+		if strings.Contains(project.Name, id) {
+			return project
+		}
+	}
+	return nil
 }
 
 func ByProjectName(name string) func(project Project) bool {

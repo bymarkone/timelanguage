@@ -35,7 +35,11 @@ func evalTasks(items []*Item) {
 				parent = repository.GetProject(projectName)
 			}
 			if parent == nil {
-				panic("Project id exists, but project is not valid: " + projectName)
+				parent = repository.GetProjectsWithText(projectName)
+			}
+			if parent == nil {
+				fmt.Printf("Project id exists, but project is not valid: %s \n", projectName)
+				parent = &planning.Project{Name: projectName, Id: projectName}
 			}
 		}
 		task.Parent = parent
