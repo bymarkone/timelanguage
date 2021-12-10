@@ -1,126 +1,136 @@
 package repl
 
 import (
-	"bufio"
 	"fmt"
-	"github.com/bymarkone/timelanguage/internal/language"
-	"github.com/bymarkone/timelanguage/internal/planning"
-	"github.com/bymarkone/timelanguage/internal/purpose"
-	"github.com/bymarkone/timelanguage/internal/schedule"
+	"github.com/bymarkone/timelanguage/internal/data"
+	"golang.org/x/term"
 	"io"
-	"io/ioutil"
-	"log"
+	"os"
 	"os/exec"
 	"strings"
+	"unicode/utf8"
 )
 
-const Prompt = ">> "
 const MaxTableLines = 100
 
+type TerminalReadWriter struct {
+	term *term.Terminal
+}
+
+func (t TerminalReadWriter) Write(b []byte) (int, error) {
+	return t.term.Write(b)
+}
+
+func (t TerminalReadWriter) Read(b []byte) (int, error) {
+	return os.Stdin.Read(b)
+}
+
+type Repl struct {
+	terminal TerminalReadWriter
+	data     []string
+	loader   data.Loader
+}
+
 var allCommands = make(map[string]Command)
-
-type Loader struct {
-	BaseFolder string
-	loaded     map[string]string
-}
-
-func (l *Loader) Load() {
-	planning.CreateRepository()
-	schedule.CreateRepository()
-	purpose.CreateRepository()
-	l.loaded = make(map[string]string)
-
-	filesInfo, err := ioutil.ReadDir(l.BaseFolder)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-	for _, file := range filesInfo {
-		fmt.Printf("Processing file %s \n", file.Name())
-		fileAddress := l.BaseFolder + "/" + file.Name()
-		content, err := ioutil.ReadFile(fileAddress)
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-		context := strings.ReplaceAll(file.Name(), ".gr", "")
-		l.loaded[context] = fileAddress
-		text := string(content)
-		l := language.NewLexer(text)
-		p := language.NewParser(file.Name(), l)
-		categories, items := p.Parse()
-		language.Eval(context, categories, items)
-	}
-}
 
 func RegisterCommands(name string, command Command) {
 	allCommands[name] = command
 }
 
-var out io.Writer
-var loader Loader
+func NewRepl(loader data.Loader) *Repl {
+	terminal := term.NewTerminal(os.Stdin, ">")
+	return &Repl{
+		terminal: TerminalReadWriter{terminal},
+		data:     make([]string, 0),
+		loader:   loader,
+	}
+}
 
-func Start(_in io.Reader, _out io.Writer, _loader Loader) {
-	scanner := bufio.NewScanner(_in)
-	out = _out
-	loader = _loader
+func (repl *Repl) ReadInput() (rune, error) {
+	var buffer []byte
+	for {
+		var b = make([]byte, 1)
+		_, err := repl.terminal.Read(b)
+
+		if err != nil && err != io.EOF {
+			return toRune(b), err
+		}
+
+		if b[0] == 3 {
+			return toRune(b), nil
+		}
+
+		buffer = append(buffer, b[0])
+
+		if len(buffer) > 0 {
+			break
+		}
+	}
+
+	return toRune(buffer), nil
+}
+
+func (repl *Repl) Start() {
+	var lines []string
+	var line string
+
+	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
+	if err != nil {
+		panic(err)
+	}
+	defer term.Restore(int(os.Stdin.Fd()), oldState)
 
 	for {
-		print(Prompt)
-		scanned := scanner.Scan()
-		if !scanned {
-			return
-		}
+		char, _ := repl.ReadInput()
 
-		line := scanner.Text()
-		words := strings.Split(line, " ")
-		if len(words) == 0 {
-			continue
-		}
-
-		switch words[0] {
-		case "clear":
-			clear()
-		case "exit":
+		switch char {
+		case 'q':
 			return
-		case "reload":
-			loader.Load()
-		case "help":
-			allCommands["help"].Function(out, words)
-		case "tracks":
-			allCommands["tracks"].Function(out, words)
-		case "plan":
-			allCommands["plan"].Function(out, words)
-		case "now":
-			allCommands["now"].Function(out, words)
-		case "edit":
-			allCommands["edit"].Function(out, words)
-		case "week":
-			allCommands["week"].Function(out, words)
-		case "goals":
-			allCommands["goals"].Function(out, words)
+		case 13:
+			lines = append(lines, line)
+			repl.executeCommand(line)
+			line = ""
+			break
+		default:
+			str := string(char)
+			fmt.Fprint(repl.terminal, str)
+
+			line += str
 		}
 	}
 }
 
-func println(what string) {
-	print(what)
-	printEmptyLine()
+func (repl *Repl) executeCommand(line string) {
+	words := strings.Split(line, " ")
+	switch words[0] {
+	case "clear":
+		clear(repl.terminal)
+	case "exit":
+		return
+	case "reload":
+		repl.loader.Load()
+	case "help":
+		allCommands["help"].Function(repl.terminal, words)
+	case "tracks":
+		allCommands["tracks"].Function(repl.terminal, words)
+	case "plan":
+		allCommands["plan"].Function(repl.terminal, words)
+	case "now":
+		allCommands["now"].Function(repl.terminal, words)
+	case "edit":
+		allCommands["edit"].Function(repl.terminal, words)
+	case "week":
+		allCommands["week"].Function(repl.terminal, words)
+	case "goals":
+		allCommands["goals"].Function(repl.terminal, words)
+	}
 }
 
-func print(what string) {
-	_, _ = fmt.Fprint(out, what)
+func printTlanHeader(out io.ReadWriter) {
+	printlnint(out, "tLan - a language for time")
 }
 
-func printEmptyLine() {
-	_, _ = fmt.Fprint(out, "\n")
-}
-
-func printTlanHeader() {
-	println("tLan - a language for time")
-}
-
-func clear() {
+func clear(out io.ReadWriter) {
 	cmd := exec.Command("clear")
 	cmd.Stdout = out
 	_ = cmd.Run()
@@ -147,4 +157,22 @@ func contains(flags []string, shallow string) bool {
 		}
 	}
 	return false
+}
+
+func printlnint(out io.ReadWriter, what string) {
+	printint(out, what)
+	printEmptyLine(out)
+}
+
+func printint(out io.ReadWriter, what string) {
+	_, _ = fmt.Fprint(out, what)
+}
+
+func printEmptyLine(out io.ReadWriter) {
+	_, _ = fmt.Fprint(out, "\n")
+}
+
+func toRune(b []byte) rune {
+	r, _ := utf8.DecodeRune(b)
+	return r
 }

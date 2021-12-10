@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/bymarkone/timelanguage/internal/data"
 	"github.com/bymarkone/timelanguage/internal/repl"
 	"os"
 	"os/user"
@@ -18,13 +19,18 @@ func main() {
 		panic(err)
 	}
 
-	var loader repl.Loader
+	var loader data.Loader
 	if len(os.Args) > 1 && os.Args[1] == "samples" {
-		loader = repl.Loader{BaseFolder: SamplesFolder}
+		loader = data.Loader{BaseFolder: SamplesFolder}
 	} else {
-		loader = repl.Loader{BaseFolder: DataFolder}
+		loader = data.Loader{BaseFolder: DataFolder}
 	}
+
 	loader.Load()
 	fmt.Printf("Hello %s! Welcome to tlan\n", currentUser.Username)
-	repl.Start(os.Stdin, os.Stdout, loader)
+	//repl.Start(os.Stdin, os.Stdout, loader)
+
+	repl := repl.NewRepl(loader)
+
+	repl.Start()
 }

@@ -20,7 +20,7 @@ func init() {
 	RegisterCommands("week", command)
 }
 
-func week(out io.Writer, _ []string) {
+func week(out io.ReadWriter, _ []string) {
 	weekdays := []time.Weekday{time.Monday, time.Tuesday, time.Wednesday, time.Thursday, time.Friday, time.Saturday, time.Sunday}
 	times := []string{
 		"04:00", "05:00", "06:00", "07:00", "08:00", "09:00",

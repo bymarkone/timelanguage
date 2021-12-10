@@ -16,7 +16,7 @@ func init() {
 	command := Command{
 		Description: "Prints the dashboard of goals",
 		Usage:       "goals {flags}",
-		Arguments: []Argument{ },
+		Arguments:   []Argument{},
 		Flags: []Flag{
 			{Name: GoalsDeep, Shortcut: "d", Description: "Display projects related to goals"},
 		},
@@ -25,7 +25,7 @@ func init() {
 	RegisterCommands("goals", command)
 }
 
-func goals(out io.Writer,words []string) {
+func goals(out io.ReadWriter, words []string) {
 	t := table.NewWriter()
 	t.SetOutputMirror(out)
 

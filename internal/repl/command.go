@@ -10,7 +10,7 @@ type Command struct {
 	Usage       string
 	Arguments   []Argument
 	Flags       []Flag
-	Function    func(io.Writer, []string)
+	Function    func(io.ReadWriter, []string)
 }
 
 type Argument struct {
@@ -24,7 +24,7 @@ type Flag struct {
 	Description string
 }
 
-func printCommand(command Command) {
+func printCommand(out io.ReadWriter, command Command) {
 	tmpl, err := template.New("Command").Parse(`
 {{.Description}}
 

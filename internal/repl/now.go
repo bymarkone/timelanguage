@@ -22,7 +22,7 @@ func init() {
 	RegisterCommands("now", command)
 }
 
-func now(_ io.Writer, words []string) {
+func now(out io.ReadWriter, words []string) {
 	tracks := schedule.GetRepository().ListTracks()
 	now := time.Now()
 	if len(words) > 1 {
@@ -33,52 +33,52 @@ func now(_ io.Writer, words []string) {
 		return track.Slot.Period.Start.Hour <= now.Hour() && track.Slot.Period.End.Hour > now.Hour() && ContainsWeekday(track.Slot.Period.Weekdays, now.Weekday())
 	})
 	if len(filteredTracks) == 0 {
-		println("It seems you have nothing to do")
+		printlnint(out, "It seems you have nothing to do")
 		return
 	}
-	println("NOW is time to do " + filteredTracks[0].Slot.Name)
+	printlnint(out, "NOW is time to do " + filteredTracks[0].Slot.Name)
 	for _, track := range filteredTracks {
 		subProjects := extractSubProjects(track)
 		if len(subProjects) == 0 {
 			continue
 		}
-		println(" ")
-		println(track.Name)
+		printlnint(out, " ")
+		printlnint(out, track.Name)
 		for _, project := range subProjects {
-			println(" -- " + project.Name + " [" + project.Parent.Name + "]")
+			printlnint(out, " -- " + project.Name + " [" + project.Parent.Name + "]")
 		}
-		println(" ")
+		printlnint(out, " ")
 	}
-	printPriorities()
-	printDebt()
+	printPriorities(out)
+	printDebt(out)
 }
 
-func printPriorities() {
+func printPriorities(out io.ReadWriter) {
 	priorities := planning.GetRepository().GetProject("Priority")
 	if priorities == nil {
 		return
 	}
 	if len(priorities.SubProjects) > 0 {
-		println("You have also some Priorities")
+		printlnint(out, "You have also some Priorities")
 		for _, project := range priorities.SubProjects {
-			println(" -- " + project.Name)
+			printlnint(out, " -- " + project.Name)
 		}
 	}
-	println(" ")
+	printlnint(out, " ")
 }
 
-func printDebt() {
+func printDebt(out io.ReadWriter) {
 	debt := planning.GetRepository().GetProject("Debt")
 	if debt == nil {
 		return
 	}
 	if len(debt.SubProjects) > 0 {
-		println("And some Debt")
+		printlnint(out, "And some Debt")
 		for _, project := range debt.SubProjects {
-			println(" -- " + project.Name)
+			printlnint(out, " -- " + project.Name)
 		}
 	}
-	println(" ")
+	printlnint(out, " ")
 }
 
 func extractSubProjects(track *schedule.Track) []*planning.Project {

@@ -17,8 +17,8 @@ func init() {
 	RegisterCommands("tracks", command)
 }
 
-func tracks(out io.Writer, _ []string) {
-	println("Tracks:")
+func tracks(out io.ReadWriter, _ []string) {
+	printlnint(out, "Tracks:")
 	t := table.NewWriter()
 	t.SetOutputMirror(out)
 

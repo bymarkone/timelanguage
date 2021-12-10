@@ -19,7 +19,7 @@ func init() {
 	RegisterCommands("plan", command)
 }
 
-func plan(out io.Writer, _ []string) {
+func plan(out io.ReadWriter, _ []string) {
 	t := table.NewWriter()
 	t.SetOutputMirror(out)
 	rowConfigAutoMerge := table.RowConfig{AutoMerge: true}
