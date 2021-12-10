@@ -12,6 +12,7 @@ import (
 )
 
 const MaxTableLines = 100
+const Prompt = ">> "
 
 type TerminalReadWriter struct {
 	term *term.Terminal
@@ -73,6 +74,7 @@ func (repl *Repl) ReadInput() (rune, error) {
 func (repl *Repl) Start() {
 	var lines []string
 	var line string
+	var cursor = 0
 
 	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
@@ -80,22 +82,34 @@ func (repl *Repl) Start() {
 	}
 	defer term.Restore(int(os.Stdin.Fd()), oldState)
 
+	fmt.Fprint(repl.terminal, Prompt)
+
 	for {
 		char, _ := repl.ReadInput()
 
 		switch char {
 		case 'q':
 			return
+		case 127:
+			if cursor == 0 {
+				break
+			}
+			cursor -= 1
+			fmt.Fprint(repl.terminal, "\b \b")
+			break
 		case 13:
 			lines = append(lines, line)
 			repl.executeCommand(line)
 			line = ""
+			fmt.Fprint(repl.terminal, "\n")
+			fmt.Fprint(repl.terminal, Prompt)
 			break
 		default:
 			str := string(char)
 			fmt.Fprint(repl.terminal, str)
 
 			line += str
+			cursor += 1
 		}
 	}
 }
