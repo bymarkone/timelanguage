@@ -47,18 +47,18 @@ func NewRepl(loader data.Loader) *Repl {
 	}
 }
 
-func (repl *Repl) ReadInput() (rune, error) {
+func (repl *Repl) ReadInput() rune {
 	var buffer []byte
 	for {
 		var b = make([]byte, 1)
 		_, err := repl.terminal.Read(b)
 
 		if err != nil && err != io.EOF {
-			return toRune(b), err
+			return toRune(b)
 		}
 
 		if b[0] == 3 {
-			return toRune(b), nil
+			return toRune(b)
 		}
 
 		buffer = append(buffer, b[0])
@@ -68,13 +68,14 @@ func (repl *Repl) ReadInput() (rune, error) {
 		}
 	}
 
-	return toRune(buffer), nil
+	return toRune(buffer)
 }
 
 func (repl *Repl) Start() {
 	var lines []string
 	var line string
-	var cursor = 0
+	var col = 0
+	var row = 0
 
 	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
@@ -85,31 +86,81 @@ func (repl *Repl) Start() {
 	fmt.Fprint(repl.terminal, Prompt)
 
 	for {
-		char, _ := repl.ReadInput()
+		char := repl.ReadInput()
+
+		//fmt.Fprintf(repl.terminal, "\n%d", char)
 
 		switch char {
 		case 'q':
 			return
 		case 127:
-			if cursor == 0 {
+			if col == 0 {
 				break
 			}
-			cursor -= 1
+			col -= 1
 			fmt.Fprint(repl.terminal, "\b \b")
 			break
 		case 13:
-			lines = append(lines, line)
-			repl.executeCommand(line)
-			line = ""
+			if len(line) > 0 {
+				lines = append(lines, line)
+				repl.executeCommand(line)
+				line = ""
+			}
 			fmt.Fprint(repl.terminal, "\n")
 			fmt.Fprint(repl.terminal, Prompt)
+			break
+		case 27:
+			repl.ReadInput()
+			arrow := repl.ReadInput()
+			switch arrow {
+			case 68:
+				if col == 0 {
+					break
+				}
+				fmt.Fprint(repl.terminal, "\b")
+				col -= 1
+				break
+			case 65:
+				index := len(lines) - (row+1)
+				if index < 0 || index > len(lines)-1 {
+					break
+				}
+				row += 1
+				fmt.Fprint(repl.terminal, "\r")
+				fmt.Fprint(repl.terminal, strings.Repeat(" ", len(line) + 2))
+				fmt.Fprint(repl.terminal, "\r")
+				line = lines[index]
+				fmt.Fprint(repl.terminal, Prompt)
+				fmt.Fprint(repl.terminal, line)
+				break
+			case 66:
+				index := len(lines) - (row-1)
+				 if index < 0 || index > len(lines)-1 {
+					break
+				}
+				row -= 1
+				fmt.Fprint(repl.terminal, "\r")
+				fmt.Fprint(repl.terminal, strings.Repeat(" ", len(line) + 2))
+				fmt.Fprint(repl.terminal, "\r")
+				line = lines[index]
+				fmt.Fprint(repl.terminal, Prompt)
+				fmt.Fprint(repl.terminal, line)
+				break
+			case 67:
+				if col == len(line) {
+					break
+				}
+				fmt.Fprint(repl.terminal, "", string(line[col]))
+				col += 1
+				break
+			}
 			break
 		default:
 			str := string(char)
 			fmt.Fprint(repl.terminal, str)
 
 			line += str
-			cursor += 1
+			col += 1
 		}
 	}
 }
@@ -124,18 +175,25 @@ func (repl *Repl) executeCommand(line string) {
 	case "reload":
 		repl.loader.Load()
 	case "help":
+		fmt.Fprint(repl.terminal, "\n")
 		allCommands["help"].Function(repl.terminal, words)
 	case "tracks":
+		fmt.Fprint(repl.terminal, "\n")
 		allCommands["tracks"].Function(repl.terminal, words)
 	case "plan":
+		fmt.Fprint(repl.terminal, "\n")
 		allCommands["plan"].Function(repl.terminal, words)
 	case "now":
+		fmt.Fprint(repl.terminal, "\n")
 		allCommands["now"].Function(repl.terminal, words)
 	case "edit":
+		fmt.Fprint(repl.terminal, "\n")
 		allCommands["edit"].Function(repl.terminal, words)
 	case "week":
+		fmt.Fprint(repl.terminal, "\n")
 		allCommands["week"].Function(repl.terminal, words)
 	case "goals":
+		fmt.Fprint(repl.terminal, "\n")
 		allCommands["goals"].Function(repl.terminal, words)
 	}
 }
