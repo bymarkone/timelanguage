@@ -30,7 +30,10 @@ func main() {
 	fmt.Printf("Hello %s! Welcome to tlan\n", currentUser.Username)
 	//repl.Start(os.Stdin, os.Stdout, loader)
 
-	repl := repl.NewRepl(loader)
+	_repl := repl.NewRepl(loader)
 
-	repl.Start()
+	_repl.Start()
+}
+
+func loadConfiguration() {
 }

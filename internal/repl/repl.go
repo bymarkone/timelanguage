@@ -124,11 +124,18 @@ func (repl *Repl) Start() {
 			arrow := repl.ReadInput()
 			switch arrow {
 			case 68:
-				if col == 1 {
+				if col < 1 {
 					break
 				}
 				terminal.Print("\b")
 				col -= 1
+				break
+			case 67:
+				if col >= len(line) {
+					break
+				}
+				terminal.Print(string(line[col]))
+				col += 1
 				break
 			case 65:
 				index := len(lines) - (row+1)
@@ -137,9 +144,10 @@ func (repl *Repl) Start() {
 				}
 				row += 1
 				terminal.Print("\r")
-				terminal.Print(strings.Repeat(" ", len(line) + 2))
+				terminal.Print(strings.Repeat(" ", len(line) + 3))
 				terminal.Print("\r")
 				line = lines[index]
+				col = len(line)
 				terminal.Print(Prompt)
 				terminal.Print(line)
 				break
@@ -150,18 +158,12 @@ func (repl *Repl) Start() {
 				}
 				row -= 1
 				terminal.Print("\r")
-				terminal.Print(strings.Repeat(" ", len(line) + 2))
+				terminal.Print(strings.Repeat(" ", len(line) + 3))
 				terminal.Print("\r")
 				line = lines[index]
+				col = len(line)
 				terminal.Print(Prompt)
 				terminal.Print(line)
-				break
-			case 67:
-				if col == len(line) {
-					break
-				}
-				terminal.Print(string(line[col]))
-				col += 1
 				break
 			}
 			break
