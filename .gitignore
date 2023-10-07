@@ -1,6 +1,7 @@
 *.swp
 *.gr
 .idea
+.env
 /pkg
 github.com/
 gopkg.in/

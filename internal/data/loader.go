@@ -5,8 +5,8 @@ import (
 	"github.com/bymarkone/timelanguage/internal/planning"
 	"github.com/bymarkone/timelanguage/internal/purpose"
 	"github.com/bymarkone/timelanguage/internal/schedule"
-	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -21,14 +21,17 @@ func (l *Loader) Load() {
 	purpose.CreateRepository()
 	l.loaded = make(map[string]string)
 
-	filesInfo, err := ioutil.ReadDir(l.BaseFolder)
+	filesInfo, err := os.ReadDir(l.BaseFolder)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 	for _, file := range filesInfo {
+		if !strings.HasSuffix(file.Name(), ".gr") {
+			continue
+		}
 		fileAddress := l.BaseFolder + "/" + file.Name()
-		content, err := ioutil.ReadFile(fileAddress)
+		content, err := os.ReadFile(fileAddress)
 		if err != nil {
 			log.Fatal(err)
 			return

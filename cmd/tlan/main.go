@@ -2,17 +2,18 @@ package main
 
 import (
 	"fmt"
+	"github.com/bymarkone/timelanguage/internal/config"
 	"github.com/bymarkone/timelanguage/internal/data"
 	"github.com/bymarkone/timelanguage/internal/repl"
 	"os"
 	"os/user"
 )
 
-const BaseFolder = "./../.."
-const DataFolder = BaseFolder + "/data"
-const SamplesFolder = BaseFolder + "/samples"
-
 func main() {
+	var BaseFolder = config.EnvBaseFolder()
+	var DataFolder = BaseFolder + "/data"
+	var SamplesFolder = BaseFolder + "/samples"
+
 	currentUser, err := user.Current()
 
 	if err != nil {
