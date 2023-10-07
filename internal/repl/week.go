@@ -13,9 +13,9 @@ func init() {
 	command := Command{
 		Description: "Prints the plan for the week",
 		Usage:       "week",
-		Arguments: []Argument{ },
-		Flags: []Flag{ },
-		Function: week,
+		Arguments:   []Argument{},
+		Flags:       []Flag{},
+		Function:    week,
 	}
 	RegisterCommands("week", command)
 }
@@ -48,14 +48,15 @@ func week(out io.ReadWriter, _ []string) {
 	tracks := schedule.GetRepository().ListTracks()
 	var rows []table.Row
 	for _, timeSlot := range times {
-		hour, minute, _ := utils.Parse(timeSlot)
+		hour, _, _ := utils.Parse(timeSlot)
 		row := table.Row{}
 		row = append(row, timeSlot)
 		for _, weekday := range weekdays {
 			var name []string
 			for _, track := range tracks {
-				if (track.Slot.Period.Start.Hour < hour || (track.Slot.Period.Start.Hour == hour && track.Slot.Period.Start.Minute <= minute)) &&
-					(track.Slot.Period.End.Hour > hour || (track.Slot.Period.End.Hour == hour && track.Slot.Period.End.Minute > minute)) {
+				//if (track.Slot.Period.Start.Hour < hour || (track.Slot.Period.Start.Hour == hour && track.Slot.Period.Start.Minute <= minute)) &&
+				//	(track.Slot.Period.End.Hour > hour || (track.Slot.Period.End.Hour == hour && track.Slot.Period.End.Minute > minute)) {
+				if (track.Slot.Period.Start.Hour <= hour) && (track.Slot.Period.End.Hour > hour) {
 					if ContainsWeekday(track.Slot.Period.Weekdays, weekday) {
 						name = append(name, track.Name)
 					}
@@ -84,4 +85,3 @@ func week(out io.ReadWriter, _ []string) {
 	})
 	t.Render()
 }
-
