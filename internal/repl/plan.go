@@ -5,6 +5,7 @@ import (
 	"github.com/bymarkone/timelanguage/internal/schedule"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"io"
+	"slices"
 	"time"
 )
 
@@ -49,6 +50,11 @@ func plan(out io.ReadWriter, _ []string) {
 			var activeProjects []*planning.Project
 			for _, track := range schedule.GetRepository().TracksBySlot(*slot) {
 				for _, project := range categoriesWithProjects[track.Name] {
+					if slices.ContainsFunc(activeProjects, func(p *planning.Project) bool {
+						return p.Name == project.Name
+					}) {
+						continue
+					}
 					if project.Period.ActiveIn(now) {
 						activeProjects = append(activeProjects, project)
 					}
