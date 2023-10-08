@@ -82,7 +82,7 @@ func toProjectNamesForGoals(depth []*planning.Project) []string {
 	for i := range depth {
 		project := depth[i]
 		results = append(results, "-"+project.Name)
-	
+
 	}
 	return results
 }

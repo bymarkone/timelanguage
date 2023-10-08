@@ -86,12 +86,16 @@ func (repl *Repl) Start() {
 
 	terminal := repl.terminal
 
-
 	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
 		panic(err)
 	}
-	defer term.Restore(int(os.Stdin.Fd()), oldState)
+	defer func(fd int, oldState *term.State) {
+		err := term.Restore(fd, oldState)
+		if err != nil {
+
+		}
+	}(int(os.Stdin.Fd()), oldState)
 
 	terminal.Print(Prompt)
 
@@ -138,13 +142,13 @@ func (repl *Repl) Start() {
 				col += 1
 				break
 			case 65:
-				index := len(lines) - (row+1)
+				index := len(lines) - (row + 1)
 				if index < 0 || index > len(lines)-1 {
 					break
 				}
 				row += 1
 				terminal.Print("\r")
-				terminal.Print(strings.Repeat(" ", len(line) + 3))
+				terminal.Print(strings.Repeat(" ", len(line)+3))
 				terminal.Print("\r")
 				line = lines[index]
 				col = len(line)
@@ -152,13 +156,13 @@ func (repl *Repl) Start() {
 				terminal.Print(line)
 				break
 			case 66:
-				index := len(lines) - (row-1)
-				 if index < 0 || index > len(lines)-1 {
+				index := len(lines) - (row - 1)
+				if index < 0 || index > len(lines)-1 {
 					break
 				}
 				row -= 1
 				terminal.Print("\r")
-				terminal.Print(strings.Repeat(" ", len(line) + 3))
+				terminal.Print(strings.Repeat(" ", len(line)+3))
 				terminal.Print("\r")
 				line = lines[index]
 				col = len(line)
@@ -209,6 +213,9 @@ func (repl *Repl) executeCommand(line string) {
 	case "goals":
 		terminal.Print("\n")
 		allCommands["goals"].Function(repl.terminal, words)
+	case "today":
+		terminal.Print("\n")
+		allCommands["today"].Function(repl.terminal, words)
 	}
 }
 
