@@ -10,9 +10,9 @@ func init() {
 	command := Command{
 		Description: "Prints list of tracks and the activities within it",
 		Usage:       "tracks",
-		Arguments: []Argument{ },
-		Flags: []Flag{ },
-		Function: tracks,
+		Arguments:   []Argument{},
+		Flags:       []Flag{},
+		Function:    tracks,
 	}
 	RegisterCommands("tracks", command)
 }
@@ -71,13 +71,7 @@ func extractProjectNameForTracks(track *schedule.Track, n int) string {
 
 func boxedProjectNameForTracks(track *schedule.Track, n int) string {
 	project := track.FlattenActiveProjects()[n]
-	name := project.Name
-	base := ""
-	if project.Level >= 1 {
-		base = "- " + name
-	} else {
-		base = name
-	}
+	base := project.Name
 	const LIMIT = 25
 	if len(base) > LIMIT {
 		return base[0:LIMIT] + "..."

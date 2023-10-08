@@ -47,8 +47,11 @@ func evalTasks(items []*Item) {
 			task.Active = true
 		}
 		task.Name = strings.Replace(item.Name.Value, "!", "", 1)
+		if project == nil {
+			fmt.Printf("Invalid project for task %s \n", task.Name)
+			continue
+		}
 		task.Project = *project
-
 		repository.AddTask(&task)
 	}
 }
