@@ -51,6 +51,9 @@ func evalTasks(items []*Item) {
 			fmt.Printf("Invalid project for task %s \n", task.Name)
 			continue
 		}
+		if len(item.Annotations) == 1 {
+			task.Type = item.Annotations[0].ToString()
+		}
 		task.Project = *project
 		repository.AddTask(&task)
 	}

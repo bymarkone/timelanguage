@@ -123,15 +123,15 @@ AI
 `,
 		`
 Elements
-* !Take urgent notes
-- Read chapters 4 and 5
+* !Take urgent notes [Study.]
+- Read chapters 4 and 5 [Study.]
 
 PhD
-* Apply to TUM
+* Apply to TUM [Personal.]
 `, []*planning.Task{
-			{Name: "Take urgent notes", Type: "None", Project: planning.Project{Name: "Elements of Statistical Learning"}},
-			{Name: "Read chapters 4 and 5", Type: "None", Project: planning.Project{Name: "Elements of Statistical Learning"}},
-			{Name: "Apply to TUM", Type: "None", Project: planning.Project{Name: "PhD in AI"}}}}}
+			{Name: "Take urgent notes", Type: "Study", Project: planning.Project{Name: "Elements of Statistical Learning"}},
+			{Name: "Read chapters 4 and 5", Type: "Study", Project: planning.Project{Name: "Elements of Statistical Learning"}},
+			{Name: "Apply to TUM", Type: "Personal", Project: planning.Project{Name: "PhD in AI"}}}}}
 
 	for _, tt := range tests {
 		l1 := NewLexer(tt.projectInput)
@@ -147,10 +147,9 @@ PhD
 		tasks := planning.GetRepository().ListTasks()
 
 		for i, p := range tt.expected {
-			if tasks[i].Name != p.Name {
-				assert.Equal(t, tasks[i].Name, p.Name)
-				assert.Equal(t, tasks[i].Project.Name, p.Project.Name)
-			}
+			assert.Equal(t, tasks[i].Name, p.Name)
+			assert.Equal(t, tasks[i].Project.Name, p.Project.Name)
+			assert.Equal(t, tasks[i].Type, p.Type)
 		}
 
 		assert.True(t, tasks[0].Active, "Task bullet * should me classified as active")
