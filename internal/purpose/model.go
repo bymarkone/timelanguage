@@ -10,3 +10,7 @@ type Goal struct {
 	Tags     []string
 	Projects []*plan.Project
 }
+
+type Value struct {
+	Name string
+}

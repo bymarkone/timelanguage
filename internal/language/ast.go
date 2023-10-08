@@ -4,8 +4,7 @@ type Node interface {
 	TokenLiteral() string
 }
 
-type
-Item struct {
+type Item struct {
 	Token       Token
 	Type        string
 	Name        *Name
@@ -20,9 +19,9 @@ Item struct {
 func (s *Item) TokenLiteral() string { return s.Token.Literal }
 
 const (
-	Task    = "Task"
-	Project = "Project"
-	Pointer = "Pointer"
+	Normal = "Normal"
+	Star   = "Star"
+	Plus   = "Plus"
 )
 
 type Name struct {

@@ -9,7 +9,8 @@ func init() {
 }
 
 type Repository struct {
-	goals []*Goal
+	goals  []*Goal
+	values []*Value
 }
 
 var repository Repository
@@ -57,4 +58,12 @@ func GoalsByCategory() map[string][]*Goal {
 		result[goal.Category] = append(result[goal.Category], goal)
 	}
 	return result
+}
+
+func (r *Repository) ListValues() []*Value {
+	return r.values
+}
+
+func (r *Repository) AddValue(value *Value) {
+	r.values = append(r.values, value)
 }

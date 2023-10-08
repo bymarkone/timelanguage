@@ -1,7 +1,6 @@
 package repl
 
 import (
-	"github.com/bymarkone/timelanguage/internal/planning"
 	"github.com/bymarkone/timelanguage/internal/schedule"
 	"github.com/bymarkone/timelanguage/internal/utils"
 	"io"
@@ -16,7 +15,7 @@ func init() {
 			{Name: "<hour>", Description: "hour to be considered when printing"},
 			{Name: "<weekday>", Description: "weekday to be considered when printing"},
 		},
-		Flags: []Flag{ },
+		Flags:    []Flag{},
 		Function: now,
 	}
 	RegisterCommands("now", command)
@@ -36,59 +35,7 @@ func now(out io.ReadWriter, words []string) {
 		printlnint(out, "It seems you have nothing to do")
 		return
 	}
-	printlnint(out, "NOW is time to do " + filteredTracks[0].Slot.Name)
-	for _, track := range filteredTracks {
-		subProjects := extractSubProjects(track)
-		if len(subProjects) == 0 {
-			continue
-		}
-		printlnint(out, " ")
-		printlnint(out, track.Name)
-		for _, project := range subProjects {
-			printlnint(out, " -- " + project.Name + " [" + project.Parent.Name + "]")
-		}
-		printlnint(out, " ")
-	}
-	printPriorities(out)
-	printDebt(out)
-}
-
-func printPriorities(out io.ReadWriter) {
-	priorities := planning.GetRepository().GetProject("Priority")
-	if priorities == nil {
-		return
-	}
-	if len(priorities.SubProjects) > 0 {
-		printlnint(out, "You have also some Priorities")
-		for _, project := range priorities.SubProjects {
-			printlnint(out, " -- " + project.Name)
-		}
-	}
-	printlnint(out, " ")
-}
-
-func printDebt(out io.ReadWriter) {
-	debt := planning.GetRepository().GetProject("Debt")
-	if debt == nil {
-		return
-	}
-	if len(debt.SubProjects) > 0 {
-		printlnint(out, "And some Debt")
-		for _, project := range debt.SubProjects {
-			printlnint(out, " -- " + project.Name)
-		}
-	}
-	printlnint(out, " ")
-}
-
-func extractSubProjects(track *schedule.Track) []*planning.Project {
-	var subProjects []*planning.Project
-	for _, project := range track.Projects {
-		subProjects = append(subProjects, planning.FilterProjects(project.AllSubProjects(), func(item planning.Project) bool {
-			return item.Active && (item.Type == "Task" || item.Type == "Pointer")
-		})...)
-	}
-	return subProjects
+	printlnint(out, "NOW is time to do "+filteredTracks[0].Slot.Name)
 }
 
 func ContainsWeekday(weekdays []time.Weekday, weekday time.Weekday) bool {

@@ -6,6 +6,7 @@ import (
 	"github.com/bymarkone/timelanguage/internal/purpose"
 	"github.com/bymarkone/timelanguage/internal/schedule"
 	"github.com/bymarkone/timelanguage/internal/utils"
+	"strings"
 	"time"
 )
 
@@ -19,31 +20,36 @@ func Eval(context string, categories []*Category, items []*Item) {
 		evalGoals(categories, items)
 	case "tasks":
 		evalTasks(items)
+	case "values":
+		evalValues(items)
+	}
+}
+
+func evalValues(items []*Item) {
+	repository := purpose.GetRepository()
+
+	for _, item := range items {
+		value := purpose.Value{Name: item.Name.Value}
+		repository.AddValue(&value)
 	}
 }
 
 func evalTasks(items []*Item) {
 	repository := planning.GetRepository()
 	for _, item := range items {
-		var task = projectFromItem(item)
-		projectAnnotation := findUnaryAnnotation(item.Annotations)
-		var parent = &planning.Project{}
-		if projectAnnotation != nil {
-			projectName := projectAnnotation.Name.Value
-			parent = repository.GetProjectById(projectName)
-			if parent == nil {
-				parent = repository.GetProject(projectName)
-			}
-			if parent == nil {
-				parent = repository.GetProjectsWithText(projectName)
-			}
-			if parent == nil {
-				fmt.Printf("Project id exists, but project is not valid: %s \n", projectName)
-				parent = &planning.Project{Name: projectName, Id: projectName}
-			}
+		project := repository.GetProjectById(item.Category.Value)
+
+		var task = planning.Task{}
+		if strings.HasPrefix(item.Name.Value, "!") {
+			task.Urgent = true
 		}
-		task.Parent = parent
-		parent.SubProjects = append(parent.SubProjects, task)
+		if item.Type == Star {
+			task.Active = true
+		}
+		task.Name = strings.Replace(item.Name.Value, "!", "", 1)
+		task.Project = *project
+
+		repository.AddTask(&task)
 	}
 }
 
@@ -95,12 +101,6 @@ func evalProject(items []*Item) {
 	repository := planning.GetRepository()
 	for _, item := range items {
 		project := projectFromItem(item)
-		for _, item := range item.Children {
-			subProject := projectFromItem(item)
-			subProject.Level = 1
-			subProject.Parent = project
-			project.SubProjects = append(project.SubProjects, subProject)
-		}
 		repository.AddProject(project)
 	}
 }
@@ -116,7 +116,6 @@ func projectFromItem(item *Item) *planning.Project {
 	project.Category = item.Category.Value
 	project.Active = !item.Marked
 	project.Period = findPeriod(item.Annotations, DATE, utils.Period{})
-	project.Type = item.Type
 	if item.Target != "" {
 		project.ContributingGoals = append(project.ContributingGoals, item.Target)
 		goal := repository.GetGoal(item.Target)

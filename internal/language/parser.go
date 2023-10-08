@@ -70,11 +70,11 @@ func (p *Parser) parseItem() {
 	var level = p.findLevel()
 	var item = &Item{Category: p.currentCategory}
 	if p.couldPeek(DASH) {
-		item.Type = Project
+		item.Type = Normal
 	} else if p.couldPeek(STAR) {
-		item.Type = Task
+		item.Type = Star
 	} else if p.couldPeek(PLUS) {
-		item.Type = Pointer
+		item.Type = Plus
 	} else {
 		p.peekErrors(DASH, STAR, PLUS)
 		return

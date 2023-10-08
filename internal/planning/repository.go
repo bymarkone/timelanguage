@@ -8,6 +8,7 @@ var repository Repository
 
 type Repository struct {
 	projects []*Project
+	tasks    []*Task
 }
 
 func CreateRepository() {
@@ -67,6 +68,10 @@ func (r *Repository) GetProjectsWithText(id string) *Project {
 	return nil
 }
 
+func (r *Repository) ListTasks() []*Task {
+	return r.tasks
+}
+
 func ByProjectName(name string) func(project Project) bool {
 	return func(project Project) bool { return project.Name == name }
 }
@@ -83,4 +88,8 @@ func FindProject(arr []*Project, cond func(project Project) bool) *Project {
 		}
 	}
 	return result
+}
+
+func (r *Repository) AddTask(task *Task) {
+	r.tasks = append(r.tasks, task)
 }

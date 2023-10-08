@@ -5,6 +5,7 @@ import (
 	"github.com/bymarkone/timelanguage/internal/purpose"
 	"github.com/bymarkone/timelanguage/internal/schedule"
 	"github.com/bymarkone/timelanguage/internal/utils"
+	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
 	"time"
@@ -113,19 +114,24 @@ func TestEvalTasks(t *testing.T) {
 	tests := []struct {
 		projectInput string
 		taskInput    string
+		expected     []*planning.Task
 	}{{
 		`
-Developer
-- Data Platform
-- Debt, Other
+AI
+- Elements of Statistical Learning [Elements.]
+- PhD in AI [PhD.]
 `,
 		`
-Tasks
-* !Do something urgent [Data Platform]
-* Do something else [Data Platform]
-* Do something now [Debt]
-`,
-	}}
+Elements
+* !Take urgent notes
+- Read chapters 4 and 5
+
+PhD
+* Apply to TUM
+`, []*planning.Task{
+			{Name: "Take urgent notes", Type: "None", Project: planning.Project{Name: "Elements of Statistical Learning"}},
+			{Name: "Read chapters 4 and 5", Type: "None", Project: planning.Project{Name: "Elements of Statistical Learning"}},
+			{Name: "Apply to TUM", Type: "None", Project: planning.Project{Name: "PhD in AI"}}}}}
 
 	for _, tt := range tests {
 		l1 := NewLexer(tt.projectInput)
@@ -138,16 +144,52 @@ Tasks
 		categories2, items2 := p2.Parse()
 		Eval("tasks", categories2, items2)
 
-		project := planning.GetRepository().GetProject("Data Platform")
-		if len(project.SubProjects) != 2 {
-			t.Errorf("Tasks were not added to project. Got %d, want %d", len(project.SubProjects), 2)
+		tasks := planning.GetRepository().ListTasks()
+
+		for i, p := range tt.expected {
+			if tasks[i].Name != p.Name {
+				assert.Equal(t, tasks[i].Name, p.Name)
+				assert.Equal(t, tasks[i].Project.Name, p.Project.Name)
+			}
 		}
 
-		debt := planning.GetRepository().GetProject("Debt, Other")
-		if len(debt.SubProjects) != 1 {
-			t.Errorf("Tasks were not added to Debt project. Got %d, want %d", len(debt.SubProjects), 2)
+		assert.True(t, tasks[0].Active, "Task bullet * should me classified as active")
+		assert.Falsef(t, tasks[1].Active, "Task bullet ! should me classified as non active")
+		assert.True(t, tasks[2].Active, "Task bullet * should me classified as active")
+		assert.True(t, tasks[0].Urgent, "Task starting with ! not market as urgent")
+
+	}
+}
+
+func TestEvalValues(t *testing.T) {
+
+	tests := []struct {
+		input    string
+		expected []*purpose.Value
+	}{{`
+Values
+- Family
+- Health
+`, []*purpose.Value{{Name: "Family"}, {Name: "Health"}}}}
+
+	for _, tt := range tests {
+		purpose.CreateRepository()
+
+		l := NewLexer(tt.input)
+		p := NewParser("test_values", l)
+		categories, items := p.Parse()
+
+		Eval("values", categories, items)
+
+		values := purpose.GetRepository().ListValues()
+
+		for i, p := range tt.expected {
+			if values[i].Name != p.Name {
+				t.Errorf("Project has wrong data. Got %s, want %s", values[i].Name, p.Name)
+			}
 		}
 	}
+
 }
 
 func TestEvalProjects(t *testing.T) {
@@ -163,18 +205,16 @@ func TestEvalProjects(t *testing.T) {
 Mathematics
 - IU Analysis II >> BS Mathematics
 - IU Modern Algebra [Algebra. 10/01/21-15/04/22]
-  * Read book
 - Study Analysis Burkin
-  + Follow another list
 - (Study Logic for Mathematicians)
 `,
 			[]*planning.Project{
 				{Name: "IU Analysis II", Category: "Mathematics", Active: true,
 					ContributingGoals: []string{"BS Mathematics"}},
 				{Id: "Algebra", Name: "IU Modern Algebra", Category: "Mathematics", Active: true, Period: period,
-					ContributingGoals: []string{}, SubProjects: []*planning.Project{{Name: "Read book"}}},
+					ContributingGoals: []string{}},
 				{Name: "Study Analysis Burkin", Category: "Mathematics", Active: true,
-					ContributingGoals: []string{}, SubProjects: []*planning.Project{{Name: "Follow another list"}}},
+					ContributingGoals: []string{}},
 				{Name: "Study Logic for Mathematicians", Category: "Mathematics", Active: false,
 					ContributingGoals: []string{}},
 			},
@@ -213,35 +253,15 @@ Mathematics
 			if !equalGoals(projects[i].ContributingGoals, p.ContributingGoals) {
 				t.Errorf("Project has wrong goals. Got %v, want %v", projects[i].ContributingGoals, p.ContributingGoals)
 			}
-			if !equalProjects(projects[i].SubProjects, p.SubProjects) {
-				t.Errorf("Project has wrong subprojects. Got %v, want %v", projects[i].SubProjects, p.SubProjects)
-			}
-			for _, sub := range projects[i].SubProjects {
-				if sub.Parent == nil {
-					t.Errorf("Project parent cannot be nil, project %s", sub.Name)
-				}
-			}
 		}
 	}
-}
-
-func equalProjects(first []*planning.Project, second []*planning.Project) bool {
-	if len(first) != len(second) {
-		return false
-	}
-	for i, _ := range first {
-		if !(first[i].Name == second[i].Name) {
-			return false
-		}
-	}
-	return true
 }
 
 func equalGoals(first []string, second []string) bool {
 	if len(first) != len(second) {
 		return false
 	}
-	for i, _ := range first {
+	for i := range first {
 		if !(first[i] == second[i]) {
 			return false
 		}

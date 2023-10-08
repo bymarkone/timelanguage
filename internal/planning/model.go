@@ -8,22 +8,17 @@ type Project struct {
 	Id                string
 	Name              string
 	Category          string
-	Type              string
 	Period            utils.Period
 	ContributingGoals []string
-	SubProjects       []*Project
-	Parent            *Project
 	Active            bool
-	Level             int
 }
 
-func (p *Project) AllSubProjects() []*Project {
-	var result []*Project
-	for _, subProject := range p.SubProjects {
-		result = append(result, subProject)
-		result = append(result, subProject.AllSubProjects()...)
-	}
-	return result
+type Task struct {
+	Active  bool
+	Urgent  bool
+	Name    string
+	Type    string
+	Project Project
 }
 
 func FilterProjects(arr []*Project, cond func(project Project) bool) []*Project {
@@ -44,7 +39,6 @@ func FlattenProjectsDepth(arr []*Project) []*Project {
 	var results []*Project
 	for i := range arr {
 		results = append(results, arr[i])
-		results = append(results, FlattenProjectsDepth(arr[i].SubProjects)...)
 	}
 	return results
 }
