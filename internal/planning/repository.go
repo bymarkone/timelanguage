@@ -68,10 +68,6 @@ func (r *Repository) GetProjectsWithText(id string) *Project {
 	return nil
 }
 
-func (r *Repository) ListTasks() []*Task {
-	return r.tasks
-}
-
 func ByProjectName(name string) func(project Project) bool {
 	return func(project Project) bool { return project.Name == name }
 }
@@ -92,4 +88,25 @@ func FindProject(arr []*Project, cond func(project Project) bool) *Project {
 
 func (r *Repository) AddTask(task *Task) {
 	r.tasks = append(r.tasks, task)
+}
+
+func (r *Repository) ListTasks() []*Task {
+	return r.tasks
+}
+
+type void struct{}
+
+func (r *Repository) TypesFromTasks() []string {
+	var member void
+	set := make(map[string]void)
+	for _, task := range r.tasks {
+		set[task.Type] = member
+	}
+	keys := make([]string, len(set))
+	i := 0
+	for k := range set {
+		keys[i] = k
+		i++
+	}
+	return keys
 }
