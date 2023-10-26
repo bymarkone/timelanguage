@@ -13,14 +13,6 @@ type Project struct {
 	Active            bool
 }
 
-type Task struct {
-	Active  bool
-	Urgent  bool
-	Name    string
-	Type    string
-	Project Project
-}
-
 func FilterProjects(arr []*Project, cond func(project Project) bool) []*Project {
 	var result []*Project
 	for i := range arr {
@@ -43,10 +35,6 @@ func FlattenProjectsDepth(arr []*Project) []*Project {
 	return results
 }
 
-var ByActive = func(val Project) bool {
+var ProjectActive = func(val Project) bool {
 	return val.Active == true
-}
-
-var ByInactive = func(val Project) bool {
-	return val.Active == false
 }

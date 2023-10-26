@@ -191,8 +191,8 @@ func (repl *Repl) executeCommand(line string) {
 	case "exit":
 		return
 	case "reload":
-		repl.loader.Load()
 		clear(repl.terminal)
+		repl.loader.Load()
 	case "help":
 		terminal.Print("\n")
 		allCommands["help"].Function(repl.terminal, words)

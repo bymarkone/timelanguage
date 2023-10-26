@@ -22,6 +22,8 @@ func Eval(context string, categories []*Category, items []*Item) {
 		evalTasks(items)
 	case "values":
 		evalValues(items)
+	case "today":
+		evalToday(items)
 	}
 }
 
@@ -100,6 +102,12 @@ func evalSchedule(items []*Item) {
 			return project.Category == item.Name.Value
 		})
 		repository.AddTrack(track)
+	}
+}
+
+func evalToday(items []*Item) {
+	for _, item := range items {
+		fmt.Println(item.Name.Value)
 	}
 }
 

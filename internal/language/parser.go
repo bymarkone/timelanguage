@@ -19,6 +19,7 @@ type Parser struct {
 }
 
 type ParseError struct {
+	origin   string
 	expected []TokenType
 	got      TokenType
 	literal  string
@@ -44,8 +45,8 @@ func (p *Parser) Parse() ([]*Category, []*Item) {
 	for !p.peekTokenIs(EOF) {
 		if !p.parseCategory() {
 			for _, err := range p.Errors {
-				fmt.Printf("Error parsing file %s (line %d,column %d). Expected %s, got %s (%s) \n",
-					p.filename, err.line, err.column, err.expected, err.got, err.literal)
+				fmt.Printf("Error parsing file %s while doing '%s' (line %d,column %d). Expected %s, got %s (%s) \n",
+					p.filename, err.origin, err.line, err.column, err.expected, err.got, err.literal)
 			}
 			break
 		}
@@ -54,7 +55,7 @@ func (p *Parser) Parse() ([]*Category, []*Item) {
 }
 
 func (p *Parser) parseCategory() bool {
-	if !p.expectPeek(IDENT) {
+	if !p.expectPeek("Category", IDENT) {
 		return false
 	}
 
@@ -111,10 +112,19 @@ func (p *Parser) parseMarker() {
 }
 
 func (p *Parser) parseName() {
-	if !p.expectPeek(IDENT) {
+	if !p.expectPeek("Name", IDENT) {
 		return
 	}
-	p.currentItem.Name = &Name{Token: p.curToken, Value: p.curToken.Literal}
+	if p.peekTokenIs(DUALCOLON) {
+		p.currentItem.PreName = &Name{Token: p.curToken, Value: p.curToken.Literal}
+		p.expectSkip(DUALCOLON)
+		if !p.expectPeek("Name", IDENT) {
+			return
+		}
+		p.currentItem.Name = &Name{Token: p.curToken, Value: p.curToken.Literal}
+	} else {
+		p.currentItem.Name = &Name{Token: p.curToken, Value: p.curToken.Literal}
+	}
 }
 
 func (p *Parser) parseDescription() {
@@ -128,7 +138,7 @@ func (p *Parser) parseTarget() {
 	if !p.couldPeek(DUALARROW) {
 		return
 	}
-	if !p.expectPeek(IDENT) {
+	if !p.expectPeek("Target", IDENT) {
 		return
 	}
 	p.currentItem.Target = p.curToken.Literal
@@ -145,7 +155,7 @@ func (p *Parser) parseAnnotations() {
 }
 
 func (p *Parser) parseAnnotation() {
-	if !p.expectPeek(IDENT) {
+	if !p.expectPeek("Annotations", IDENT) {
 		return
 	}
 	if p.peekTokenIs(RSB) || p.peekTokenIs(DOT) {
@@ -153,9 +163,9 @@ func (p *Parser) parseAnnotation() {
 		p.addAnnotationTo(unary)
 	} else if p.peekTokenIs(DASH) {
 		left := &Name{Token: p.curToken, Value: p.curToken.Literal}
-		p.expectPeek(DASH)
+		p.expectPeek("Annotations : Binary", DASH)
 		operator := Operator{Token: p.curToken}
-		if !p.expectPeek(IDENT) {
+		if !p.expectPeek("Annotations : Binary : Identity", IDENT) {
 			return
 		}
 		right := &Name{Token: p.curToken, Value: p.curToken.Literal}
@@ -205,12 +215,12 @@ func (p *Parser) couldPeek(t TokenType) bool {
 	return false
 }
 
-func (p *Parser) expectPeek(t TokenType) bool {
+func (p *Parser) expectPeek(origin string, t TokenType) bool {
 	if p.peekTokenIs(t) {
 		p.nextToken()
 		return true
 	} else {
-		p.peekError(t)
+		p.peekError(origin, t)
 		return false
 	}
 }
@@ -223,8 +233,8 @@ func (p *Parser) curTokenIs(t TokenType) bool {
 	return p.curToken.Type == t
 }
 
-func (p *Parser) peekError(t TokenType) {
-	parseError := ParseError{expected: []TokenType{t}, got: p.peekToken.Type, column: p.lexer.col - 1, line: p.lexer.line, literal: p.peekToken.Literal}
+func (p *Parser) peekError(origin string, t TokenType) {
+	parseError := ParseError{expected: []TokenType{t}, got: p.peekToken.Type, column: p.lexer.col - 1, line: p.lexer.line, literal: p.peekToken.Literal, origin: origin}
 	p.Errors = append(p.Errors, parseError)
 }
 

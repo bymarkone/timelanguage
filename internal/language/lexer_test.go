@@ -1,14 +1,18 @@
 package language
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestAnything(t *testing.T) {
 	input := `
+First Category
 AI
 - Math >> Mathematician
   - Bachelors Degree [Unary. 15/01/21-10/12/22]
   - (Cambridge Part III)
 - Foundations [Unary. 05:00-10:00]
+- Parent :: Child
 * Books 
 - (Research)
   + Follow other list, but not too "eagerly"
@@ -17,6 +21,7 @@ AI
 		expectedType    TokenType
 		expectedLiteral string
 	}{
+		{IDENT, "First Category"},
 		{IDENT, "AI"},
 		{DASH, "-"},
 		{IDENT, "Math"},
@@ -46,6 +51,10 @@ AI
 		{DASH, "-"},
 		{IDENT, "10:00"},
 		{RSB, "]"},
+		{DASH, "-"},
+		{IDENT, "Parent"},
+		{DUALCOLON, "::"},
+		{IDENT, "Child"},
 		{STAR, "*"},
 		{IDENT, "Books"},
 		{DASH, "-"},

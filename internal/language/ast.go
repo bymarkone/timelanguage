@@ -7,6 +7,7 @@ type Node interface {
 type Item struct {
 	Token       Token
 	Type        string
+	PreName     *Name
 	Name        *Name
 	Description *Description
 	Category    *Category

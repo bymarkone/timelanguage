@@ -15,14 +15,14 @@ type Track struct {
 
 func (t *Track) ActiveProjects() []*plan.Project {
 	if len(t._cachedActive) == 0 {
-		t._cachedActive = plan.FilterProjects(t.Projects, plan.ByActive)
+		t._cachedActive = plan.FilterProjects(t.Projects, plan.ProjectActive)
 	}
 	return t._cachedActive
 }
 
 func (t *Track) FlattenActiveProjects() []*plan.Project {
 	if len(t._cachedFlattenActive) == 0 {
-		t._cachedFlattenActive = plan.FilterProjects(plan.FlattenProjects(t.Projects), plan.ByActive)
+		t._cachedFlattenActive = plan.FilterProjects(plan.FlattenProjects(t.Projects), plan.ProjectActive)
 	}
 	return t._cachedFlattenActive
 }

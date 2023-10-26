@@ -10,6 +10,7 @@ AI
   - Bachelors Degree 
 - Foundations [Unary. 15/01/21-06/12/22]
 * Books [Unary. 05:00-07:00]
+- Parent :: Child
 - (Research)
   + Follow another list, but not too "eagerly"
 `
@@ -23,11 +24,13 @@ AI
 		parenthesis bool
 		annotations []string
 		target      string
+		preName     string
 	}{
-		{"Project", "Math", "", 1, "AI", 1, false, []string{}, "Mathematician"},
-		{"Project", "Foundations", "", 1, "AI", 0, false, []string{"Unary", "15/01/21-06/12/22"}, ""},
-		{"Task", "Books", "", 1, "AI", 0, false, []string{"Unary", "05:00-07:00"}, ""},
-		{"Project", "Research", "", 1, "AI", 1, true, []string{}, ""},
+		{"Normal", "Math", "", 1, "AI", 1, false, []string{}, "Mathematician", ""},
+		{"Normal", "Foundations", "", 1, "AI", 0, false, []string{"Unary", "15/01/21-06/12/22"}, "", ""},
+		{"Star", "Books", "", 1, "AI", 0, false, []string{"Unary", "05:00-07:00"}, "", ""},
+		{"Normal", "Child", "", 1, "AI", 0, false, []string{}, "", "Parent"},
+		{"Normal", "Research", "", 1, "AI", 1, true, []string{}, "", ""},
 	}
 
 	lexer := NewLexer(input)
@@ -45,6 +48,10 @@ AI
 
 		if items[i].Name.TokenLiteral() != tt.name {
 			t.Fatalf("Expecting %s got %s", tt.name, items[i].Name.TokenLiteral())
+		}
+
+		if items[i].PreName != nil && items[i].PreName.TokenLiteral() != tt.preName {
+			t.Fatalf("Expecting %s got %s", tt.preName, items[i].PreName.TokenLiteral())
 		}
 
 		if items[i].Description != nil && items[i].Description.TokenLiteral() != tt.description {

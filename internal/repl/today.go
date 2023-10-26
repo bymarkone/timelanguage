@@ -31,7 +31,10 @@ func today(out io.ReadWriter, _ []string) {
 
 	f, err := os.Create(config.EnvBaseFolder() + "/data/today.gr")
 	check(err)
-	defer f.Close()
+	defer func() { check(f.Close()) }()
+
+	_, err = f.WriteString("SELECTED \n\n\n\n")
+	check(err)
 
 	for _, taskType := range types {
 		printlnint(out, " ")
@@ -40,17 +43,15 @@ func today(out io.ReadWriter, _ []string) {
 		printlnint(out, taskType)
 		_, err = f.WriteString(taskType + " \n")
 		check(err)
-		for _, task := range tasks {
-			if !(task.Type == taskType) {
-				continue
-			}
-			if task.Active {
-				taskDescription := "- " + task.Project.Name + " :: " + task.Name
-				_, err = f.WriteString(taskDescription + " \n")
-				check(err)
-				printlnint(out, taskDescription)
-			}
+
+		selected := planning.FilterTasks(tasks, planning.ByType(taskType))
+		selected = planning.FilterTasks(selected, planning.TaskActive)
+
+		for _, task := range selected {
+			taskDescription := "- " + task.Project.Name + " :: " + task.Name
+			_, err = f.WriteString(taskDescription + " \n")
+			check(err)
+			printlnint(out, taskDescription)
 		}
 	}
-
 }

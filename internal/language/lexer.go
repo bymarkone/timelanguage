@@ -46,6 +46,16 @@ func (l *Lexer) NextToken() Token {
 		tok = newToken(DOT, l.ch)
 	case '+':
 		tok = newToken(PLUS, l.ch)
+	case ':':
+		l.readChar()
+		if isColon(l.ch) {
+			tok = Token{Type: DUALCOLON, Literal: "::"}
+			l.readChar()
+			return tok
+		} else {
+			tok = newToken(ARROW, l.ch)
+			return tok
+		}
 	case '>':
 		l.readChar()
 		if l.ch == '>' {
@@ -83,7 +93,7 @@ func (l *Lexer) NextToken() Token {
 	return tok
 }
 
-//private
+// private
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
 		l.ch = 0
@@ -110,7 +120,13 @@ func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for {
 		l.readChar()
-		if isNewline(l.ch) || isComparison(l.ch) || isBracket(l.ch) || isDot(l.ch) || isDash(l.ch) || isParenthesis(l.ch) {
+		if isNewline(l.ch) ||
+			isComparison(l.ch) ||
+			isBracket(l.ch) ||
+			isDot(l.ch) ||
+			isDash(l.ch) ||
+			isParenthesis(l.ch) ||
+			(isColon(l.ch) && isColon(l.peekChar())) {
 			break
 		}
 	}
@@ -133,7 +149,7 @@ func (l *Lexer) skipNewLine() {
 	}
 }
 
-//local
+// local
 func newToken(tokenType TokenType, ch byte) Token {
 	return Token{Type: tokenType, Literal: string(ch)}
 }
@@ -154,16 +170,8 @@ func isSpace(ch byte) bool {
 	return ch == ' '
 }
 
-func isSlash(ch byte) bool {
-	return ch == '\\' || ch == '/'
-}
-
 func isColon(ch byte) bool {
 	return ch == ':'
-}
-
-func isHash(ch byte) bool {
-	return ch == '#'
 }
 
 func isDash(ch byte) bool {
