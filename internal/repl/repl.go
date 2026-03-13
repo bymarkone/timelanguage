@@ -217,6 +217,9 @@ func (repl *Repl) executeCommand(line string) {
 	case "today":
 		terminal.Print("\n")
 		allCommands["today"].Function(repl.terminal, words)
+	case "random":
+		terminal.Print("\n")
+		allCommands["random"].Function(repl.terminal, words)
 	}
 }
 

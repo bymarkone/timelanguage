@@ -5,6 +5,7 @@ import (
 	"github.com/bymarkone/timelanguage/internal/planning"
 	"io"
 	"os"
+	"strings"
 )
 
 func init() {
@@ -29,11 +30,15 @@ func today(out io.ReadWriter, _ []string) {
 	tasks := repository.ListTasks()
 	types := []string{"Thoughtworks", "Study", "Readings", "Writing", "Coding", "Other"}
 
-	f, err := os.Create(config.EnvBaseFolder() + "/data/today.gr")
+	dat, err := os.ReadFile(config.EnvBaseFolder() + "/data/today.gr")
 	check(err)
+	current := strings.Split(string(dat), "===")[0]
+	current = strings.TrimSpace(current)
+
+	f, err := os.Create(config.EnvBaseFolder() + "/data/today.gr")
 	defer func() { check(f.Close()) }()
 
-	_, err = f.WriteString("SELECTED \n\n\n\n")
+	_, err = f.WriteString(current + "\n===\n")
 	check(err)
 
 	for _, taskType := range types {

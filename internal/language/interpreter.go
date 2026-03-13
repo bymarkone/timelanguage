@@ -106,9 +106,6 @@ func evalSchedule(items []*Item) {
 }
 
 func evalToday(items []*Item) {
-	for _, item := range items {
-		fmt.Println(item.Name.Value)
-	}
 }
 
 func evalProject(items []*Item) {
